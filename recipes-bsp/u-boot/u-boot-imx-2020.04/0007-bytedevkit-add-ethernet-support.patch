@@ -1,0 +1,137 @@
+From 3037f56a13883835d2a27cd9b8ad427bc5d929f6 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Stephan=20D=C3=BCnner?= <stephan.duenner@bytesatwork.ch>
+Date: Wed, 2 Feb 2022 06:35:17 +0100
+Subject: [PATCH] bytedevkit: add ethernet support
+
+It is mandatory to enable ethernet support to store MAC
+address during production.
+---
+ arch/arm/dts/imx8mm-bytedevkit.dts | 45 ++++++++++++++++++++++++++++++
+ configs/bytedevkit_defconfig       |  8 ++++++
+ configs/bytedevkit_fspi_defconfig  |  8 ++++++
+ 3 files changed, 61 insertions(+)
+
+diff --git a/arch/arm/dts/imx8mm-bytedevkit.dts b/arch/arm/dts/imx8mm-bytedevkit.dts
+index 0837f2e697..f59fa05331 100644
+--- a/arch/arm/dts/imx8mm-bytedevkit.dts
++++ b/arch/arm/dts/imx8mm-bytedevkit.dts
+@@ -19,6 +19,7 @@
+ 
+ #include "imx8mm.dtsi"
+ #include "imx8mm-byteengine-m6.dtsi"
++#include <dt-bindings/net/ti-dp83867.h>
+ 
+ / {
+ 	model = "i.MX 8M Mini on bytes at work byteDEVKIT";
+@@ -56,6 +57,26 @@
+ 			MX8MM_IOMUXC_GPIO1_IO04_USDHC2_VSELECT	0x1d0
+ 		>;
+ 	};
++
++	pinctrl_fec1: fec1grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_ENET_MDC_ENET1_MDC			0x3     /* AC27  ENET_MDC */
++			MX8MM_IOMUXC_ENET_MDIO_ENET1_MDIO		0x3     /* AB27  ENET_MDIO */
++			MX8MM_IOMUXC_ENET_TD3_ENET1_RGMII_TD3		0x1f    /* AF25  ENET_TD3 */
++			MX8MM_IOMUXC_ENET_TD2_ENET1_RGMII_TD2		0x1f    /* AG25  ENET_TD2 */
++			MX8MM_IOMUXC_ENET_TD1_ENET1_RGMII_TD1		0x1f    /* AF26  ENET_TD1 */
++			MX8MM_IOMUXC_ENET_TD0_ENET1_RGMII_TD0		0x1f    /* AG26  ENET_TD0 */
++			MX8MM_IOMUXC_ENET_RD3_ENET1_RGMII_RD3		0x91    /* AC26  ENET_RD3 */
++			MX8MM_IOMUXC_ENET_RD2_ENET1_RGMII_RD2		0x91    /* AD26  ENET_RD2 */
++			MX8MM_IOMUXC_ENET_RD1_ENET1_RGMII_RD1		0x91    /* AD27  ENET_RD1 */
++			MX8MM_IOMUXC_ENET_RD0_ENET1_RGMII_RD0		0x91    /* AE27  ENET_RD0 */
++			MX8MM_IOMUXC_ENET_TXC_ENET1_RGMII_TXC		0x1f    /* AG24  ENET_TXC */
++			MX8MM_IOMUXC_ENET_RXC_ENET1_RGMII_RXC		0x91    /* AE26  ENET_RXC */
++			MX8MM_IOMUXC_ENET_RX_CTL_ENET1_RGMII_RX_CTL	0x91    /* AF27  ENET_RX_CTL */
++			MX8MM_IOMUXC_ENET_TX_CTL_ENET1_RGMII_TX_CTL	0x1f    /* AF24  ENET_TX_CTL */
++			MX8MM_IOMUXC_UART3_TXD_GPIO5_IO27		0x6     /* D18   ETH_RESET~ */
++		>;
++	};
+ };
+ 
+ /* Console */
+@@ -83,3 +104,27 @@
+ &usbotg2 {
+ 	status = "okay";
+ };
++
++&fec1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_fec1>;
++	phy-mode = "rgmii-id";
++	phy-handle = <&ethphy0>;
++	fsl,magic-packet;
++	phy-reset-gpios = <&gpio5 27 GPIO_ACTIVE_LOW>;
++	status = "okay";
++
++	mdio {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		ethphy0: ethernet-phy@0 {
++			compatible = "ethernet-phy-ieee802.3-c22";
++			reg = <0>;
++			ti,rx-internal-delay = <DP83867_RGMIIDCTL_250_PS>;
++			ti,tx-internal-delay = <DP83867_RGMIIDCTL_250_PS>;
++			ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_8_B_NIB>;
++			ti,dp83867-rxctrl-strap-quirk;
++		};
++	};
++};
+diff --git a/configs/bytedevkit_defconfig b/configs/bytedevkit_defconfig
+index fa03d4320a..bf9b4733e1 100644
+--- a/configs/bytedevkit_defconfig
++++ b/configs/bytedevkit_defconfig
+@@ -35,6 +35,8 @@ CONFIG_CMD_MEMTEST=y
+ CONFIG_CMD_GPIO=y
+ CONFIG_CMD_I2C=y
+ CONFIG_CMD_MMC=y
++CONFIG_CMD_MII=y
++CONFIG_CMD_PING=y
+ CONFIG_CMD_CACHE=y
+ CONFIG_CMD_REGULATOR=y
+ CONFIG_CMD_EXT2=y
+@@ -65,7 +67,13 @@ CONFIG_SPI_FLASH_ISSI=y
+ CONFIG_SPI_FLASH_MACRONIX=y
+ CONFIG_SPI_FLASH_STMICRO=y
+ CONFIG_SPI_FLASH_WINBOND=y
++CONFIG_PHYLIB=y
+ CONFIG_DM_ETH=y
++CONFIG_DM_ETH_PHY=y
++CONFIG_FEC_MXC=y
++CONFIG_RGMII=y
++CONFIG_MII=y
++CONFIG_PHY=y
+ CONFIG_PINCTRL=y
+ CONFIG_PINCTRL_IMX8M=y
+ CONFIG_DM_REGULATOR=y
+diff --git a/configs/bytedevkit_fspi_defconfig b/configs/bytedevkit_fspi_defconfig
+index c397411e1d..542eb4b538 100644
+--- a/configs/bytedevkit_fspi_defconfig
++++ b/configs/bytedevkit_fspi_defconfig
+@@ -35,6 +35,8 @@ CONFIG_CMD_MEMTEST=y
+ CONFIG_CMD_GPIO=y
+ CONFIG_CMD_I2C=y
+ CONFIG_CMD_MMC=y
++CONFIG_CMD_MII=y
++CONFIG_CMD_PING=y
+ CONFIG_CMD_CACHE=y
+ CONFIG_CMD_REGULATOR=y
+ CONFIG_CMD_EXT2=y
+@@ -65,7 +67,13 @@ CONFIG_SPI_FLASH_ISSI=y
+ CONFIG_SPI_FLASH_MACRONIX=y
+ CONFIG_SPI_FLASH_STMICRO=y
+ CONFIG_SPI_FLASH_WINBOND=y
++CONFIG_PHYLIB=y
+ CONFIG_DM_ETH=y
++CONFIG_DM_ETH_PHY=y
++CONFIG_FEC_MXC=y
++CONFIG_RGMII=y
++CONFIG_MII=y
++CONFIG_PHY=y
+ CONFIG_PINCTRL=y
+ CONFIG_PINCTRL_IMX8M=y
+ CONFIG_DM_REGULATOR=y
+-- 
+2.30.2
+

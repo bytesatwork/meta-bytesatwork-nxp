@@ -1,0 +1,89 @@
+From 942c0b231c659e70c4040be1623e598c88486d25 Mon Sep 17 00:00:00 2001
+From: Rico Ganahl <rico.ganahl@bytesatwork.ch>
+Date: Thu, 20 Jan 2022 15:26:39 +0100
+Subject: [PATCH] build: add Docker build scripts
+
+Using Docker to build boot binaries for SD card and SPI NOR.
+
+Needs Docker ghcr.io/bytesatwork/uboot-imx-container:lf-5.10.72_2.2.0
+
+- Build boot binary for SD with `bytedevkit_defconfig`
+  > ./docker_build_sd.sh
+
+- Build boot binary for SD with your current u-boot config
+  > ./docker_build_dev_sd.sh
+
+- Build boot binary for SPI NOR with `bytedevkit_fspi_defconfig`
+  > ./docker_build_fspi.sh
+
+- Build boot binary for SPI NOR with your current u-boot config
+  > ./docker_build_dev_fspi.sh
+
+- Use Docker interactively (you know what you are doing)
+  > ./docker_build_interactive.sh
+---
+ docker_build_dev_fspi.sh    | 4 ++++
+ docker_build_dev_sd.sh      | 4 ++++
+ docker_build_fspi.sh        | 4 ++++
+ docker_build_interactive.sh | 4 ++++
+ docker_build_sd.sh          | 4 ++++
+ 5 files changed, 20 insertions(+)
+ create mode 100755 docker_build_dev_fspi.sh
+ create mode 100755 docker_build_dev_sd.sh
+ create mode 100755 docker_build_fspi.sh
+ create mode 100755 docker_build_interactive.sh
+ create mode 100755 docker_build_sd.sh
+
+diff --git a/docker_build_dev_fspi.sh b/docker_build_dev_fspi.sh
+new file mode 100755
+index 0000000000..09838b39c8
+--- /dev/null
++++ b/docker_build_dev_fspi.sh
+@@ -0,0 +1,4 @@
++#!/bin/bash
++
++# build for FSPI with current config
++docker run --rm -v "$(pwd)":/workdir/u-boot-imx ghcr.io/bytesatwork/uboot-imx-container:lf-5.10.72_2.2.0 /workdir/build.sh -t fspi
+diff --git a/docker_build_dev_sd.sh b/docker_build_dev_sd.sh
+new file mode 100755
+index 0000000000..8bc86e927c
+--- /dev/null
++++ b/docker_build_dev_sd.sh
+@@ -0,0 +1,4 @@
++#!/bin/bash
++
++# build for SD with current config
++docker run --rm -v "$(pwd)":/workdir/u-boot-imx ghcr.io/bytesatwork/uboot-imx-container:lf-5.10.72_2.2.0 /workdir/build.sh -t sd
+diff --git a/docker_build_fspi.sh b/docker_build_fspi.sh
+new file mode 100755
+index 0000000000..ff4edcfb15
+--- /dev/null
++++ b/docker_build_fspi.sh
+@@ -0,0 +1,4 @@
++#!/bin/bash
++
++# FSPI
++docker run --rm -v "$(pwd)":/workdir/u-boot-imx ghcr.io/bytesatwork/uboot-imx-container:lf-5.10.72_2.2.0 /workdir/build.sh -t fspi -c bytedevkit_fspi_defconfig
+diff --git a/docker_build_interactive.sh b/docker_build_interactive.sh
+new file mode 100755
+index 0000000000..179e15509d
+--- /dev/null
++++ b/docker_build_interactive.sh
+@@ -0,0 +1,4 @@
++#!/bin/bash
++
++# interactive
++docker run --rm -it -v "$(pwd)":/workdir/u-boot-imx ghcr.io/bytesatwork/uboot-imx-container:lf-5.10.72_2.2.0
+diff --git a/docker_build_sd.sh b/docker_build_sd.sh
+new file mode 100755
+index 0000000000..aafa979ef9
+--- /dev/null
++++ b/docker_build_sd.sh
+@@ -0,0 +1,4 @@
++#!/bin/bash
++
++# SD
++docker run --rm -v "$(pwd)":/workdir/u-boot-imx ghcr.io/bytesatwork/uboot-imx-container:lf-5.10.72_2.2.0 /workdir/build.sh -t sd -c bytedevkit_defconfig
+-- 
+2.30.2
+
