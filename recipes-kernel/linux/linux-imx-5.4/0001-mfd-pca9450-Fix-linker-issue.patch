@@ -1,0 +1,24 @@
+From 7239dac2f223e0cbf557a7fcd0fef7e3b5b52a97 Mon Sep 17 00:00:00 2001
+From: Daniel Ammann <daniel.ammann@bytesatwork.ch>
+Date: Thu, 13 Aug 2020 14:09:24 +0200
+Subject: [PATCH] mfd: pca9450: Fix linker issue
+
+---
+ drivers/mfd/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+index e2e88fde69bc..97c4cd7aac43 100644
+--- a/drivers/mfd/Kconfig
++++ b/drivers/mfd/Kconfig
+@@ -1993,6 +1993,7 @@ config MFD_PCA9450
+ 	bool "PCA9450 Power Management chip"
+ 	depends on I2C=y
+ 	select MFD_CORE
++	select REGMAP_IRQ
+ 	help
+ 	  if you say yes here you get support for the PCA9450
+ 	  Power Management chips.
+-- 
+2.30.2
+

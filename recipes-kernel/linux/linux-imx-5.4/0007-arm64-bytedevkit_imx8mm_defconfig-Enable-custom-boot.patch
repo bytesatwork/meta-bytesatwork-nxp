@@ -1,0 +1,28 @@
+From 5a81b578b4c5329fe8ff611de9e521a54131522e Mon Sep 17 00:00:00 2001
+From: Daniel Ammann <daniel.ammann@bytesatwork.ch>
+Date: Tue, 9 Nov 2021 07:19:16 +0100
+Subject: [PATCH] arm64: bytedevkit_imx8mm_defconfig: Enable custom boot logo
+
+---
+ arch/arm64/configs/bytedevkit_imx8mm_defconfig | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/arch/arm64/configs/bytedevkit_imx8mm_defconfig b/arch/arm64/configs/bytedevkit_imx8mm_defconfig
+index 3cd35041388e..6da7e0052aaa 100644
+--- a/arch/arm64/configs/bytedevkit_imx8mm_defconfig
++++ b/arch/arm64/configs/bytedevkit_imx8mm_defconfig
+@@ -313,6 +313,11 @@ CONFIG_FB_ARMCLCD=y
+ # CONFIG_BACKLIGHT_GENERIC is not set
+ CONFIG_BACKLIGHT_PWM=y
+ CONFIG_FRAMEBUFFER_CONSOLE=y
++CONFIG_LOGO=y
++# CONFIG_LOGO_LINUX_MONO is not set
++# CONFIG_LOGO_LINUX_VGA16 is not set
++# CONFIG_LOGO_LINUX_CLUT224 is not set
++CONFIG_LOGO_BAW_CLUT224=y
+ CONFIG_SOUND=y
+ CONFIG_SND=y
+ CONFIG_SND_HRTIMER=y
+-- 
+2.30.2
+
