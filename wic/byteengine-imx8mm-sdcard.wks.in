@@ -1,0 +1,7 @@
+# short-description: Create SD card image
+# long-description: Creates a partitioned SD card image for i.MX 8M Mini
+
+part u-boot --source rawcopy --sourceparams="file=imx-boot" --ondisk mmcblk --no-table --align ${IMX_BOOT_SEEK}
+part / --source rootfs --ondisk mmcblk --fstype=ext4 --label root --align 8192
+
+bootloader --ptable msdos
