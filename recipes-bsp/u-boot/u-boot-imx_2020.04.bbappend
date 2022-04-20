@@ -8,4 +8,11 @@ SRC_URI += " \
 	file://0005-WA-spi_nor-is25wp256-allow-only-standard-read.patch \
 	file://0006-build-add-Docker-build-scripts.patch \
 	file://0007-bytedevkit-add-ethernet-support.patch \
+	file://0008-board-fix-default-RAM-size.patch \
+	file://0009-m2config-verbatim-import.patch \
+	file://0010-m2config-rename-to-baw-config.patch \
+	file://0011-bawconfig-adapt-PCB-RAM-and-flash-enums-and-descript.patch \
+	file://0012-bawconfig-support-imx8mm-bytedevkit.patch \
+	file://0013-board-multi-dram-timings.patch \
+	file://0014-board-introduce-baw-config.patch \
 "

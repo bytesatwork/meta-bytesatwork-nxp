@@ -1,0 +1,274 @@
+From 59bb4eecff5ca3ecee55cc682eb174d0776c6844 Mon Sep 17 00:00:00 2001
+From: Rico Ganahl <rico.ganahl@bytesatwork.ch>
+Date: Tue, 1 Mar 2022 14:29:16 +0100
+Subject: [PATCH] board: introduce baw config
+
+This allows to store production data in the EEPROM on the byteENGINE.
+Additionally, the M6 dram timings are configured according to EEPROM data.
+As fallback the built in or the default configuration is used.
+---
+ board/bytesatwork/bytedevkit/Kconfig      | 34 +++++++++++++
+ board/bytesatwork/bytedevkit/Makefile     | 15 +++++-
+ board/bytesatwork/bytedevkit/bytedevkit.c | 59 ++++++++++++++++++++++
+ board/bytesatwork/bytedevkit/spl.c        | 60 +++++++++++++++++++++++
+ include/configs/bytedevkit.h              |  5 ++
+ 5 files changed, 172 insertions(+), 1 deletion(-)
+
+diff --git a/board/bytesatwork/bytedevkit/Kconfig b/board/bytesatwork/bytedevkit/Kconfig
+index b142be2b42..f18737068a 100644
+--- a/board/bytesatwork/bytedevkit/Kconfig
++++ b/board/bytesatwork/bytedevkit/Kconfig
+@@ -9,6 +9,40 @@ config SYS_VENDOR
+ config SYS_CONFIG_NAME
+ 	default "bytedevkit"
+ 
++menu "bytes at work config tool"
++
++config CMD_BAW_CONFIG
++	bool "bawconfig command"
++	default y
++	help
++	  Enable bawconfig command functionality.
++
++config BAW_CONFIG_EEPROM
++	bool "bawconfig eeprom support"
++	default y
++	help
++	  Enable bawconfig EEPROM read/write functionality.
++
++config BAW_CONFIG_EEPROM_BUS
++	int "bawconfig I2C bus number"
++	default 1
++	help
++	  I2C bus number of configuration EEPROM.
++
++config BAW_CONFIG_EEPROM_ADDRESS
++	hex "bawconfig I2C address"
++	default 0x50
++	help
++	  I2C address of configuration EEPROM.
++
++config BAW_CONFIG_BUILTIN
++	bool "bawconfig builtin support"
++	default y
++	help
++	  Enable bawconfig builtin configuration functionality.
++
++endmenu
++
+ source "board/bytesatwork/common/Kconfig"
+ 
+ endif
+diff --git a/board/bytesatwork/bytedevkit/Makefile b/board/bytesatwork/bytedevkit/Makefile
+index 889a2b30bc..3d1dcba912 100644
+--- a/board/bytesatwork/bytedevkit/Makefile
++++ b/board/bytesatwork/bytedevkit/Makefile
+@@ -10,5 +10,18 @@ obj-y += bytedevkit.o
+ 
+ ifdef CONFIG_SPL_BUILD
+ obj-y += spl.o
+-obj-$(CONFIG_IMX8M_LPDDR4) += lpddr4_timing.o
++obj-y += baw_config/baw_config.o
++# baw_config_get is mandatory for lpddr4 timing setup
++obj-y += baw_config/baw_config_get.o
++obj-$(CONFIG_IMX8M_LPDDR4) += lpddr4_timing_512.o
++obj-$(CONFIG_IMX8M_LPDDR4) += lpddr4_timing_1024.o
++obj-$(CONFIG_IMX8M_LPDDR4) += lpddr4_timing_1536.o
++else
++ifneq ($(or $(CONFIG_CMD_BAW_CONFIG), $(CONFIG_BAW_CONFIG_BUILTIN), $(CONFIG_BAW_CONFIG_EEPROM)),)
++obj-y += baw_config/baw_config.o
+ endif
++endif
++
++obj-$(CONFIG_CMD_BAW_CONFIG) += baw_config/cmd_baw_config.o
++obj-$(CONFIG_BAW_CONFIG_EEPROM) += baw_config/baw_config_eeprom.o
++obj-$(CONFIG_BAW_CONFIG_BUILTIN) += baw_config/baw_config_builtin.o
+diff --git a/board/bytesatwork/bytedevkit/bytedevkit.c b/board/bytesatwork/bytedevkit/bytedevkit.c
+index af2b32fa19..f169cec42c 100644
+--- a/board/bytesatwork/bytedevkit/bytedevkit.c
++++ b/board/bytesatwork/bytedevkit/bytedevkit.c
+@@ -29,6 +29,7 @@
+ #include <usb.h>
+ #include <asm/mach-imx/video.h>
+ #include <power/pca9450.h>
++#include "baw_config/baw_config_eeprom.h"
+ 
+ DECLARE_GLOBAL_DATA_PTR;
+ 
+@@ -44,6 +45,25 @@ static iomux_v3_cfg_t const wdog_pads[] = {
+ 	IMX8MM_PAD_GPIO1_IO02_WDOG1_WDOG_B  | MUX_PAD_CTRL(WDOG_PAD_CTRL),
+ };
+ 
++#define I2C_PAD_CTRL (PAD_CTL_DSE6 | PAD_CTL_HYS | PAD_CTL_PUE | PAD_CTL_PE)
++#define I2C_GPIO_MUX MUX_PAD_CTRL(I2C_PAD_CTRL)
++/* I2Cs != I2C1(index 0) need fix by manually set the SION bit. Solution from:
++ * https://community.nxp.com/t5/i-MX-Processors/iMX8MM-problems-on-early-I2C-access-from-SPL/m-p/1230261/highlight/true#M169427
++ */
++#define I2C_MUX (I2C_GPIO_MUX | ((u64)(IOMUX_CONFIG_SION) << MUX_MODE_SHIFT))
++struct i2c_pads_info i2c2_pad_info = {
++	.scl = {
++		.i2c_mode = IMX8MM_PAD_I2C2_SCL_I2C2_SCL | I2C_MUX,
++		.gpio_mode = IMX8MM_PAD_I2C2_SCL_GPIO5_IO16 | I2C_GPIO_MUX,
++		.gp = IMX_GPIO_NR(5, 16),
++	},
++	.sda = {
++		.i2c_mode = IMX8MM_PAD_I2C2_SDA_I2C2_SDA | I2C_MUX,
++		.gpio_mode = IMX8MM_PAD_I2C2_SDA_GPIO5_IO17 | I2C_GPIO_MUX,
++		.gp = IMX_GPIO_NR(5, 17),
++	},
++};
++
+ #ifdef CONFIG_FSL_FSPI
+ int board_qspi_init(void)
+ {
+@@ -65,6 +85,11 @@ int board_early_init_f(void)
+ 
+ 	init_uart_clk(1);
+ 
++#ifdef CONFIG_SPL_BUILD
++	/* SPL does not use DM compared to u-boot, so setup manually */
++	setup_i2c(CONFIG_BAW_CONFIG_EEPROM_BUS, CONFIG_SYS_I2C_SPEED,
++		  CONFIG_BAW_CONFIG_EEPROM_ADDRESS, &i2c2_pad_info);
++#endif
+ 	return 0;
+ }
+ 
+@@ -192,5 +217,39 @@ int board_late_init(void)
+ 	board_late_mmc_env_init();
+ #endif
+ 
++#ifdef CONFIG_BAW_CONFIG_EEPROM
++	if (baw_config_eeprom_init()) {
++		printf("EEPROM init failed!\n");
++	}
++#endif
++
++	return 0;
++}
++
++#include <asm/armv8/mmu.h>
++extern struct mm_region *mem_map;
++
++int board_phys_sdram_size(phys_size_t *size)
++{
++	/* NOTE: value passed from SPL (same address as set in SPL) */
++	phys_size_t *ram_size = (phys_size_t *)BAW_CONFIG_RAM_SIZE_PTR_ADDR;
++
++	if (!size)
++		return -EINVAL;
++
++	switch (*ram_size) {
++	case SZ_512M:
++	case SZ_1G:
++	case (SZ_1G + SZ_512M):
++	case SZ_2G:
++	case (SZ_2G + SZ_1G):
++	case SZ_4G:
++		mem_map[5].size = *ram_size;
++		*size = *ram_size;
++		break;
++	default:
++		return -EINVAL;
++	}
++
+ 	return 0;
+ }
+diff --git a/board/bytesatwork/bytedevkit/spl.c b/board/bytesatwork/bytedevkit/spl.c
+index b64a6d9aa7..03e1f55427 100644
+--- a/board/bytesatwork/bytedevkit/spl.c
++++ b/board/bytesatwork/bytedevkit/spl.c
+@@ -26,6 +26,9 @@
+ #include <fsl_esdhc_imx.h>
+ #include <mmc.h>
+ 
++#include "baw_config/baw_config_eeprom.h"
++#include "baw_config/baw_config_get.h"
++
+ DECLARE_GLOBAL_DATA_PTR;
+ 
+ int spl_board_boot_device(enum boot_device boot_dev_spl)
+@@ -48,8 +51,65 @@ int spl_board_boot_device(enum boot_device boot_dev_spl)
+ 	}
+ }
+ 
++/* NOTE: ddr timing config params, see arch/arm/include/asm/arch-imx8m/ddr.h */
++struct dram_timing_info dram_timing;
++/* NOTE: generated timings for different RAM types. */
++extern struct dram_timing_info dram_timing_512;
++extern struct dram_timing_info dram_timing_1024;
++extern struct dram_timing_info dram_timing_1536;
++
++struct dram_setup {
++	baw_config_ram_t ram;
++	const phys_size_t size;
++	const struct dram_timing_info *timing;
++};
++
+ void spl_dram_init(void)
+ {
++	/* NOTE: store ram_size in OCRAM to pass value from SPL to u-boot */
++	phys_size_t *ram_size = (phys_size_t *)BAW_CONFIG_RAM_SIZE_PTR_ADDR;
++	const struct dram_timing_info dram_timings[] = {
++		dram_timing_512,
++		dram_timing_1024,
++		dram_timing_1536,
++	};
++	const struct dram_setup dram_setups[] = {
++		{ M6_RAM_MT53E128M32D2DS_053, SZ_512M, &dram_timings[0] },
++		{ M6_RAM_MT53E256M32D2DS_053, SZ_1G, &dram_timings[1] },
++		{ M6_RAM_MT53E384M32D2DS_053, SZ_1G+SZ_512M, &dram_timings[2] },
++		/* fallbacks */
++		{ M6_RAM_MT53D512M32D2DS_053, SZ_512M, &dram_timings[0] },
++		{ M6_RAM_MT53E768M32D4DT_053, SZ_512M, &dram_timings[0] },
++		{ M6_RAM_MT53D1024M32D4DT_053, SZ_512M, &dram_timings[0] },
++		{ 0, 0, NULL },
++	};
++	struct baw_config config;
++	bool ram_found = false;
++	int i;
++
++#ifdef CONFIG_BAW_CONFIG_EEPROM
++	if (baw_config_eeprom_init()) {
++		printf("EEPROM init failed!\n");
++	}
++#endif
++
++	baw_config_get(&config);
++	for (i = 0; dram_setups[i].ram > 0; i++) {
++		if (config.ram == dram_setups[i].ram) {
++			memcpy(&dram_timing, dram_setups[i].timing,
++			       sizeof(dram_timing));
++			*ram_size = dram_setups[i].size;
++			ram_found = true;
++			break;
++		}
++	}
++
++	if (!ram_found) {
++		printf("Error: Unknown RAM config, use fallback.\n");
++		memcpy(&dram_timing, &dram_timings[0], sizeof(dram_timing));
++		*ram_size = dram_setups[0].size;
++	}
++
+ 	ddr_init(&dram_timing);
+ }
+ 
+diff --git a/include/configs/bytedevkit.h b/include/configs/bytedevkit.h
+index 5d5979a316..2ea7d85c2f 100644
+--- a/include/configs/bytedevkit.h
++++ b/include/configs/bytedevkit.h
+@@ -13,6 +13,11 @@
+ #include <asm/arch/imx-regs.h>
+ #include "imx_env.h"
+ 
++#define BAW_CONFIG_BUILTIN_PCB		M6_PCB_REV_1_0
++#define BAW_CONFIG_BUILTIN_RAM		M6_RAM_MT53E128M32D2DS_053
++#define BAW_CONFIG_BUILTIN_FLASH	EMMC_16GB
++#define BAW_CONFIG_RAM_SIZE_PTR_ADDR	0x0091ffe0
++
+ #ifdef CONFIG_SECURE_BOOT
+ #define CONFIG_CSF_SIZE			0x2000 /* 8K region */
+ #endif
+-- 
+2.30.2
+
