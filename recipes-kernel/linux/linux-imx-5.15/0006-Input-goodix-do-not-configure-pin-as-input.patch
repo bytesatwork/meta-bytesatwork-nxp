@@ -1,0 +1,29 @@
+From b36b4442ce5bf57086ede4599976e94157f0a207 Mon Sep 17 00:00:00 2001
+From: Daniel Ammann <daniel.ammann@bytesatwork.ch>
+Date: Thu, 2 Jun 2022 16:12:00 +0200
+Subject: [PATCH] Input: goodix - do not configure pin as input
+
+The reset pin needs to be high.
+---
+ drivers/input/touchscreen/goodix.c | 5 -----
+ 1 file changed, 5 deletions(-)
+
+diff --git a/drivers/input/touchscreen/goodix.c b/drivers/input/touchscreen/goodix.c
+index 026c6404168c..f021afe1d8e1 100644
+--- a/drivers/input/touchscreen/goodix.c
++++ b/drivers/input/touchscreen/goodix.c
+@@ -697,11 +697,6 @@ static int goodix_reset(struct goodix_ts_data *ts)
+ 
+ 	usleep_range(6000, 10000);		/* T4: > 5ms */
+ 
+-	/* end select I2C slave addr */
+-	error = gpiod_direction_input(ts->gpiod_rst);
+-	if (error)
+-		return error;
+-
+ 	error = goodix_int_sync(ts);
+ 	if (error)
+ 		return error;
+-- 
+2.30.2
+
