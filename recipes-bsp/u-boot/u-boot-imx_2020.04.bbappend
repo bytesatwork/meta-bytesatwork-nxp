@@ -1,4 +1,4 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}-2020.04:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}-2020.04:"
 
 SRC_URI += " \
 	file://0001-dts-introduce-imx8mm-bytedevkit.patch \
@@ -15,4 +15,5 @@ SRC_URI += " \
 	file://0012-bawconfig-support-imx8mm-bytedevkit.patch \
 	file://0013-board-multi-dram-timings.patch \
 	file://0014-board-introduce-baw-config.patch \
+	file://0015-board-introduce-2GB-RAM-config.patch \
 "
