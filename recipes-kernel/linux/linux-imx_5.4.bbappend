@@ -9,9 +9,10 @@ SRC_URI += " \
 	file://0007-arm64-bytedevkit_imx8mm_defconfig-Enable-custom-boot.patch \
 	file://0008-mtd-spi-nor-Add-support-for-is25wp256.patch \
 	file://0009-arm64-dts-freescale-imx8mm-byteengine-Fix-PMIC-int.patch \
+	file://0010-arm64-dts-freescale-bytedevkit-imx8mm-Add-support-fo.patch \
 "
 
-PR ??= "r0"
+PR = "r1"
 
 EXTRA_OEMAKE="LOCALVERSION=-${PR}"
 
