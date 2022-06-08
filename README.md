@@ -13,7 +13,7 @@ This layer depends on:
 
 	URI: https://git.yoctoproject.org/meta-freescale
 	layer: meta-freescale
-	branch: dunfell
+	branch: kirkstone
 
 
 BSP
