@@ -8,7 +8,7 @@
 MACHINEOVERRIDES =. "mx8:mx8m:mx8mm:"
 
 require conf/machine/include/imx-base.inc
-require conf/machine/include/tune-cortexa53.inc
+require conf/machine/include/arm/armv8a/tune-cortexa53.inc
 
 IMX_DEFAULT_BSP = "nxp"
 
@@ -33,7 +33,7 @@ IMX_BOOT_SEEK = "33"
 OPTEE_BIN_EXT = "8mm"
 
 PREFERRED_PROVIDER_virtual/kernel = "linux-imx"
-PREFERRED_VERSION_linux-imx = "5.4%"
+PREFERRED_VERSION_linux-imx = "5.15%"
 PREFERRED_PROVIDER_virtual/bootloader = "u-boot-imx"
 
 MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS += " \
@@ -41,3 +41,6 @@ MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS += " \
 	kernel-devicetree \
 	linux-firmware-imx-sdma-imx7d \
 "
+
+ATF_PLATFORM = "imx8mm"
+IMX_BOOT_SOC_TARGET = "iMX8MM"
