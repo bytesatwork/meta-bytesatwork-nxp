@@ -16,4 +16,8 @@ SRC_URI += " \
 	file://0013-board-multi-dram-timings.patch \
 	file://0014-board-introduce-baw-config.patch \
 	file://0015-board-introduce-2GB-RAM-config.patch \
+	file://0016-Create-checkpatch.yml.patch \
+	file://0017-spi-fsl_fspi-implement-set-speed.patch \
+	file://0018-configs-bytedevkit-enable-clock-control-increase-sf-.patch \
+	file://0019-github-workflows-update-version.patch \
 "
