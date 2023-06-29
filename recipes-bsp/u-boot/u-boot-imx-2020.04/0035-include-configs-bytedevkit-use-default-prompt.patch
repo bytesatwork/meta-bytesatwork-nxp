@@ -1,0 +1,28 @@
+From fb4696ada12ebb1abbc4d70e28a3954fe0d3a220 Mon Sep 17 00:00:00 2001
+From: Rico Ganahl <rico.ganahl@bytesatwork.ch>
+Date: Wed, 14 Jun 2023 12:04:52 +0200
+Subject: [PATCH] include/configs: bytedevkit: use default prompt
+
+Unify u-boot prompt for production test.
+
+Signed-off-by: Rico Ganahl <rico.ganahl@bytesatwork.ch>
+---
+ include/configs/bytedevkit.h | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/include/configs/bytedevkit.h b/include/configs/bytedevkit.h
+index 2ea7d85c2f..41db8ee79e 100644
+--- a/include/configs/bytedevkit.h
++++ b/include/configs/bytedevkit.h
+@@ -175,8 +175,6 @@
+ #define CONFIG_MXC_UART_BASE		UART2_BASE_ADDR
+ 
+ /* Monitor Command Prompt */
+-#undef CONFIG_SYS_PROMPT
+-#define CONFIG_SYS_PROMPT		"u-boot=> "
+ #define CONFIG_SYS_PROMPT_HUSH_PS2	"> "
+ #define CONFIG_SYS_CBSIZE		2048
+ #define CONFIG_SYS_MAXARGS		64
+-- 
+2.39.2
+

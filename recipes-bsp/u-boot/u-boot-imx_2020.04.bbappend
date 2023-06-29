@@ -20,4 +20,20 @@ SRC_URI += " \
 	file://0017-spi-fsl_fspi-implement-set-speed.patch \
 	file://0018-configs-bytedevkit-enable-clock-control-increase-sf-.patch \
 	file://0019-github-workflows-update-version.patch \
+       	file://0020-board-bytedevkit-clean-up-dram-timing.patch \
+	file://0021-board-bytesatwork-bytedevkit-bawconfig-remove.patch \
+	file://0022-bytesatwork-m2config-verbatim-import.patch \
+	file://0023-bytesatwork-m2config-rename-to-baw-config.patch \
+	file://0024-bytesatwork-bawconfig-init-config-to-zero.patch \
+	file://0025-bytesatwork-bawconfig-adapt-PCB-RAM-and-flash-enums.patch \
+	file://0026-bytesatwork-bawconfig-stm32mp1-ram-fallback.patch \
+	file://0027-bytesatwork-bawconfig-support-imx8mm-bytedevkit.patch \
+	file://0028-bytesatwork-bawconfig-fix-build-without-EEPROM-enabl.patch \
+	file://0029-bytesatwork-bawconfig-add-4-GB-as-3-GB-RAM.patch \
+	file://0030-bytesatwork-bawconfig-introduce-ti-am62x-enums.patch \
+	file://0031-bytesatwork-bawconfig-introduce-Makefile.patch \
+	file://0032-bytesatwork-bawconfig-add-stm32mp1-ram-types.patch \
+	file://0033-board-bytedevkit-use-common-baw_config.patch \
+	file://0034-configs-bytedevkit-add-flash-manufacturers.patch \
+	file://0035-include-configs-bytedevkit-use-default-prompt.patch \
 "
