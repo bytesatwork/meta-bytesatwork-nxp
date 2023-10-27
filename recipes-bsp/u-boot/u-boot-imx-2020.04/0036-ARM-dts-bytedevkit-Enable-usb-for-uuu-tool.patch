@@ -1,0 +1,42 @@
+From bebcb555a22f6f88e1359e9cd9b406a23ee1ecb6 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Stephan=20D=C3=BCnner?= <stephan.duenner@bytesatwork.ch>
+Date: Wed, 28 Jun 2023 10:32:22 +0200
+Subject: [PATCH] ARM: dts: bytedevkit: Enable usb for uuu tool
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+We will use uuu tool to update the image.
+
+Signed-off-by: Stephan Dünner <stephan.duenner@bytesatwork.ch>
+---
+ arch/arm/dts/imx8mm-bytedevkit-u-boot.dtsi | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/arch/arm/dts/imx8mm-bytedevkit-u-boot.dtsi b/arch/arm/dts/imx8mm-bytedevkit-u-boot.dtsi
+index 5bda067789..1500c460aa 100644
+--- a/arch/arm/dts/imx8mm-bytedevkit-u-boot.dtsi
++++ b/arch/arm/dts/imx8mm-bytedevkit-u-boot.dtsi
+@@ -6,6 +6,19 @@
+  * Copyright 2019 NXP
+  */
+ 
++/ {
++	aliases {
++		usbgadget0 = &usbg1;
++	};
++
++	usbg1: usbg1 {
++		compatible = "fsl,imx27-usb-gadget";
++		dr_mode = "peripheral";
++		chipidea,usb = <&usbotg1>;
++		status = "okay";
++	};
++};
++
+ &clk {
+ 	u-boot,dm-spl;
+ 	u-boot,dm-pre-reloc;
+-- 
+2.39.2
+

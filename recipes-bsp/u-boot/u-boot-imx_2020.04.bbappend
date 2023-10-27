@@ -36,4 +36,8 @@ SRC_URI += " \
 	file://0033-board-bytedevkit-use-common-baw_config.patch \
 	file://0034-configs-bytedevkit-add-flash-manufacturers.patch \
 	file://0035-include-configs-bytedevkit-use-default-prompt.patch \
+	file://0036-ARM-dts-bytedevkit-Enable-usb-for-uuu-tool.patch \
 "
+
+PR = "r1"
+LOCALVERSION = "-${SRCBRANCH}-${PR}"
