@@ -1,0 +1,28 @@
+From 7aa3634ea89211a626a7fae907f30f3f5be12632 Mon Sep 17 00:00:00 2001
+From: Daniel Ammann <daniel.ammann@bytesatwork.ch>
+Date: Thu, 14 Jul 2022 10:14:39 +0200
+Subject: [PATCH] dt-bindings: vendor-prefixes: Add bytesatwork AG
+
+Document the bytesatwork AG vendor prefix.
+
+Signed-off-by: Daniel Ammann <daniel.ammann@bytesatwork.ch>
+---
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index 336598c3b6f8..8ad4ba5a9a26 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -210,6 +210,8 @@ patternProperties:
+     description: B&R Industrial Automation GmbH
+   "^bytedance,.*":
+     description: ByteDance Ltd.
++  "^bytesatwork,.*":
++    description: bytesatwork AG
+   "^calamp,.*":
+     description: CalAmp Corp.
+   "^calaosystems,.*":
+-- 
+2.39.2
+
