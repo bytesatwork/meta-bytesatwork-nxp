@@ -3,8 +3,8 @@
 
 ## Introduction
 
-This is the official OpenEmbedded/Yocto BSP layer for byteDEVKIT IMX8MM by [bytes at
-work AG](https://www.bytesatwork.io/).
+This is the official OpenEmbedded/Yocto BSP layer for byteDEVKIT IMX8MM and IMX8MP
+by [bytes atwork AG](https://www.bytesatwork.io/).
 
 It is hosted on [github](https://github.com/bytesatwork/meta-bytesatwork-nxp.git).
 
@@ -18,8 +18,8 @@ This layer depends on:
 ## BSP
 
 This meta layer provides the Board Support Package (U-Boot and Linux kernel)
-for byteDEVKIT IMX8MM by bytes at work AG. Simply set the variable MACHINE to
-`bytedevkit-imx8mm` to use this BSP.
+for byteDEVKIT IMX8MM and IMX8MP by bytes at work AG. Simply set the variable MACHINE to
+`bytedevkit-imx8mm` or `bytedevkit-imx8mp` to use this BSP.
 
 Linux Kernel recipe: linux-imx
 
