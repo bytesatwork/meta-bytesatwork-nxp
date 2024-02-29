@@ -1,0 +1,158 @@
+From 852e8af16dcdc3371acb4b3e174e557eadc986da Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Stephan=20D=C3=BCnner?= <stephan.duenner@bytesatwork.ch>
+Date: Wed, 24 Jan 2024 13:50:00 +0100
+Subject: [PATCH] m7: set sdcard to mmc2
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Adaptations for imx8mp bytedevkit.
+
+Signed-off-by: Stephan Dünner <stephan.duenner@bytesatwork.ch>
+---
+ arch/arm/dts/imx8mp-bytedevkit-u-boot.dtsi |  4 +-
+ arch/arm/dts/imx8mp-bytedevkit.dts         | 56 +++++++++++-----------
+ include/configs/imx8mp_bytedevkit.h        | 10 ++--
+ 3 files changed, 35 insertions(+), 35 deletions(-)
+
+diff --git a/arch/arm/dts/imx8mp-bytedevkit-u-boot.dtsi b/arch/arm/dts/imx8mp-bytedevkit-u-boot.dtsi
+index 19b7215cc5..ff1a43240a 100644
+--- a/arch/arm/dts/imx8mp-bytedevkit-u-boot.dtsi
++++ b/arch/arm/dts/imx8mp-bytedevkit-u-boot.dtsi
+@@ -84,11 +84,11 @@
+ 	u-boot,dm-spl;
+ };
+ 
+-&pinctrl_usdhc1_gpio {
++&pinctrl_usdhc2_gpio {
+ 	u-boot,dm-spl;
+ };
+ 
+-&pinctrl_usdhc1 {
++&pinctrl_usdhc2 {
+ 	u-boot,dm-spl;
+ };
+ 
+diff --git a/arch/arm/dts/imx8mp-bytedevkit.dts b/arch/arm/dts/imx8mp-bytedevkit.dts
+index 1f85e029c7..fabfdb2405 100644
+--- a/arch/arm/dts/imx8mp-bytedevkit.dts
++++ b/arch/arm/dts/imx8mp-bytedevkit.dts
+@@ -392,12 +392,12 @@
+ 	status = "okay";
+ };
+ 
+-&usdhc1 {
++&usdhc2 {
+ 	pinctrl-names = "default", "state_100mhz", "state_200mhz";
+-	pinctrl-0 = <&pinctrl_usdhc1>, <&pinctrl_usdhc1_gpio>;
+-	pinctrl-1 = <&pinctrl_usdhc1_100mhz>, <&pinctrl_usdhc1_gpio>;
+-	pinctrl-2 = <&pinctrl_usdhc1_200mhz>, <&pinctrl_usdhc1_gpio>;
+-	cd-gpios = <&gpio2 6 GPIO_ACTIVE_LOW>;
++	pinctrl-0 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
++	pinctrl-1 = <&pinctrl_usdhc2_100mhz>, <&pinctrl_usdhc2_gpio>;
++	pinctrl-2 = <&pinctrl_usdhc2_200mhz>, <&pinctrl_usdhc2_gpio>;
++	cd-gpios = <&gpio2 12 GPIO_ACTIVE_LOW>;
+ 	vmmc-supply = <&reg_usdhc2_vmmc>;
+ 	no-1-8-v;
+ 	bus-width = <4>;
+@@ -590,45 +590,45 @@
+ 		>;
+ 	};
+ 
+-	pinctrl_usdhc1: usdhc1grp {
++	pinctrl_usdhc2: usdhc2grp {
+ 		fsl,pins = <
+-			MX8MP_IOMUXC_SD1_CLK__USDHC1_CLK	0x190
+-			MX8MP_IOMUXC_SD1_CMD__USDHC1_CMD	0x1d0
+-			MX8MP_IOMUXC_SD1_DATA0__USDHC1_DATA0	0x1d0
+-			MX8MP_IOMUXC_SD1_DATA1__USDHC1_DATA1	0x1d0
+-			MX8MP_IOMUXC_SD1_DATA2__USDHC1_DATA2	0x1d0
+-			MX8MP_IOMUXC_SD1_DATA3__USDHC1_DATA3	0x1d0
++			MX8MP_IOMUXC_SD2_CLK__USDHC2_CLK	0x190
++			MX8MP_IOMUXC_SD2_CMD__USDHC2_CMD	0x1d0
++			MX8MP_IOMUXC_SD2_DATA0__USDHC2_DATA0	0x1d0
++			MX8MP_IOMUXC_SD2_DATA1__USDHC2_DATA1	0x1d0
++			MX8MP_IOMUXC_SD2_DATA2__USDHC2_DATA2	0x1d0
++			MX8MP_IOMUXC_SD2_DATA3__USDHC2_DATA3	0x1d0
+ 			MX8MP_IOMUXC_GPIO1_IO04__USDHC2_VSELECT	0xc1
+ 		>;
+ 	};
+ 
+-	pinctrl_usdhc1_100mhz: usdhc1-100mhzgrp {
++	pinctrl_usdhc2_100mhz: usdhc2-100mhzgrp {
+ 		fsl,pins = <
+-			MX8MP_IOMUXC_SD1_CLK__USDHC1_CLK	0x194
+-			MX8MP_IOMUXC_SD1_CMD__USDHC1_CMD	0x1d4
+-			MX8MP_IOMUXC_SD1_DATA0__USDHC1_DATA0	0x1d4
+-			MX8MP_IOMUXC_SD1_DATA1__USDHC1_DATA1	0x1d4
+-			MX8MP_IOMUXC_SD1_DATA2__USDHC1_DATA2	0x1d4
+-			MX8MP_IOMUXC_SD1_DATA3__USDHC1_DATA3	0x1d4
++			MX8MP_IOMUXC_SD2_CLK__USDHC2_CLK	0x194
++			MX8MP_IOMUXC_SD2_CMD__USDHC2_CMD	0x1d4
++			MX8MP_IOMUXC_SD2_DATA0__USDHC2_DATA0	0x1d4
++			MX8MP_IOMUXC_SD2_DATA1__USDHC2_DATA1	0x1d4
++			MX8MP_IOMUXC_SD2_DATA2__USDHC2_DATA2	0x1d4
++			MX8MP_IOMUXC_SD2_DATA3__USDHC2_DATA3	0x1d4
+ 			MX8MP_IOMUXC_GPIO1_IO04__USDHC2_VSELECT 0xc1
+ 		>;
+ 	};
+ 
+-	pinctrl_usdhc1_200mhz: usdhc1-200mhzgrp {
++	pinctrl_usdhc2_200mhz: usdhc2-200mhzgrp {
+ 		fsl,pins = <
+-			MX8MP_IOMUXC_SD1_CLK__USDHC1_CLK	0x196
+-			MX8MP_IOMUXC_SD1_CMD__USDHC1_CMD	0x1d6
+-			MX8MP_IOMUXC_SD1_DATA0__USDHC1_DATA0	0x1d6
+-			MX8MP_IOMUXC_SD1_DATA1__USDHC1_DATA1	0x1d6
+-			MX8MP_IOMUXC_SD1_DATA2__USDHC1_DATA2	0x1d6
+-			MX8MP_IOMUXC_SD1_DATA3__USDHC1_DATA3	0x1d6
++			MX8MP_IOMUXC_SD2_CLK__USDHC2_CLK	0x196
++			MX8MP_IOMUXC_SD2_CMD__USDHC2_CMD	0x1d6
++			MX8MP_IOMUXC_SD2_DATA0__USDHC2_DATA0	0x1d6
++			MX8MP_IOMUXC_SD2_DATA1__USDHC2_DATA1	0x1d6
++			MX8MP_IOMUXC_SD2_DATA2__USDHC2_DATA2	0x1d6
++			MX8MP_IOMUXC_SD2_DATA3__USDHC2_DATA3	0x1d6
+ 			MX8MP_IOMUXC_GPIO1_IO04__USDHC2_VSELECT 0xc1
+ 		>;
+ 	};
+ 
+-	pinctrl_usdhc1_gpio: usdhc1gpiogrp {
++	pinctrl_usdhc2_gpio: usdhc2gpiogrp {
+ 		fsl,pins = <
+-			MX8MP_IOMUXC_SD1_DATA4__GPIO2_IO06	0x1c4
++			MX8MP_IOMUXC_SD2_CD_B__GPIO2_IO12	0x1c4
+ 		>;
+ 	};
+ 
+diff --git a/include/configs/imx8mp_bytedevkit.h b/include/configs/imx8mp_bytedevkit.h
+index b6cef41216..3f3f65ca98 100644
+--- a/include/configs/imx8mp_bytedevkit.h
++++ b/include/configs/imx8mp_bytedevkit.h
+@@ -120,9 +120,9 @@
+ 	"boot_fit=no\0" \
+ 	"fdtfile=/boot/imx8mp-evk.dtb\0" \
+ 	"bootm_size=0x10000000\0" \
+-	"mmcdev=0\0" \
++	"mmcdev=1\0" \
+ 	"mmcpart=1\0" \
+-	"mmcroot=/dev/mmcblk0p1 rootwait rw\0" \
++	"mmcroot=/dev/mmcblk1p1 rootwait rw\0" \
+ 	"mmcautodetect=yes\0" \
+ 	"mmcargs=setenv bootargs ${jh_clk} ${mcore_clk} console=${console} root=${mmcroot}\0 " \
+ 	"loadbootscript=ext4load mmc ${mmcdev}:${mmcpart} ${loadaddr} ${bsp_script};\0" \
+@@ -162,9 +162,9 @@
+ 			"fi; " \
+ 		"fi;\0" \
+ 	"bsp_bootcmd=echo Running BSP bootcmd ...; " \
+-		"mmc dev 0; " \
+-		"setenv mmcdev 0; " \
+-		"setenv mmcroot \"/dev/mmcblk0p1 rootwait rw\"; " \
++		"mmc dev 1; " \
++		"setenv mmcdev 1; " \
++		"setenv mmcroot \"/dev/mmcblk1p1 rootwait rw\"; " \
+ 		"run loadimage; " \
+ 		"run mmcboot;" \
+ 
+-- 
+2.39.2
+
