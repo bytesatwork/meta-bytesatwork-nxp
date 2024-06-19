@@ -1,0 +1,81 @@
+From caa8f04aed52df06050a73f0b287c73bc12f70a0 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Stephan=20D=C3=BCnner?= <stephan.duenner@bytesatwork.ch>
+Date: Fri, 9 Aug 2019 19:17:33 +0200
+Subject: [PATCH] cmd: add cpuinfo
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Add command for print_cpuinfo.
+
+Signed-off-by: Stephan Dünner <stephan.duenner@bytesatwork.ch>
+---
+ MAINTAINERS   |  1 +
+ cmd/Kconfig   |  6 ++++++
+ cmd/Makefile  |  1 +
+ cmd/cpuinfo.c | 15 +++++++++++++++
+ 4 files changed, 23 insertions(+)
+ create mode 100644 cmd/cpuinfo.c
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index a291c32e9a..bc9c26dd01 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -254,6 +254,7 @@ W:	https://www.bytesatwork.io/
+ F:	.github/workflows/checkpatch.yaml
+ F:	arch/arm/dts/imx93-bytedevkit.dts
+ F:	board/bytesatwork/bytedevkit_imx93/
++F:	cmd/cpuinfo.c
+ F:	configs/imx93_bytedevkit_defconfig
+ F:	include/configs/imx93_bytedevkit.h
+ 
+diff --git a/cmd/Kconfig b/cmd/Kconfig
+index b696cb6ccb..a824a65e54 100644
+--- a/cmd/Kconfig
++++ b/cmd/Kconfig
+@@ -162,6 +162,12 @@ config CMD_CPU
+ 	  internal name) and clock frequency. Other information may be
+ 	  available depending on the CPU driver.
+ 
++config CMD_CPUINFO
++	bool "cpuinfo"
++	help
++	  Print information about the CPU by using specific implementation of
++	  print_cpuinfo().
++
+ config CMD_FWU_METADATA
+ 	bool "fwu metadata read"
+ 	depends on FWU_MULTI_BANK_UPDATE
+diff --git a/cmd/Makefile b/cmd/Makefile
+index 36d2daf22a..844162b8cd 100644
+--- a/cmd/Makefile
++++ b/cmd/Makefile
+@@ -47,6 +47,7 @@ obj-$(CONFIG_CMD_CONFIG) += config.o
+ obj-$(CONFIG_CMD_CONITRACE) += conitrace.o
+ obj-$(CONFIG_CMD_CONSOLE) += console.o
+ obj-$(CONFIG_CMD_CPU) += cpu.o
++obj-$(CONFIG_CMD_CPUINFO) += cpuinfo.o
+ obj-$(CONFIG_CMD_DATE) += date.o
+ obj-$(CONFIG_CMD_DEMO) += demo.o
+ obj-$(CONFIG_CMD_DM) += dm.o
+diff --git a/cmd/cpuinfo.c b/cmd/cpuinfo.c
+new file mode 100644
+index 0000000000..62016aad53
+--- /dev/null
++++ b/cmd/cpuinfo.c
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * Copyright (C) 2024 bytesatwork AG - https://www.bytesatwork.io
++ */
++
++#include <common.h>
++#include <command.h>
++#include <init.h>
++
++static int do_cpuinfo(struct cmd_tbl *cmdtp, int flag, int argc, char * const argv[])
++{
++	return print_cpuinfo();
++}
++
++U_BOOT_CMD(cpuinfo, 1, 1, do_cpuinfo, "show cpu info", "");
