@@ -3,8 +3,8 @@
 
 ## Introduction
 
-This is the official OpenEmbedded/Yocto BSP layer for byteDEVKIT IMX8MM and IMX8MP
-by [bytes atwork AG](https://www.bytesatwork.io/).
+This is the official OpenEmbedded/Yocto BSP layer for byteDEVKIT IMX93
+by [bytesatwork](https://www.bytesatwork.io/).
 
 It is hosted on [github](https://github.com/bytesatwork/meta-bytesatwork-nxp.git).
 
@@ -12,14 +12,14 @@ This layer depends on:
 
 	URI: https://git.yoctoproject.org/meta-freescale
 	layer: meta-freescale
-	branch: kirkstone
+	branch: scarthgap
 
 
 ## BSP
 
 This meta layer provides the Board Support Package (U-Boot and Linux kernel)
-for byteDEVKIT IMX8MM and IMX8MP by bytes at work AG. Simply set the variable MACHINE to
-`bytedevkit-imx8mm` or `bytedevkit-imx8mp` to use this BSP.
+for byteDEVKIT IMX93 by bytesatwork. Simply set the variable MACHINE to
+`bytedevkit-imx93` to use this BSP.
 
 Linux Kernel recipe: linux-imx
 
@@ -34,14 +34,14 @@ with the image `bytesatwork-minimal-image` from
 environment:
 
 	cd $BUILDDIR
-	gunzip -c tmp/deploy/images/bytedevkit-imx8mm/bytesatwork-minimal-image-bytedevkit-imx8mm.wic.gz | dd of=/dev/sdX bs=1M && sync
+	gunzip -c tmp/deploy/images/bytedevkit-imx93/bytesatwork-minimal-image-bytedevkit-imx93.wic.gz | dd of=/dev/sdX bs=1M && sync
 
 or using `bmap-tools`:
 
 	cd $BUILDDIR
-	bmaptool copy tmp/deploy/images/bytedevkit-imx8mm/bytesatwork-minimal-image-bytedevkit-imx8mm.wic.bmap /dev/sdX
+	bmaptool copy tmp/deploy/images/bytedevkit-imx93/bytesatwork-minimal-image-bytedevkit-imx93.wic.bmap /dev/sdX
 
-You can find more information on `bmap-tools` in the [Yocto Project documentation](https://docs.yoctoproject.org/4.0/dev-manual/common-tasks.html#flashing-images-using-bmaptool).
+You can find more information on `bmap-tools` in the [Yocto Project documentation](https://docs.yoctoproject.org/5.0/dev-manual/bmaptool.html).
 
 
 ## Reporting bugs
