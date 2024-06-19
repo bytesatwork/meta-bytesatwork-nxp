@@ -1,0 +1,24 @@
+From 7e3fd0514f7a9f720bd7035193a02ac6212f9318 Mon Sep 17 00:00:00 2001
+From: Guy Morand <guy.morand@bytesatwork.ch>
+Date: Mon, 17 Jun 2024 08:59:13 +0200
+Subject: [PATCH] arm64: bytedevkit_imx93_defconfig: Enable tca6418 driver
+
+Compile the driver to use the i2c tca6418 gpio expander.
+
+Signed-off-by: Guy Morand <guy.morand@bytesatwork.ch>
+---
+ arch/arm64/configs/bytedevkit_imx93_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/configs/bytedevkit_imx93_defconfig b/arch/arm64/configs/bytedevkit_imx93_defconfig
+index bfa2d22d7263..db48df6498f8 100644
+--- a/arch/arm64/configs/bytedevkit_imx93_defconfig
++++ b/arch/arm64/configs/bytedevkit_imx93_defconfig
+@@ -476,6 +476,7 @@ CONFIG_GPIO_MAX732X=y
+ CONFIG_GPIO_PCA953X=y
+ CONFIG_GPIO_PCA953X_IRQ=y
+ CONFIG_GPIO_PCF857X=y
++CONFIG_GPIO_TCA6418=y
+ CONFIG_GPIO_ADP5585=y
+ CONFIG_GPIO_BD9571MWV=m
+ CONFIG_GPIO_MAX77620=y

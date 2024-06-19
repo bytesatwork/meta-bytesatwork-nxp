@@ -1,0 +1,24 @@
+From f514e03fbbc3f223e37306febfb63595f2afcd62 Mon Sep 17 00:00:00 2001
+From: Simone Schwizer <simone.schwizer@bytesatwork.ch>
+Date: Wed, 19 Jun 2024 13:17:08 +0200
+Subject: [PATCH] arm64: dts: freescale: Add byteDEVKIT iMX93 to Makefile
+
+Build byteDEVKIT iMX93 device tree per default for ARCH_MXC.
+
+Signed-off-by: Simone Schwizer <simone.schwizer@bytesatwork.ch>
+---
+ arch/arm64/boot/dts/freescale/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
+index 025a2a8b0739..1b2dfe2558a7 100644
+--- a/arch/arm64/boot/dts/freescale/Makefile
++++ b/arch/arm64/boot/dts/freescale/Makefile
+@@ -420,6 +420,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx93-9x9-qsb.dtb \
+ 			  imx93-9x9-qsb-aud-hat.dtb \
+ 			  imx93-9x9-qsb-ld.dtb \
+ 			  imx93-9x9-qsb-rpmsg.dtb imx93-9x9-qsb-rpmsg-lpv.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx93-bytedevkit.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx93-tqma9352-mba93xxla.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk.dtb imx95-19x19-evk-root.dtb imx95-19x19-evk-inmate.dtb
+ 
