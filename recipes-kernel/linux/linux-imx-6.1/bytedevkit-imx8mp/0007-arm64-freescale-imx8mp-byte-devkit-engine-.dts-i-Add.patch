@@ -1,4 +1,4 @@
-From 76f6e01187ead94e1f2af1797e0687018038345d Mon Sep 17 00:00:00 2001
+From c26009602b73bed8cc2214ae4588381ad4b7b428 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Stephan=20D=C3=BCnner?= <stephan.duenner@bytesatwork.ch>
 Date: Tue, 30 Jan 2024 14:09:56 +0100
 Subject: [PATCH] arm64: freescale: imx8mp-byte(devkit|engine).dts(i): Add
@@ -12,9 +12,10 @@ Add support for byteENGINE IMX8MP and byteDEVKIT IMX8MP.
 Signed-off-by: Stephan Dünner <stephan.duenner@bytesatwork.ch>
 ---
  MAINTAINERS                                   |   2 +
+ arch/arm64/boot/dts/freescale/Makefile        |   1 +
  .../boot/dts/freescale/imx8mp-bytedevkit.dts  | 346 ++++++++++++++++++
  .../boot/dts/freescale/imx8mp-byteengine.dtsi | 286 +++++++++++++++
- 3 files changed, 634 insertions(+)
+ 4 files changed, 635 insertions(+)
  create mode 100644 arch/arm64/boot/dts/freescale/imx8mp-bytedevkit.dts
  create mode 100644 arch/arm64/boot/dts/freescale/imx8mp-byteengine.dtsi
 
@@ -31,6 +32,18 @@ index 1383dd9f1d8f..eecf9c2ea459 100644
  F:	arch/arm64/configs/bytedevkit_imx8mp_defconfig
  F:	drivers/video/logo/logo_baw_clut224.ppm
  
+diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
+index 40006fbe1a43..1435c4715fde 100644
+--- a/arch/arm64/boot/dts/freescale/Makefile
++++ b/arch/arm64/boot/dts/freescale/Makefile
+@@ -130,6 +130,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mp-phyboard-pollux-rdk.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mp-ab2.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mp-ddr4-evk.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-ndm.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-bytedevkit.dtb
+ 
+ imx8mp-evk-revb4-dtbs := imx8mp-evk.dtb imx8mp-evk-revb4.dtbo
+ imx8mp-evk-revb4-rm67191-dtbs := imx8mp-evk-rm67191.dtb imx8mp-evk-revb4.dtbo
 diff --git a/arch/arm64/boot/dts/freescale/imx8mp-bytedevkit.dts b/arch/arm64/boot/dts/freescale/imx8mp-bytedevkit.dts
 new file mode 100644
 index 000000000000..4420d8b1ed44
@@ -675,6 +688,3 @@ index 000000000000..9cb52ae48d53
 +		spi-rx-bus-width = <4>;
 +	};
 +};
--- 
-2.39.2
-

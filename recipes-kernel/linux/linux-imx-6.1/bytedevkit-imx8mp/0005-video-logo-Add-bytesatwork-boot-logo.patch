@@ -1,4 +1,4 @@
-From 4f076482860b4d237be241f634586486145eae15 Mon Sep 17 00:00:00 2001
+From e326099d0d8a137a21b9ea7de55ef7eb755d2db6 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Stephan=20D=C3=BCnner?= <stephan.duenner@bytesatwork.ch>
 Date: Mon, 29 Jan 2024 16:37:59 +0100
 Subject: [PATCH] video/logo: Add bytesatwork boot logo
@@ -64414,6 +64414,3 @@ index d4d5b93efe84..a71a70ba578f 100644
  
  extern const struct linux_logo *fb_find_logo(int depth);
  #ifdef CONFIG_FB_LOGO_EXTRA
--- 
-2.39.2
-

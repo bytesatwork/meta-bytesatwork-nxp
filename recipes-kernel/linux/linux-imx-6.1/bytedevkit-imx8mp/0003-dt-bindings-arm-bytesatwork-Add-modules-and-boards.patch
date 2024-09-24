@@ -1,4 +1,4 @@
-From 88e983ac785712518b7b729b64fdf9e2785fa057 Mon Sep 17 00:00:00 2001
+From c110dc00a0c7c37c5e9db68034e62a513447c939 Mon Sep 17 00:00:00 2001
 From: Daniel Ammann <daniel.ammann@bytesatwork.ch>
 Date: Thu, 14 Jul 2022 10:33:44 +0200
 Subject: [PATCH] dt-bindings: arm: bytesatwork: Add modules and boards
@@ -65,6 +65,3 @@ index 48504f56a701..636595fe3b10 100644
  
  C-MEDIA CMI8788 DRIVER
  M:	Clemens Ladisch <clemens@ladisch.de>
--- 
-2.39.2
-

@@ -1,4 +1,4 @@
-From e294c7e4c1feb794281cc09eb401eb99caa976c2 Mon Sep 17 00:00:00 2001
+From e2bad0ee907f72cffc237dcb6ed72eb6294de09a Mon Sep 17 00:00:00 2001
 From: Michael Meister <michael.meister@bytesatwork.ch>
 Date: Mon, 11 Jul 2022 16:02:24 +0200
 Subject: [PATCH] github: workflows: Add action to analyze patches
@@ -164,6 +164,3 @@ index 38bf91959339..48504f56a701 100644
  C-MEDIA CMI8788 DRIVER
  M:	Clemens Ladisch <clemens@ladisch.de>
  L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
--- 
-2.39.2
-

@@ -1,4 +1,4 @@
-From c70525229234502ffc44d8f89e5e83dcba36de4a Mon Sep 17 00:00:00 2001
+From 06351ee3767e61e75ee770f4861c30f018660b91 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Stephan=20D=C3=BCnner?= <stephan.duenner@bytesatwork.ch>
 Date: Tue, 30 Jan 2024 14:11:21 +0100
 Subject: [PATCH] arm64: bytedevkit_imx8mp_defconfig: Add a basic configuration
@@ -1146,6 +1146,3 @@ index 000000000000..04e06172379a
 +CONFIG_CORESIGHT_CPU_DEBUG=m
 +CONFIG_CORESIGHT_CTI=m
 +CONFIG_MEMTEST=y
--- 
-2.39.2
-

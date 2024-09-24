@@ -1,4 +1,4 @@
-From 6c370f3d58c96959e63b75475a97ce0936a65685 Mon Sep 17 00:00:00 2001
+From 93e33621bc4d756f45d6ad61c224637f7d92e83f Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Stephan=20D=C3=BCnner?= <stephan.duenner@bytesatwork.ch>
 Date: Fri, 26 Jan 2024 18:57:51 +0100
 Subject: [PATCH] drm/imx: imx-ldb: Add 168Mhz LDB clock to drive 24 Mhz PCLK
@@ -76,6 +76,3 @@ index e3f5c5e6e842..df4fdc5dbfcb 100644
  	return MODE_OK;
  }
  
--- 
-2.39.2
-

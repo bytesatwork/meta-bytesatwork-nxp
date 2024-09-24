@@ -1,4 +1,4 @@
-From 7aa3634ea89211a626a7fae907f30f3f5be12632 Mon Sep 17 00:00:00 2001
+From 8a080617ad5ac3be8d5b8ac5c0c23125e6435314 Mon Sep 17 00:00:00 2001
 From: Daniel Ammann <daniel.ammann@bytesatwork.ch>
 Date: Thu, 14 Jul 2022 10:14:39 +0200
 Subject: [PATCH] dt-bindings: vendor-prefixes: Add bytesatwork AG
@@ -23,6 +23,3 @@ index 336598c3b6f8..8ad4ba5a9a26 100644
    "^calamp,.*":
      description: CalAmp Corp.
    "^calaosystems,.*":
--- 
-2.39.2
-
