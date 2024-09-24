@@ -1,0 +1,255 @@
+From b048c7f45a6ec402068d0c17eb1deb6e1440b12e Mon Sep 17 00:00:00 2001
+From: Rico Ganahl <rico.ganahl@bytesatwork.ch>
+Date: Mon, 22 Apr 2024 06:46:36 +0200
+Subject: [PATCH] bytesatwork: imx8mp: introduce bawconfig
+
+Configure defaults for bytes at work tool to store production data
+in EEPROM.
+
+Used cherry picked commits:
+
+cb5924b5a7 bytesatwork: imx8mp: introduce bawconfig
+743520f67c bytesatwork: imx8mp: prepare dynamic ram config
+
+Signed-off-by: Rico Ganahl <rico.ganahl@bytesatwork.ch>
+---
+ MAINTAINERS                                   |  1 +
+ board/bytesatwork/bytedevkit_imx8mp/Kconfig   |  2 +
+ board/bytesatwork/bytedevkit_imx8mp/Makefile  |  2 +
+ .../bytedevkit_imx8mp/imx8mp_bytedevkit.c     | 37 ++++++++++++++++
+ .../bytedevkit_imx8mp/lpddr4_timing.c         |  3 +-
+ .../bytedevkit_imx8mp/lpddr4_timings.h        | 12 ++++++
+ board/bytesatwork/bytedevkit_imx8mp/spl.c     | 43 +++++++++++++++++++
+ include/configs/imx8mp_bytedevkit.h           |  5 +++
+ 8 files changed, 104 insertions(+), 1 deletion(-)
+ create mode 100644 board/bytesatwork/bytedevkit_imx8mp/lpddr4_timings.h
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 676ecc973d..ea8aaaf8f5 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -255,6 +255,7 @@ F:	.github/workflows/checkpatch.yml
+ F:	arch/arm/dts/imx8mp-bytedevkit-u-boot.dtsi
+ F:	arch/arm/dts/imx8mp-bytedevkit.dts
+ F:	board/bytesatwork/bytedevkit_imx8mp/
++F:	bytesatwork/bytedevkit_imx8mp/lpddr4_timings.h
+ F:	cmd/cpuinfo.c
+ F:	configs/imx8mp_bytedevkit_defconfig
+ F:	include/configs/imx8mp_bytedevkit.h
+diff --git a/board/bytesatwork/bytedevkit_imx8mp/Kconfig b/board/bytesatwork/bytedevkit_imx8mp/Kconfig
+index cff47a7922..d53eb6c991 100644
+--- a/board/bytesatwork/bytedevkit_imx8mp/Kconfig
++++ b/board/bytesatwork/bytedevkit_imx8mp/Kconfig
+@@ -12,4 +12,6 @@ config SYS_CONFIG_NAME
+ config IMX_CONFIG
+ 	default "board/bytesatwork/bytedevkit_imx8mp/imximage-8mp-lpddr4.cfg"
+ 
++source "board/bytesatwork/baw_config/Kconfig"
++
+ endif
+diff --git a/board/bytesatwork/bytedevkit_imx8mp/Makefile b/board/bytesatwork/bytedevkit_imx8mp/Makefile
+index 40687bd038..96cbc73c76 100644
+--- a/board/bytesatwork/bytedevkit_imx8mp/Makefile
++++ b/board/bytesatwork/bytedevkit_imx8mp/Makefile
+@@ -19,3 +19,5 @@ obj-$(CONFIG_IMX8M_LPDDR4) += lpddr4_timing.o
+ obj-$(CONFIG_IMX8M_DDR4) += ddr4_timing.o
+ endif
+ endif
++
++obj-y += ../baw_config/
+diff --git a/board/bytesatwork/bytedevkit_imx8mp/imx8mp_bytedevkit.c b/board/bytesatwork/bytedevkit_imx8mp/imx8mp_bytedevkit.c
+index 8902825026..f51a5857ed 100644
+--- a/board/bytesatwork/bytedevkit_imx8mp/imx8mp_bytedevkit.c
++++ b/board/bytesatwork/bytedevkit_imx8mp/imx8mp_bytedevkit.c
+@@ -32,11 +32,13 @@
+ #include <imx_sip.h>
+ #include <linux/arm-smccc.h>
+ #include <mmc.h>
++#include "../baw_config/baw_config_eeprom.h"
+ 
+ DECLARE_GLOBAL_DATA_PTR;
+ 
+ #define UART_PAD_CTRL	(PAD_CTL_DSE6 | PAD_CTL_FSEL1)
+ #define WDOG_PAD_CTRL	(PAD_CTL_DSE6 | PAD_CTL_ODE | PAD_CTL_PUE | PAD_CTL_PE)
++#define I2C_PAD_CTRL	(PAD_CTL_DSE6 | PAD_CTL_HYS | PAD_CTL_PUE | PAD_CTL_PE)
+ 
+ static const iomux_v3_cfg_t uart_pads[] = {
+ 	MX8MP_PAD_UART1_RXD__UART1_DCE_RX | MUX_PAD_CTRL(UART_PAD_CTRL),
+@@ -47,6 +49,11 @@ static const iomux_v3_cfg_t wdog_pads[] = {
+ 	MX8MP_PAD_GPIO1_IO02__WDOG1_WDOG_B  | MUX_PAD_CTRL(WDOG_PAD_CTRL),
+ };
+ 
++static const iomux_v3_cfg_t i2c1_pads[] = {
++	MX8MP_PAD_I2C1_SCL__I2C1_SCL | MUX_PAD_CTRL(I2C_PAD_CTRL),
++	MX8MP_PAD_I2C1_SDA__I2C1_SDA | MUX_PAD_CTRL(I2C_PAD_CTRL),
++};
++
+ #ifdef CONFIG_NAND_MXS
+ 
+ static void setup_gpmi_nand(void)
+@@ -84,6 +91,8 @@ int board_early_init_f(void)
+ 
+ 	init_uart_clk(0);
+ 
++	imx_iomux_v3_setup_multiple_pads(i2c1_pads, ARRAY_SIZE(i2c1_pads));
++
+ 	return 0;
+ }
+ 
+@@ -493,6 +502,10 @@ int board_late_init(void)
+ 	env_set("board_rev", "iMX8MP");
+ #endif
+ 
++	if (IS_ENABLED(CONFIG_BAW_CONFIG_EEPROM))
++		if (baw_config_eeprom_init())
++			printf("EEPROM init failed!\n");
++
+ 	return 0;
+ }
+ 
+@@ -535,3 +548,27 @@ int is_recovery_key_pressing(void)
+ }
+ #endif /* CONFIG_ANDROID_RECOVERY */
+ #endif /* CONFIG_FSL_FASTBOOT */
++
++#include <asm/armv8/mmu.h>
++extern struct mm_region *mem_map;
++
++int board_phys_sdram_size(phys_size_t *size)
++{
++	/* NOTE: value passed from SPL (same address as set in SPL) */
++	phys_size_t *ram_size = (phys_size_t *)BAW_CONFIG_RAM_SIZE_PTR_ADDR;
++
++	if (!size)
++		return -EINVAL;
++
++	switch (*ram_size) {
++	case SZ_4G:
++		mem_map[6].size = SZ_2G + SZ_1G;
++		mem_map[7].size = SZ_1G;
++		*size = *ram_size;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
+diff --git a/board/bytesatwork/bytedevkit_imx8mp/lpddr4_timing.c b/board/bytesatwork/bytedevkit_imx8mp/lpddr4_timing.c
+index 299d497640..6c08106ba3 100644
+--- a/board/bytesatwork/bytedevkit_imx8mp/lpddr4_timing.c
++++ b/board/bytesatwork/bytedevkit_imx8mp/lpddr4_timing.c
+@@ -9,6 +9,7 @@
+ 
+ #include <linux/kernel.h>
+ #include <asm/arch/ddr.h>
++#include "lpddr4_timings.h"
+ 
+ struct dram_cfg_param ddr_ddrc_cfg[] = {
+ 	/** Initialize DDRC registers **/
+@@ -1832,7 +1833,7 @@ struct dram_fsp_msg ddr_dram_fsp_msg[] = {
+ };
+ 
+ /* ddr timing config params */
+-struct dram_timing_info dram_timing = {
++struct dram_timing_info dram_timing_4gb = {
+ 	.ddrc_cfg = ddr_ddrc_cfg,
+ 	.ddrc_cfg_num = ARRAY_SIZE(ddr_ddrc_cfg),
+ 	.ddrphy_cfg = ddr_ddrphy_cfg,
+diff --git a/board/bytesatwork/bytedevkit_imx8mp/lpddr4_timings.h b/board/bytesatwork/bytedevkit_imx8mp/lpddr4_timings.h
+new file mode 100644
+index 0000000000..40a5fa9ded
+--- /dev/null
++++ b/board/bytesatwork/bytedevkit_imx8mp/lpddr4_timings.h
+@@ -0,0 +1,12 @@
++/* SPDX-License-Identifier: GPL-2.0+ */
++/*
++ * Copyright (C) 2024 bytesatwork AG - https://www.bytesatwork.io
++ */
++
++#ifndef _LPDDR4_TIMINGS_H_
++#define _LPDDR4_TIMINGS_H_
++
++/* NOTE: generated timings for different RAM types. */
++extern struct dram_timing_info dram_timing_4gb;
++
++#endif /* _LPDDR4_TIMINGS_H_ */
+diff --git a/board/bytesatwork/bytedevkit_imx8mp/spl.c b/board/bytesatwork/bytedevkit_imx8mp/spl.c
+index 28fc42ea98..cf63e900fc 100644
+--- a/board/bytesatwork/bytedevkit_imx8mp/spl.c
++++ b/board/bytesatwork/bytedevkit_imx8mp/spl.c
+@@ -30,6 +30,10 @@
+ #include <mmc.h>
+ #include <asm/arch/ddr.h>
+ 
++#include "lpddr4_timings.h"
++#include "../baw_config/baw_config_eeprom.h"
++#include "../baw_config/baw_config_get.h"
++
+ DECLARE_GLOBAL_DATA_PTR;
+ 
+ int spl_board_boot_device(enum boot_device boot_dev_spl)
+@@ -58,8 +62,47 @@ int spl_board_boot_device(enum boot_device boot_dev_spl)
+ #endif
+ }
+ 
++/* NOTE: ddr timing config params, see arch/arm/include/asm/arch-imx8m/ddr.h */
++struct dram_timing_info dram_timing;
++
++struct dram_setup {
++	enum baw_config_ram ram;
++	const phys_size_t size;
++	const struct dram_timing_info *timing;
++};
++
+ void spl_dram_init(void)
+ {
++	/* NOTE: store ram_size in OCRAM to pass value from SPL to u-boot */
++	phys_size_t *ram_size = (phys_size_t *)BAW_CONFIG_RAM_SIZE_PTR_ADDR;
++	const struct dram_setup dram_setups[] = {
++		{M7_RAM_MT53E1G32D2FW_046, SZ_4G, &dram_timing_4gb},
++		{0, 0, NULL },
++	};
++	struct baw_config config;
++	bool ram_found = false;
++
++	if (IS_ENABLED(CONFIG_BAW_CONFIG_EEPROM))
++		if (baw_config_eeprom_init())
++			printf("EEPROM init failed!\n");
++
++	baw_config_get(&config);
++	for (int i = 0; dram_setups[i].ram > 0; i++) {
++		if (config.ram == dram_setups[i].ram) {
++			memcpy(&dram_timing, dram_setups[i].timing,
++			       sizeof(dram_timing));
++			*ram_size = dram_setups[i].size;
++			ram_found = true;
++			break;
++		}
++	}
++
++	if (!ram_found) {
++		printf("Error: Unknown RAM config, use fallback.\n");
++		memcpy(&dram_timing, dram_setups[0].timing, sizeof(dram_timing));
++		*ram_size = dram_setups[0].size;
++	}
++
+ 	ddr_init(&dram_timing);
+ }
+ 
+diff --git a/include/configs/imx8mp_bytedevkit.h b/include/configs/imx8mp_bytedevkit.h
+index 298457fe96..3fea0216e3 100644
+--- a/include/configs/imx8mp_bytedevkit.h
++++ b/include/configs/imx8mp_bytedevkit.h
+@@ -15,6 +15,11 @@
+ #include <asm/arch/imx-regs.h>
+ #include "imx_env.h"
+ 
++#define BAW_CONFIG_BUILTIN_PCB		M7_PCB_REV_1_0
++#define BAW_CONFIG_BUILTIN_RAM		M7_RAM_MT53E1G32D2FW_046
++#define BAW_CONFIG_BUILTIN_FLASH	EMMC_16GB
++#define BAW_CONFIG_RAM_SIZE_PTR_ADDR	0x98ffc0
++
+ #define CFG_SYS_UBOOT_BASE	(QSPI0_AMBA_BASE + CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_SECTOR * 512)
+ 
+ #if defined(CONFIG_CMD_NET)
