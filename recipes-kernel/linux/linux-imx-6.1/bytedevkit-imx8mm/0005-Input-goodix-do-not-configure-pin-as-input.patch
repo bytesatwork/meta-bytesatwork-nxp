@@ -1,0 +1,34 @@
+From 4ceb85f1f66c057663751822d60378dc36ab7706 Mon Sep 17 00:00:00 2001
+From: Daniel Ammann <daniel.ammann@bytesatwork.ch>
+Date: Thu, 2 Jun 2022 16:12:00 +0200
+Subject: [PATCH] Input: goodix - do not configure pin as input
+
+The reset pin needs to be high.
+
+Signed-off-by: Daniel Ammann <daniel.ammann@bytesatwork.ch>
+---
+ drivers/input/touchscreen/goodix.c | 11 -----------
+ 1 file changed, 11 deletions(-)
+
+diff --git a/drivers/input/touchscreen/goodix.c b/drivers/input/touchscreen/goodix.c
+index d487ebfd82f4..18216bbbe8d2 100644
+--- a/drivers/input/touchscreen/goodix.c
++++ b/drivers/input/touchscreen/goodix.c
+@@ -780,17 +780,6 @@ int goodix_reset_no_int_sync(struct goodix_ts_data *ts)
+ 
+ 	usleep_range(6000, 10000);		/* T4: > 5ms */
+ 
+-	/*
+-	 * Put the reset pin back in to input / high-impedance mode to save
+-	 * power. Only do this in the non ACPI case since some ACPI boards
+-	 * don't have a pull-up, so there the reset pin must stay active-high.
+-	 */
+-	if (ts->irq_pin_access_method == IRQ_PIN_ACCESS_GPIO) {
+-		error = gpiod_direction_input(ts->gpiod_rst);
+-		if (error)
+-			goto error;
+-	}
+-
+ 	return 0;
+ 
+ error:

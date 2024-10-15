@@ -20,3 +20,14 @@ SRC_URI:append:bytedevkit-imx8mp = " \
 	file://0010-arch-arm64-dts-fix-touch-lvds-for-byteDEVKIT3.patch \
 "
 PR:bytedevkit-imx8mp = "r0"
+
+# bytedevkit-imx8mm
+SRC_URI:append:bytedevkit-imx8mm = " \
+	file://0001-github-workflows-Add-action-to-analyze-patches.patch \
+	file://0002-dt-bindings-Add-various-vendor-prefixes-and-devices.patch \
+	file://0003-drm-Add-youritech-ILI9806E-panel.patch \
+	file://0004-arm64-Add-byteENGINE-imx8mm-module-and-byteDEVKIT-im.patch \
+	file://0005-Input-goodix-do-not-configure-pin-as-input.patch \
+	file://0006-video-logo-Add-bytesatwork-logo.patch \
+"
+PR:bytedevkit-imx8mm = "r0"
