@@ -13,9 +13,10 @@ SRC_URI += " \
 	file://0011-drivers-gpio-Introduce-tca6418-driver.patch \
 	file://0012-arm64-freescale-imx93-byteengine.dts-Adapt-tca6418.patch \
 	file://0013-arm64-bytedevkit_imx93_defconfig-Enable-tca6418-driv.patch \
+	file://0014-arm64-freescale-imx93-bytedevkit.dts-Fix-touch-and-d.patch \
 "
 
-PR = "r0"
+PR = "r1"
 
 EXTRA_OEMAKE="LOCALVERSION=-${PR}"
 
