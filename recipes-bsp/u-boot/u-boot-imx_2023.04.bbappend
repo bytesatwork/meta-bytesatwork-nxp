@@ -12,8 +12,10 @@ SRC_URI:append:bytedevkit-imx93 = " \
 	file://0006-include-configs-introduce-bytedevkit-imx93.patch \
 	file://0007-board-bytesatwork-introduce-bytedevkit-imx93.patch \
 	file://0008-arm-mach-imx-introduce-bytedevkit-imx93.patch \
+	file://0009-board-bytesatwork-import-bawconfig.patch \
+	file://0010-bytesatwork-enable-bawconfig.patch \
 "
-PR:bytedevkit-imx93 = "r0"
+PR:bytedevkit-imx93 = "r1"
 
 # bytedevkit-imx8mp
 SRC_URI:append:bytedevkit-imx8mp = " \

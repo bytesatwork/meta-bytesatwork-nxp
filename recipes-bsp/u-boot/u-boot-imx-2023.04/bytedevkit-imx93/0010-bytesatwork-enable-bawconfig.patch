@@ -1,0 +1,123 @@
+From 54e4acdcd80f8eb5d039b52179c3014bc7d7358e Mon Sep 17 00:00:00 2001
+From: Rico Ganahl <rico.ganahl@bytesatwork.ch>
+Date: Thu, 20 Jun 2024 14:05:21 +0200
+Subject: [PATCH] bytesatwork: enable bawconfig
+
+Enable bytesatwork tool to store production data in EEPROM.
+
+Signed-off-by: Rico Ganahl <rico.ganahl@bytesatwork.ch>
+---
+ board/bytesatwork/bytedevkit_imx93/Kconfig            | 2 ++
+ board/bytesatwork/bytedevkit_imx93/Makefile           | 2 ++
+ board/bytesatwork/bytedevkit_imx93/imx93_bytedevkit.c | 7 +++++++
+ board/bytesatwork/bytedevkit_imx93/spl.c              | 6 ++++++
+ configs/imx93_bytedevkit_defconfig                    | 5 +++++
+ include/configs/imx93_bytedevkit.h                    | 4 ++++
+ 6 files changed, 26 insertions(+)
+
+diff --git a/board/bytesatwork/bytedevkit_imx93/Kconfig b/board/bytesatwork/bytedevkit_imx93/Kconfig
+index 0b788e3eca..3f0b463f36 100644
+--- a/board/bytesatwork/bytedevkit_imx93/Kconfig
++++ b/board/bytesatwork/bytedevkit_imx93/Kconfig
+@@ -31,4 +31,6 @@ config IMX93_BYTEDEVKIT_LPDDR4
+ 
+ endchoice
+ 
++source "board/bytesatwork/baw_config/Kconfig"
++
+ endif
+diff --git a/board/bytesatwork/bytedevkit_imx93/Makefile b/board/bytesatwork/bytedevkit_imx93/Makefile
+index cf97a3fcc3..00137ab5f7 100644
+--- a/board/bytesatwork/bytedevkit_imx93/Makefile
++++ b/board/bytesatwork/bytedevkit_imx93/Makefile
+@@ -14,3 +14,5 @@ obj-y += spl.o
+ obj-$(CONFIG_IMX93_BYTEDEVKIT_LPDDR4X) += lpddr4x_timing.o lpddr4x_timing_1866mts.o
+ obj-$(CONFIG_IMX93_BYTEDEVKIT_LPDDR4) += lpddr4_timing_2400mts.o
+ endif
++
++obj-y += ../baw_config/
+diff --git a/board/bytesatwork/bytedevkit_imx93/imx93_bytedevkit.c b/board/bytesatwork/bytedevkit_imx93/imx93_bytedevkit.c
+index db8141d296..887a11f705 100644
+--- a/board/bytesatwork/bytedevkit_imx93/imx93_bytedevkit.c
++++ b/board/bytesatwork/bytedevkit_imx93/imx93_bytedevkit.c
+@@ -23,6 +23,7 @@
+ #include <usb.h>
+ #include <dwc3-uboot.h>
+ #include <asm/gpio.h>
++#include "../baw_config/baw_config_eeprom.h"
+ 
+ DECLARE_GLOBAL_DATA_PTR;
+ 
+@@ -111,6 +112,12 @@ int board_late_init(void)
+ 	env_set("board_name", "byteDEVKIT");
+ 	env_set("board_rev", "iMX93");
+ #endif
++
++	if (IS_ENABLED(CONFIG_BAW_CONFIG_EEPROM)) {
++		if (baw_config_eeprom_init())
++			printf("EEPROM init failed!\n");
++	}
++
+ 	return 0;
+ }
+ 
+diff --git a/board/bytesatwork/bytedevkit_imx93/spl.c b/board/bytesatwork/bytedevkit_imx93/spl.c
+index b299a316cb..056ddc07d8 100644
+--- a/board/bytesatwork/bytedevkit_imx93/spl.c
++++ b/board/bytesatwork/bytedevkit_imx93/spl.c
+@@ -35,6 +35,7 @@
+ #include <power/pmic.h>
+ #include <power/pca9450.h>
+ #include <asm/arch/trdc.h>
++#include "../baw_config/baw_config_eeprom.h"
+ 
+ DECLARE_GLOBAL_DATA_PTR;
+ 
+@@ -72,6 +73,11 @@ void spl_dram_init(void)
+ {
+ 	struct dram_timing_info *ptiming = &dram_timing;
+ 
++	if (IS_ENABLED(CONFIG_BAW_CONFIG_EEPROM)) {
++		if (baw_config_eeprom_init())
++			printf("EEPROM init failed!\n");
++	}
++
+ 	if (IS_ENABLED(CONFIG_IMX93_BYTEDEVKIT_LPDDR4X)) {
+ 		if (is_voltage_mode(VOLT_LOW_DRIVE))
+ 			ptiming = &dram_timing_1866mts;
+diff --git a/configs/imx93_bytedevkit_defconfig b/configs/imx93_bytedevkit_defconfig
+index 52499299fd..8ae716093a 100644
+--- a/configs/imx93_bytedevkit_defconfig
++++ b/configs/imx93_bytedevkit_defconfig
+@@ -1,4 +1,5 @@
+ CONFIG_ARM=y
++CONFIG_SPL_I2C_EEPROM=y
+ CONFIG_ARCH_IMX9=y
+ CONFIG_TEXT_BASE=0x80200000
+ CONFIG_SYS_MALLOC_LEN=0x2000000
+@@ -12,6 +13,10 @@ CONFIG_DM_GPIO=y
+ CONFIG_DEFAULT_DEVICE_TREE="imx93-bytedevkit"
+ CONFIG_SPL_TEXT_BASE=0x2049A000
+ CONFIG_TARGET_IMX93_BYTEDEVKIT=y
++CONFIG_BAW_CONFIG_EEPROM_BUS_NAME="i2c@44350000"
++CONFIG_BAW_CONFIG_EEPROM_ADDRESS_BYTES=1
++CONFIG_BAW_CONFIG_EEPROM_MAX_WRITE=16
++CONFIG_BAW_CONFIG_EEPROM_WRITE_DELAY_MS=5
+ CONFIG_SPL_SERIAL=y
+ CONFIG_SPL_DRIVERS_MISC=y
+ CONFIG_SPL_STACK=0x20519dd0
+diff --git a/include/configs/imx93_bytedevkit.h b/include/configs/imx93_bytedevkit.h
+index 35e1156a76..08bfdfc138 100644
+--- a/include/configs/imx93_bytedevkit.h
++++ b/include/configs/imx93_bytedevkit.h
+@@ -14,6 +14,10 @@
+ #include <asm/arch/imx-regs.h>
+ #include "imx_env.h"
+ 
++#define BAW_CONFIG_BUILTIN_PCB		M9_PCB_REV_1_0
++#define BAW_CONFIG_BUILTIN_RAM		M9_RAM_MT53D512M16D1DS_046
++#define BAW_CONFIG_BUILTIN_FLASH	EMMC_16GB
++
+ #define CFG_SYS_UBOOT_BASE	\
+ 	(QSPI0_AMBA_BASE + CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_SECTOR * 512)
+ 
