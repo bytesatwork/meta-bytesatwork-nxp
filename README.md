@@ -3,8 +3,11 @@
 
 ## Introduction
 
-This is the official OpenEmbedded/Yocto BSP layer for byteDEVKIT IMX93
-by [bytesatwork](https://www.bytesatwork.io/).
+This is the official OpenEmbedded/Yocto BSP layer for the following devkits
+by [bytesatwork](https://www.bytesatwork.io/):
+
+- [byteDEVKIT IMX8MP](https://bytewiki.readthedocs.io/en/latest/yocto/5.0/bytedevkit-imx8mp.html)
+- [byteDEVKIT IMX93](https://bytewiki.readthedocs.io/en/latest/yocto/5.0/bytedevkit-imx93.html)
 
 It is hosted on [github](https://github.com/bytesatwork/meta-bytesatwork-nxp.git).
 
@@ -17,31 +20,8 @@ This layer depends on:
 
 ## BSP
 
-This meta layer provides the Board Support Package (U-Boot and Linux kernel)
-for byteDEVKIT IMX93 by bytesatwork. Simply set the variable MACHINE to
-`bytedevkit-imx93` to use this BSP.
-
-Linux Kernel recipe: linux-imx
-
-U-Boot recipe: u-boot-imx
-
-
-## SD Card
-
-SD card images are created using *wic*. The following example shows how to create a bootable SD card
-with the image `bytesatwork-minimal-image` from
-[meta-bytesatwork](https://github.com/bytesatwork/meta-bytesatwork.git) from a sourced Yocto
-environment:
-
-	cd $BUILDDIR
-	gunzip -c tmp/deploy/images/bytedevkit-imx93/bytesatwork-minimal-image-bytedevkit-imx93.wic.gz | dd of=/dev/sdX bs=1M && sync
-
-or using `bmap-tools`:
-
-	cd $BUILDDIR
-	bmaptool copy tmp/deploy/images/bytedevkit-imx93/bytesatwork-minimal-image-bytedevkit-imx93.wic.bmap /dev/sdX
-
-You can find more information on `bmap-tools` in the [Yocto Project documentation](https://docs.yoctoproject.org/5.0/dev-manual/bmaptool.html).
+For detailed instructions on how to use this layer please refer to the
+[byteWIKI](https://bytewiki.readthedocs.io/en/latest/softwaredevelopment.html).
 
 
 ## Reporting bugs
