@@ -1,0 +1,45 @@
+From d11dda1405fcc686fee467b8f0bbfde0fea00145 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Stephan=20D=C3=BCnner?= <stephan.duenner@bytesatwork.ch>
+Date: Thu, 20 Jan 2022 09:00:38 +0100
+Subject: [PATCH] mtd: spi-nor-ids: is25wp256 allow only standard read
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Adaption needed for bytesatwork i.MX8MM modules that are
+fitted with Macronix SPI NOR.
+
+Fixes following SPI NOR problem:
+
+u-boot=> sf probe
+fsl_fspi_nor: fail to find cmd 0x35 from lut
+Failed to initialize SPI flash at 0:0 (error -22)
+
+Signed-off-by: Stephan Dünner <stephan.duenner@bytesatwork.ch>
+Signed-off-by: Simone Schwizer <simone.schwizer@bytesatwork.ch>
+---
+ drivers/mtd/spi/spi-nor-ids.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/spi/spi-nor-ids.c b/drivers/mtd/spi/spi-nor-ids.c
+index 69008280d0..63aa8d5205 100644
+--- a/drivers/mtd/spi/spi-nor-ids.c
++++ b/drivers/mtd/spi/spi-nor-ids.c
+@@ -241,8 +241,7 @@ const struct flash_info spi_nor_ids[] = {
+ 	{ INFO("is25wp128",  0x9d7018, 0, 64 * 1024, 256,
+ 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ INFO("is25wp256",  0x9d7019, 0, 64 * 1024, 512,
+-			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+-			SPI_NOR_4B_OPCODES) },
++			SECT_4K) },
+ 	{ INFO("is25wp512",  0x9d701a, 0, 64 * 1024, 1024,
+ 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ INFO("is25wp01g",  0x9d701b, 0, 64 * 1024, 2048,
+@@ -251,6 +250,7 @@ const struct flash_info spi_nor_ids[] = {
+ 			SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ | SPI_NOR_4B_OPCODES) },
+ 	{ INFO("is25lx512",  0x9d5a1a, 0, 64 * 1024, 1024,
+ 			SECT_4K | USE_FSR | SPI_NOR_4B_OPCODES | SPI_NOR_HAS_TB) },
++
+ #endif
+ #ifdef CONFIG_SPI_FLASH_MACRONIX	/* MACRONIX */
+ 	/* Macronix */
