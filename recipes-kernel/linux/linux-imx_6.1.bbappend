@@ -18,8 +18,10 @@ SRC_URI:append:bytedevkit-imx8mp = " \
 	file://0008-arch-arm64-config-add-defconfig-for-byteDEVKIT3.patch \
 	file://0009-arch-arm64-dts-add-dts-for-byteDEVKIT3.patch \
 	file://0010-arch-arm64-dts-fix-touch-lvds-for-byteDEVKIT3.patch \
+	file://0011-arm64-bytedevkit_imx8mp_defconfig-Fix-sdma-and-802.1.patch \
+	file://0012-arm64-dts-imx8mp-bytedevkit-Fix-initial-state-of-USB.patch \
 "
-PR:bytedevkit-imx8mp = "r0"
+PR:bytedevkit-imx8mp = "r1"
 
 # bytedevkit-imx8mm
 SRC_URI:append:bytedevkit-imx8mm = " \

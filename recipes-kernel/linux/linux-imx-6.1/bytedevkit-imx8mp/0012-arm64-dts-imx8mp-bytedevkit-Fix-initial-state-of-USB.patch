@@ -1,0 +1,24 @@
+From c2a90a25a95e8bac38f8b820fdb9adeba57010a6 Mon Sep 17 00:00:00 2001
+From: Alexander Forsch <alexander.forsch@bytesatwork.ch>
+Date: Fri, 15 Nov 2024 11:51:24 +0100
+Subject: [PATCH] arm64: dts: imx8mp-bytedevkit: Fix initial state of USB-C
+
+Fix USB role switch issue, define default-state as host.
+
+Signed-off-by: Alexander Forsch <alexander.forsch@bytesatwork.ch>
+---
+ arch/arm64/boot/dts/freescale/imx8mp-bytedevkit.dts | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-bytedevkit.dts b/arch/arm64/boot/dts/freescale/imx8mp-bytedevkit.dts
+index be9b2c84d730..5d6da234c5db 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp-bytedevkit.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mp-bytedevkit.dts
+@@ -292,6 +292,7 @@ &usb_dwc3_0 {
+ 	pinctrl-0 = <&pinctrl_usb1_vbus>;
+ 	usb-role-switch;
+ 	dr_mode = "otg";
++	role-switch-default-mode = "host";
+ 	status = "okay";
+ 	/* dual role is implemented, but not a full featured OTG */
+ 	hnp-disable;
