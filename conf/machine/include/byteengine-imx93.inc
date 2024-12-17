@@ -15,6 +15,8 @@ MACHINE_FEATURES:append:use-nxp-bsp = " optee jailhouse nxpiw612-sdio"
 
 IMX_DEFAULT_BOOTLOADER:use-nxp-bsp = "u-boot-imx"
 
+PREFERRED_VERSION_u-boot-imx = "2023.04"
+IMAGE_BOOTLOADER = "imx-boot"
 LOADADDR = ""
 UBOOT_SUFFIX = "bin"
 UBOOT_MAKE_TARGET = ""
