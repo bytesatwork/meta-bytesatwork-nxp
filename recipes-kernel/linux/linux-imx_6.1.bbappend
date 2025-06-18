@@ -2,9 +2,7 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}-6.1:"
 
 EXTRA_OEMAKE="LOCALVERSION=-${PR}"
 
-kernel_do_compile:prepend() {
-	oe_runmake -C ${S} O=${B} ${KERNEL_DEFCONFIG}
-}
+KBUILD_DEFCONFIG:bytedevkit-imx8mp=""
 
 # bytedevkit-imx8mp
 SRC_URI:append:bytedevkit-imx8mp = " \
@@ -20,6 +18,7 @@ SRC_URI:append:bytedevkit-imx8mp = " \
 	file://0010-arch-arm64-dts-fix-touch-lvds-for-byteDEVKIT3.patch \
 	file://0011-arm64-bytedevkit_imx8mp_defconfig-Fix-sdma-and-802.1.patch \
 	file://0012-arm64-dts-imx8mp-bytedevkit-Fix-initial-state-of-USB.patch \
+	file://defconfig \
 "
 PR:bytedevkit-imx8mp = "r1"
 
