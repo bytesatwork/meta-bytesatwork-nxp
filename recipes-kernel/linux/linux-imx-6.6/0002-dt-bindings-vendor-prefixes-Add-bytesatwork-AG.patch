@@ -1,4 +1,4 @@
-From 9733c6f9e03bb39ba5718da95a211b14b7e4b58e Mon Sep 17 00:00:00 2001
+From c83fc428f68d7b98ae24f65b6b2e67a3edcfc5af Mon Sep 17 00:00:00 2001
 From: Simone Schwizer <simone.schwizer@bytesatwork.ch>
 Date: Thu, 13 Jun 2024 12:43:50 +0200
 Subject: [PATCH] dt-bindings: vendor-prefixes: Add bytesatwork AG
@@ -11,7 +11,7 @@ Signed-off-by: Simone Schwizer <simone.schwizer@bytesatwork.ch>
  1 file changed, 2 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index 3df05e473f9d..2058bbc34f61 100644
+index 7bf6e3d5d8b6..4a7272410d73 100644
 --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
 +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
 @@ -218,6 +218,8 @@ patternProperties:

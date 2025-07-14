@@ -1,4 +1,4 @@
-From 93e33621bc4d756f45d6ad61c224637f7d92e83f Mon Sep 17 00:00:00 2001
+From f4e9323ee47acfef6c54c780f8e7d7c4a01442c9 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Stephan=20D=C3=BCnner?= <stephan.duenner@bytesatwork.ch>
 Date: Fri, 26 Jan 2024 18:57:51 +0100
 Subject: [PATCH] drm/imx: imx-ldb: Add 168Mhz LDB clock to drive 24 Mhz PCLK
@@ -16,10 +16,10 @@ Signed-off-by: Stephan Dünner <stephan.duenner@bytesatwork.ch>
  3 files changed, 2 insertions(+), 19 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-index 593b0c6ae72f..b0d59638e7a4 100644
+index 3e6d8c76d30a..ff36cc4c6d47 100644
 --- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
 +++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-@@ -696,7 +696,7 @@ clk: clock-controller@30380000 {
+@@ -752,7 +752,7 @@ clk: clock-controller@30380000 {
  						       <800000000>,
  						       <393216000>,
  						       <361267200>,
@@ -29,13 +29,13 @@ index 593b0c6ae72f..b0d59638e7a4 100644
  
  			src: reset-controller@30390000 {
 diff --git a/drivers/clk/imx/clk-pll14xx.c b/drivers/clk/imx/clk-pll14xx.c
-index c3a29e0d345e..18c7b98fa5e3 100644
+index 6c17786ecb9f..db2c72804efd 100644
 --- a/drivers/clk/imx/clk-pll14xx.c
 +++ b/drivers/clk/imx/clk-pll14xx.c
-@@ -64,6 +64,7 @@ static const struct imx_pll14xx_rate_table imx_pll1443x_tbl[] = {
- 	PLL_1443X_RATE(519750000U, 173, 2, 2, 16384),
- 	PLL_1443X_RATE(393216000U, 262, 2, 3, 9437),
- 	PLL_1443X_RATE(361267200U, 361, 3, 3, 17511),
+@@ -75,6 +75,7 @@ static const struct imx_pll14xx_rate_table imx_pll1443x_tbl[] = {
+ 	PLL_1443X_RATE(49152000U, 393, 3, 6, 0x374c),
+ 	PLL_1443X_RATE(45158400U, 241, 2, 6, 0xd845),
+ 	PLL_1443X_RATE(40960000U, 109, 1, 6, 0x3a07),
 +	PLL_1443X_RATE(168000000U, 56, 2, 2, 0),
  };
  

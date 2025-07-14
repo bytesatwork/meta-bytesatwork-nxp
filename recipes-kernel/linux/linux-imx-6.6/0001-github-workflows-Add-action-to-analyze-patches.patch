@@ -1,4 +1,4 @@
-From 0faad9440ce53695718b4411956056894d382d6a Mon Sep 17 00:00:00 2001
+From 03f86e8a8eae8b5387bebee99f6316501593ecef Mon Sep 17 00:00:00 2001
 From: Michael Meister <michael.meister@bytesatwork.ch>
 Date: Mon, 11 Jul 2022 16:02:24 +0200
 Subject: [PATCH] github: workflows: Add action to analyze patches
@@ -149,7 +149,7 @@ index 000000000000..dc75adb9e0ac
 +            ./scripts/checkpatch.pl --no-tree ${{ matrix.patch }}
 +          fi
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 40d5077e8523..864d9c673daa 100644
+index 9c822efb5cd7..cd6ad8cda57a 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
 @@ -4437,6 +4437,11 @@ S:	Maintained

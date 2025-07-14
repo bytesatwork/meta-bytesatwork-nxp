@@ -1,4 +1,4 @@
-From fbfd71dadc791cd79eb527fd418c787343ce81e9 Mon Sep 17 00:00:00 2001
+From 9b34149d25c3ed9dc91204c4944e102a487e5245 Mon Sep 17 00:00:00 2001
 From: Simone Schwizer <simone.schwizer@bytesatwork.ch>
 Date: Thu, 13 Jun 2024 15:00:45 +0200
 Subject: [PATCH] dt-bindings: display: Add Youritech ILI9806E panel bindings
@@ -104,7 +104,7 @@ index 000000000000..9c5eb2bf2e1f
 +    };
 +...
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 5c061b4fbc81..1e7b42e992d8 100644
+index fe8ac3bb4156..3cd1006128b1 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
 @@ -4442,6 +4442,7 @@ M:	Daniel Ammann <daniel.ammann@bytesatwork.ch>

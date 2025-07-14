@@ -1,4 +1,4 @@
-From dd6b7e493465af90edb6f30a9aff53bc3fe4ccfe Mon Sep 17 00:00:00 2001
+From b1714ab849fb31085b1040a2e827e7eac16629e6 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Stephan=20D=C3=BCnner?= <stephan.duenner@bytesatwork.ch>
 Date: Fri, 3 May 2024 12:53:18 +0200
 Subject: [PATCH] arm64: bytedevkit_imx93_defconfig: Add basic configuration
@@ -13,12 +13,12 @@ Signed-off-by: Stephan Dünner <stephan.duenner@bytesatwork.ch>
 Signed-off-by: Simone Schwizer <simone.schwizer@bytesatwork.ch>
 ---
  MAINTAINERS                                   |    1 +
- arch/arm64/configs/bytedevkit_imx93_defconfig | 1150 +++++++++++++++++
- 2 files changed, 1151 insertions(+)
+ arch/arm64/configs/bytedevkit_imx93_defconfig | 1151 +++++++++++++++++
+ 2 files changed, 1152 insertions(+)
  create mode 100644 arch/arm64/configs/bytedevkit_imx93_defconfig
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 78f61f7dd096..442de42ceeca 100644
+index 52a029bcd6d4..5b545be65c33 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
 @@ -4443,6 +4443,7 @@ S:	Maintained
@@ -26,15 +26,15 @@ index 78f61f7dd096..442de42ceeca 100644
  F:	Documentation/devicetree/bindings/arm/bytesatwork/bytesatwork.yaml
  F:	Documentation/devicetree/bindings/display/panel/youritech,ili9806e.yaml
 +F:	arch/arm64/configs/bytedevkit_imx93_defconfig
+ F:	drivers/gpio/gpio-tca6418.c
  F:	drivers/gpu/drm/panel/panel-youritech-ili9806e.c
- F:	drivers/video/logo/logo_baw_clut224.ppm
  
 diff --git a/arch/arm64/configs/bytedevkit_imx93_defconfig b/arch/arm64/configs/bytedevkit_imx93_defconfig
 new file mode 100644
-index 000000000000..bfa2d22d7263
+index 000000000000..db48df6498f8
 --- /dev/null
 +++ b/arch/arm64/configs/bytedevkit_imx93_defconfig
-@@ -0,0 +1,1150 @@
+@@ -0,0 +1,1151 @@
 +CONFIG_SYSVIPC=y
 +CONFIG_POSIX_MQUEUE=y
 +CONFIG_AUDIT=y
@@ -513,6 +513,7 @@ index 000000000000..bfa2d22d7263
 +CONFIG_GPIO_PCA953X=y
 +CONFIG_GPIO_PCA953X_IRQ=y
 +CONFIG_GPIO_PCF857X=y
++CONFIG_GPIO_TCA6418=y
 +CONFIG_GPIO_ADP5585=y
 +CONFIG_GPIO_BD9571MWV=m
 +CONFIG_GPIO_MAX77620=y

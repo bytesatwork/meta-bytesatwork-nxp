@@ -1,4 +1,4 @@
-From 06351ee3767e61e75ee770f4861c30f018660b91 Mon Sep 17 00:00:00 2001
+From cc9e2795c80ec90b999e6f573a52d15ea16b147a Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Stephan=20D=C3=BCnner?= <stephan.duenner@bytesatwork.ch>
 Date: Tue, 30 Jan 2024 14:11:21 +0100
 Subject: [PATCH] arm64: bytedevkit_imx8mp_defconfig: Add a basic configuration
@@ -12,28 +12,28 @@ byteENGINE IMX8MP.
 Signed-off-by: Stephan Dünner <stephan.duenner@bytesatwork.ch>
 ---
  MAINTAINERS                                   |    1 +
- .../arm64/configs/bytedevkit_imx8mp_defconfig | 1112 +++++++++++++++++
- 2 files changed, 1113 insertions(+)
+ .../arm64/configs/bytedevkit_imx8mp_defconfig | 1123 +++++++++++++++++
+ 2 files changed, 1124 insertions(+)
  create mode 100644 arch/arm64/configs/bytedevkit_imx8mp_defconfig
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index f59f569d4378..1383dd9f1d8f 100644
+index 92fe917ee89b..9ea59c1b810d 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -4503,6 +4503,7 @@ M:	Daniel Ammann <daniel.ammann@bytesatwork.ch>
- S:	Maintained
- F:	.github/workflows/checkpatch.yml
- F:	Documentation/devicetree/bindings/arm/bytesatwork/bytesatwork.yaml
+@@ -4445,6 +4445,7 @@ F:	Documentation/devicetree/bindings/arm/bytesatwork/bytesatwork.yaml
+ F:	Documentation/devicetree/bindings/display/panel/youritech,ili9806e.yaml
+ F:	arch/arm64/boot/dts/freescale/imx93-bytedevkit.dts
+ F:	arch/arm64/boot/dts/freescale/imx93-byteengine.dtsi
 +F:	arch/arm64/configs/bytedevkit_imx8mp_defconfig
- F:	drivers/video/logo/logo_baw_clut224.ppm
- 
- C-MEDIA CMI8788 DRIVER
+ F:	arch/arm64/configs/bytedevkit_imx93_defconfig
+ F:	drivers/gpio/gpio-tca6418.c
+ F:	drivers/gpu/drm/panel/panel-youritech-ili9806e.c
 diff --git a/arch/arm64/configs/bytedevkit_imx8mp_defconfig b/arch/arm64/configs/bytedevkit_imx8mp_defconfig
 new file mode 100644
-index 000000000000..04e06172379a
+index 000000000000..9dd82811d079
 --- /dev/null
 +++ b/arch/arm64/configs/bytedevkit_imx8mp_defconfig
-@@ -0,0 +1,1112 @@
+@@ -0,0 +1,1123 @@
 +CONFIG_SYSVIPC=y
 +CONFIG_POSIX_MQUEUE=y
 +CONFIG_AUDIT=y
@@ -215,7 +215,7 @@ index 000000000000..04e06172379a
 +CONFIG_BT_HCIUART_QCA=y
 +CONFIG_BT_HCIVHCI=y
 +CONFIG_BT_NXPUART=m
-+CONFIG_CFG80211=y
++CONFIG_CFG80211=m
 +CONFIG_NL80211_TESTMODE=y
 +CONFIG_CFG80211_WEXT=y
 +CONFIG_MAC80211=y
@@ -376,6 +376,7 @@ index 000000000000..04e06172379a
 +CONFIG_AT803X_PHY=y
 +CONFIG_REALTEK_PHY=y
 +CONFIG_ROCKCHIP_PHY=y
++CONFIG_DP83867_PHY=y
 +CONFIG_VITESSE_PHY=y
 +CONFIG_CAN_FLEXCAN=m
 +CONFIG_MDIO_BITBANG=y
@@ -423,6 +424,7 @@ index 000000000000..04e06172379a
 +CONFIG_INPUT_MISC=y
 +CONFIG_INPUT_PWM_BEEPER=m
 +CONFIG_INPUT_PWM_VIBRA=m
++CONFIG_INPUT_GPIO_ROTARY_ENCODER=y
 +# CONFIG_SERIO_SERPORT is not set
 +CONFIG_SERIO_AMBAKMI=y
 +CONFIG_LEGACY_PTY_COUNT=16
@@ -700,19 +702,24 @@ index 000000000000..04e06172379a
 +CONFIG_SND_ALOOP=m
 +CONFIG_SND_USB_AUDIO=m
 +CONFIG_SND_SOC=y
-+CONFIG_SND_SOC_FSL_ASRC=m
-+CONFIG_SND_SOC_FSL_MQS=m
-+CONFIG_SND_SOC_FSL_MICFIL=m
-+CONFIG_SND_SOC_FSL_EASRC=m
-+CONFIG_SND_SOC_FSL_XCVR=m
++CONFIG_SND_SOC_FSL_ASRC=y
++CONFIG_SND_SOC_FSL_SAI=y
++CONFIG_SND_SOC_FSL_MQS=y
++CONFIG_SND_SOC_FSL_AUDMIX=y
++CONFIG_SND_SOC_FSL_SPDIF=y
++CONFIG_SND_SOC_FSL_ESAI=y
++CONFIG_SND_SOC_FSL_MICFIL=y
++CONFIG_SND_SOC_FSL_EASRC=y
++CONFIG_SND_SOC_FSL_XCVR=y
++CONFIG_SND_SOC_FSL_AUD2HTX=y
 +CONFIG_SND_SOC_FSL_ESAI_CLIENT=y
-+CONFIG_SND_SOC_FSL_RPMSG=m
-+CONFIG_SND_IMX_SOC=m
-+CONFIG_SND_SOC_IMX_SGTL5000=m
++CONFIG_SND_IMX_SOC=y
++CONFIG_SND_SOC_IMX_SGTL5000=y
 +CONFIG_SND_SOC_IMX_SPDIF=m
 +CONFIG_SND_SOC_FSL_ASOC_CARD=m
 +CONFIG_SND_SOC_IMX_AUDMIX=m
 +CONFIG_SND_SOC_IMX_HDMI=m
++CONFIG_SND_SOC_IMX_RPMSG=m
 +CONFIG_SND_SOC_IMX_CARD=m
 +CONFIG_SND_SOC_IMX_PCM512X=m
 +CONFIG_SND_SOC_SOF_TOPLEVEL=y
@@ -735,9 +742,9 @@ index 000000000000..04e06172379a
 +CONFIG_SND_SOC_MSM8916_WCD_DIGITAL=m
 +CONFIG_SND_SOC_PCM3168A_I2C=m
 +CONFIG_SND_SOC_RT5659=m
-+CONFIG_SND_SOC_SIMPLE_AMPLIFIER=m
-+CONFIG_SND_SOC_SIMPLE_MUX=m
-+CONFIG_SND_SOC_SPDIF=m
++CONFIG_SND_SOC_SIMPLE_AMPLIFIER=y
++CONFIG_SND_SOC_SIMPLE_MUX=y
++CONFIG_SND_SOC_SPDIF=y
 +CONFIG_SND_SOC_TAS571X=m
 +CONFIG_SND_SOC_WCD934X=m
 +CONFIG_SND_SOC_WM8524=y
@@ -757,6 +764,7 @@ index 000000000000..04e06172379a
 +CONFIG_USB_CONN_GPIO=y
 +CONFIG_USB=y
 +CONFIG_USB_OTG=y
++CONFIG_USB_OTG_FSM=y
 +CONFIG_USB_XHCI_HCD=y
 +CONFIG_USB_XHCI_PCI_RENESAS=m
 +CONFIG_USB_EHCI_HCD=y
@@ -764,7 +772,10 @@ index 000000000000..04e06172379a
 +CONFIG_USB_OHCI_HCD=y
 +CONFIG_USB_OHCI_HCD_PLATFORM=y
 +CONFIG_USB_HCD_TEST_MODE=y
-+CONFIG_USB_ACM=m
++CONFIG_USB_ACM=y
++CONFIG_USB_PRINTER=y
++CONFIG_USB_WDM=y
++CONFIG_USB_TMC=y
 +CONFIG_USB_STORAGE=y
 +CONFIG_USB_UAS=y
 +CONFIG_USB_CDNS_SUPPORT=y
@@ -887,7 +898,7 @@ index 000000000000..04e06172379a
 +CONFIG_FSL_EDMA=y
 +CONFIG_FSL_QDMA=m
 +CONFIG_FSL_EDMA_V3=y
-+CONFIG_IMX_SDMA=y
++CONFIG_IMX_SDMA=m
 +CONFIG_MV_XOR_V2=y
 +CONFIG_MXS_DMA=y
 +CONFIG_MXC_PXP_V3=y

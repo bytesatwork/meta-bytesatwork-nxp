@@ -1,4 +1,4 @@
-From 25d01a0ee3b651f3f270c10db844a828f09c8061 Mon Sep 17 00:00:00 2001
+From 6e5df6cf90a28405d8e43afde6b3374350f9e58e Mon Sep 17 00:00:00 2001
 From: Simone Schwizer <simone.schwizer@bytesatwork.ch>
 Date: Thu, 13 Jun 2024 14:29:16 +0200
 Subject: [PATCH] dt-bindings: vendor-prefixes: Add youritech
@@ -11,10 +11,10 @@ Signed-off-by: Simone Schwizer <simone.schwizer@bytesatwork.ch>
  1 file changed, 2 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index 2058bbc34f61..a3940152696c 100644
+index 4a7272410d73..a793f7061aa7 100644
 --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
 +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -1578,6 +1578,8 @@ patternProperties:
+@@ -1580,6 +1580,8 @@ patternProperties:
      description: YSH & ATIL
    "^yones-toptech,.*":
      description: Yones Toptech Co., Ltd.

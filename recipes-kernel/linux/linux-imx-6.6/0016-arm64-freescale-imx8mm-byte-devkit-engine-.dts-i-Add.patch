@@ -1,0 +1,526 @@
+From 996b30d003261ac6cd9ee7889729fd3f8e79198e Mon Sep 17 00:00:00 2001
+From: Daniel Ammann <daniel.ammann@bytesatwork.ch>
+Date: Thu, 18 Nov 2021 13:33:33 +0100
+Subject: [PATCH] arm64: freescale: imx8mm-byte(devkit|engine).dts(i): Add
+ device trees
+
+Add support for byteENGINE IMX8MM and byteDEVKIT IMX8MM.
+Note that only version 1.3 and 1.4 of byteDEVKIT is supported.
+
+Signed-off-by: Daniel Ammann <daniel.ammann@bytesatwork.ch>
+---
+ MAINTAINERS                                   |   2 +
+ arch/arm64/boot/dts/freescale/Makefile        |   1 +
+ .../boot/dts/freescale/imx8mm-bytedevkit.dts  | 215 +++++++++++++++
+ .../boot/dts/freescale/imx8mm-byteengine.dtsi | 255 ++++++++++++++++++
+ 4 files changed, 473 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-bytedevkit.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-byteengine.dtsi
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 4ea37fc00ce4..8c7f384aa8e5 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4443,6 +4443,8 @@ S:	Maintained
+ F:	.github/workflows/checkpatch.yml
+ F:	Documentation/devicetree/bindings/arm/bytesatwork/bytesatwork.yaml
+ F:	Documentation/devicetree/bindings/display/panel/youritech,ili9806e.yaml
++F:	arch/arm64/boot/dts/freescale/imx8mm-bytedevkit.dts
++F:	arch/arm64/boot/dts/freescale/imx8mm-byteengine.dtsi
+ F:	arch/arm64/boot/dts/freescale/imx8mp-bytedevkit-v2.dts
+ F:	arch/arm64/boot/dts/freescale/imx8mp-bytedevkit.dts
+ F:	arch/arm64/boot/dts/freescale/imx8mp-byteengine.dtsi
+diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
+index 77611f081894..042cb195caee 100644
+--- a/arch/arm64/boot/dts/freescale/Makefile
++++ b/arch/arm64/boot/dts/freescale/Makefile
+@@ -97,6 +97,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mm-ddr4-evk.dtb imx8mm-ddr4-evk-rm67191.dtb imx8mm
+ 			  imx8mm-ddr4-evk-rm67199.dtb \
+ 			  imx8mm-ddr4-evk-rm67191-cmd-ram.dtb \
+ 			  imx8mm-ddr4-evk-rm67199-cmd-ram.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mm-bytedevkit.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mm-emcon-avari.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mm-emtop-baseboard.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mm-icore-mx8mm-ctouch2.dtb
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-bytedevkit.dts b/arch/arm64/boot/dts/freescale/imx8mm-bytedevkit.dts
+new file mode 100644
+index 000000000000..3d94765c7d00
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mm-bytedevkit.dts
+@@ -0,0 +1,215 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * Copyright (C) 2021 bytesatwork AG - https://www.bytesatwork.io
++ *
++ * Based on imx8mm-ddr4-evk.dts:
++ * Copyright 2018 NXP
++ *
++ */
++
++/dts-v1/;
++
++#include "imx8mm-byteengine.dtsi"
++
++/ {
++	model = "byteDEVKIT";
++	compatible = "bytesatwork,bytedevkit-imx8mm", "bytesatwork,byteengine-imx8mm", "fsl,imx8mm";
++
++	chosen {
++		bootargs = "console=ttymxc0,115200 earlycon=ec_imx6q,0x30890000,115200";
++		stdout-path = &uart2;
++	};
++
++	aliases {
++		mmc0 = &usdhc3;
++		mmc1 = &usdhc2;
++		/delete-property/ mmc2;
++		serial0 = &uart2;
++	};
++
++	backlight {
++		compatible = "pwm-backlight";
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_backlight>;
++		pwms = <&pwm1 0 5000000 0>;
++		brightness-levels = <0 4 8 16 32 64 128 255>;
++		default-brightness-level = <5>;
++	};
++
++	vbus_usb2: fixedregulator1 {
++		compatible = "regulator-fixed";
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_usb2>;
++		regulator-name = "vbus_usb2";
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++		gpio = <&gpio5 3 GPIO_ACTIVE_HIGH>;
++	};
++};
++
++&iomuxc {
++	pinctrl_uart2: uart2grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_UART2_RXD_UART2_DCE_RX	0x140	/* F15  UART2_RXD */
++			MX8MM_IOMUXC_UART2_TXD_UART2_DCE_TX	0x140	/* E15  UART2_TXD */
++		>;
++	};
++
++	pinctrl_usdhc2_gpio: usdhc2grpgpio {
++		fsl,pins = <
++			MX8MM_IOMUXC_SD2_CD_B_GPIO2_IO12	0x1c4
++		>;
++	};
++
++	pinctrl_usdhc2: usdhc2grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK		0x194
++			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD		0x1d4
++			MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0	0x1d4
++			MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1	0x1d4
++			MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2	0x1d4
++			MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3	0x1d4
++		>;
++	};
++
++	pinctrl_backlight: backlight {
++		fsl,pins = <
++			MX8MM_IOMUXC_GPIO1_IO01_PWM1_OUT	0x116	/* Backlight PWM */
++		>;
++	};
++
++	pinctrl_lcd: lcd {
++		fsl,pins = <
++			MX8MM_IOMUXC_GPIO1_IO13_GPIO1_IO13	0x19	/* DSI reset */
++		>;
++	};
++
++	pinctrl_usb2: usb2 {
++		fsl,pins = <
++			MX8MM_IOMUXC_SPDIF_TX_GPIO5_IO3		0x19	/* USB1.EN */
++		>;
++	};
++
++	pinctrl_fec1: fec1grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_ENET_MDC_ENET1_MDC			0x3
++			MX8MM_IOMUXC_ENET_MDIO_ENET1_MDIO		0x3
++			MX8MM_IOMUXC_ENET_TD2_ENET1_TX_CLK	0x4000001f	/* RMII.REF_CLK */
++			MX8MM_IOMUXC_ENET_RD0_ENET1_RGMII_RD0		0x91
++			MX8MM_IOMUXC_ENET_RD1_ENET1_RGMII_RD1		0x91
++			MX8MM_IOMUXC_ENET_TD0_ENET1_RGMII_TD0		0x1f
++			MX8MM_IOMUXC_ENET_TD1_ENET1_RGMII_TD1		0x1f
++			MX8MM_IOMUXC_ENET_RX_CTL_ENET1_RGMII_RX_CTL	0x91	/* CRS_DV */
++			MX8MM_IOMUXC_ENET_TX_CTL_ENET1_RGMII_TX_CTL	0x1f	/* TX_EN */
++			MX8MM_IOMUXC_UART3_TXD_GPIO5_IO27		0x6	/* ETH_RESET~ */
++		>;
++	};
++
++	pinctrl_i2c1: i2c1grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_I2C1_SCL_I2C1_SCL		0x400001c3	/* E9  I2C1_SCL */
++			MX8MM_IOMUXC_I2C1_SDA_I2C1_SDA		0x400001c3	/* F9  I2C1_SDA */
++		>;
++	};
++
++	pinctrl_touch: touchgrp {
++		fsl,pins = <
++			MX8MM_IOMUXC_UART1_TXD_GPIO5_IO23	0x19	/* F13   TOUCH_INT */
++			MX8MM_IOMUXC_GPIO1_IO12_GPIO1_IO12	0x6	/* AB10  TOUCH_RST */
++		>;
++	};
++};
++
++&lcdif {
++	status = "okay";
++};
++
++&mipi_dsi {
++	status = "okay";
++
++	panel@0 {
++		compatible = "youritech,ili9806e";
++		reg = <0>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_lcd>;
++		reset-gpios = <&gpio1 13 GPIO_ACTIVE_HIGH>;
++		dsi-lanes = <2>;
++		video-mode = <2>;       /* 0: burst mode
++					 * 1: non-burst mode with sync event
++					 * 2: non-burst mode with sync pulse
++					 */
++		panel-width-mm = <62>;  /* active area */
++		panel-height-mm = <110>;
++		status = "okay";
++	};
++};
++
++&uart2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart2>;
++	status = "okay";
++};
++
++&usbotg1 {
++	dr_mode = "peripheral";
++	status = "okay";
++};
++
++&usbotg2 {
++	dr_mode = "host";
++	status = "okay";
++};
++
++&usbphynop2 {
++	vbus-regulator = <&vbus_usb2>;
++};
++
++&usdhc2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
++	bus-width = <4>;
++	cd-gpios = <&gpio2 12 GPIO_ACTIVE_LOW>;
++	status = "okay";
++};
++
++&pwm1 {
++	status = "okay";
++};
++
++&fec1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_fec1>;
++	phy-mode = "rmii";
++	phy-handle = <&ethphy0>;
++	fsl,magic-packet;
++	phy-reset-gpios = <&gpio5 27 GPIO_ACTIVE_LOW>;
++	status = "okay";
++
++	mdio {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		ethphy0: ethernet-phy@0 {
++			compatible = "ethernet-phy-ieee802.3-c22";
++			reg = <0>;
++		};
++	};
++};
++
++&i2c1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_i2c1>;
++	status = "okay";
++
++	gt911@5d {
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_touch>;
++		compatible = "goodix,gt911";
++		reg = <0x5d>;
++		interrupt-parent = <&gpio5>;
++		interrupts = <23 0>;
++
++		irq-gpios = <&gpio5 23 0>;
++		reset-gpios = <&gpio1 12 0>;
++	};
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-byteengine.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-byteengine.dtsi
+new file mode 100644
+index 000000000000..a481f287474b
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mm-byteengine.dtsi
+@@ -0,0 +1,255 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ *  Copyright (C) 2021 bytesatwork AG - https://www.bytesatwork.io
++ *
++ * Based on imx8mm-ddr4-evk.dts:
++ * Copyright 2018 NXP
++ *
++ */
++
++#include "imx8mm.dtsi"
++
++/ {
++	compatible = "bytesatwork,byteengine-imx8mm", "fsl,imx8mm";
++};
++
++&iomuxc {
++	pinctrl_flexspi0: flexspi0grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_NAND_ALE_QSPI_A_SCLK	0x1c2	/* N22  NAND_ALE */
++			MX8MM_IOMUXC_NAND_CE0_B_QSPI_A_SS0_B	0x82	/* N24  NAND_CE0_B */
++			MX8MM_IOMUXC_NAND_DATA00_QSPI_A_DATA0	0x82	/* P23  NAND_DATA00 */
++			MX8MM_IOMUXC_NAND_DATA01_QSPI_A_DATA1	0x82	/* K24  NAND_DATA01 */
++			MX8MM_IOMUXC_NAND_DATA02_QSPI_A_DATA2	0x82	/* K23  NAND_DATA02 */
++			MX8MM_IOMUXC_NAND_DATA03_QSPI_A_DATA3	0x82	/* N23  NAND_DATA03 */
++		>;
++	};
++
++	pinctrl_i2c2: i2c2grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_I2C2_SCL_I2C2_SCL		0x400001c3	/* D10  I2C2_SCL */
++			MX8MM_IOMUXC_I2C2_SDA_I2C2_SDA		0x400001c3	/* D9   I2C2_SDA */
++		>;
++	};
++
++	pinctrl_pmic: pmicirq {
++		fsl,pins = <
++			MX8MM_IOMUXC_GPIO1_IO03_GPIO1_IO3	0x41	/* AF13  GPIO1_IO03 */
++		>;
++	};
++
++	pinctrl_usdhc3: usdhc3grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_NAND_WE_B_USDHC3_CLK	0x190
++			MX8MM_IOMUXC_NAND_WP_B_USDHC3_CMD	0x1d0
++			MX8MM_IOMUXC_NAND_DATA04_USDHC3_DATA0	0x1d0
++			MX8MM_IOMUXC_NAND_DATA05_USDHC3_DATA1	0x1d0
++			MX8MM_IOMUXC_NAND_DATA06_USDHC3_DATA2	0x1d0
++			MX8MM_IOMUXC_NAND_DATA07_USDHC3_DATA3	0x1d0
++			MX8MM_IOMUXC_NAND_RE_B_USDHC3_DATA4	0x1d0
++			MX8MM_IOMUXC_NAND_CE2_B_USDHC3_DATA5	0x1d0
++			MX8MM_IOMUXC_NAND_CE3_B_USDHC3_DATA6	0x1d0
++			MX8MM_IOMUXC_NAND_CLE_USDHC3_DATA7	0x1d0
++			MX8MM_IOMUXC_NAND_CE1_B_USDHC3_STROBE	0x190
++		>;
++	};
++
++	pinctrl_usdhc3_100mhz: usdhc3grp100mhz {
++		fsl,pins = <
++			MX8MM_IOMUXC_NAND_WE_B_USDHC3_CLK	0x194
++			MX8MM_IOMUXC_NAND_WP_B_USDHC3_CMD	0x1d4
++			MX8MM_IOMUXC_NAND_DATA04_USDHC3_DATA0	0x1d4
++			MX8MM_IOMUXC_NAND_DATA05_USDHC3_DATA1	0x1d4
++			MX8MM_IOMUXC_NAND_DATA06_USDHC3_DATA2	0x1d4
++			MX8MM_IOMUXC_NAND_DATA07_USDHC3_DATA3	0x1d4
++			MX8MM_IOMUXC_NAND_RE_B_USDHC3_DATA4	0x1d4
++			MX8MM_IOMUXC_NAND_CE2_B_USDHC3_DATA5	0x1d4
++			MX8MM_IOMUXC_NAND_CE3_B_USDHC3_DATA6	0x1d4
++			MX8MM_IOMUXC_NAND_CLE_USDHC3_DATA7	0x1d4
++			MX8MM_IOMUXC_NAND_CE1_B_USDHC3_STROBE	0x194
++		>;
++	};
++
++	pinctrl_usdhc3_200mhz: usdhc3grp200mhz {
++		fsl,pins = <
++			MX8MM_IOMUXC_NAND_WE_B_USDHC3_CLK	0x196
++			MX8MM_IOMUXC_NAND_WP_B_USDHC3_CMD	0x1d6
++			MX8MM_IOMUXC_NAND_DATA04_USDHC3_DATA0	0x1d6
++			MX8MM_IOMUXC_NAND_DATA05_USDHC3_DATA1	0x1d6
++			MX8MM_IOMUXC_NAND_DATA06_USDHC3_DATA2	0x1d6
++			MX8MM_IOMUXC_NAND_DATA07_USDHC3_DATA3	0x1d6
++			MX8MM_IOMUXC_NAND_RE_B_USDHC3_DATA4	0x1d6
++			MX8MM_IOMUXC_NAND_CE2_B_USDHC3_DATA5	0x1d6
++			MX8MM_IOMUXC_NAND_CE3_B_USDHC3_DATA6	0x1d6
++			MX8MM_IOMUXC_NAND_CLE_USDHC3_DATA7	0x1d6
++			MX8MM_IOMUXC_NAND_CE1_B_USDHC3_STROBE	0x196
++		>;
++	};
++
++	pinctrl_wdog: wdoggrp {
++		fsl,pins = <
++			MX8MM_IOMUXC_GPIO1_IO02_WDOG1_WDOG_B	0xc6
++		>;
++	};
++};
++
++&flexspi {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_flexspi0>;
++	status = "okay";
++
++	flash0: spi-nor@0 {
++		reg = <0>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++		compatible = "jedec,spi-nor";
++		spi-max-frequency = <50000000>;
++		spi-nor,ddr-quad-read-dummy = <8>;
++	};
++};
++
++&i2c2 {
++	clock-frequency = <400000>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_i2c2>;
++	status = "okay";
++
++	pmic: pca9450@25 {
++		compatible = "nxp,pca9450a";
++		reg = <0x25>;
++
++		pinctrl-0 = <&pinctrl_pmic>;
++		pinctrl-names = "default";
++		interrupt-parent = <&gpio1>;
++		interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
++
++		regulators {
++			buck1_reg: BUCK1 {
++				regulator-name = "BUCK1";
++				regulator-min-microvolt = <600000>;
++				regulator-max-microvolt = <2187500>;
++				regulator-boot-on;
++				regulator-always-on;
++				regulator-ramp-delay = <3125>;
++			};
++
++			buck2_reg: BUCK2 {
++				regulator-name = "BUCK2";
++				regulator-min-microvolt = <600000>;
++				regulator-max-microvolt = <2187500>;
++				regulator-boot-on;
++				regulator-always-on;
++				regulator-ramp-delay = <3125>;
++				nxp,dvs-run-voltage = <1000000>;
++				nxp,dvs-standby-voltage = <900000>;
++			};
++
++			buck3_reg: BUCK3 {
++				regulator-name = "BUCK3";
++				regulator-min-microvolt = <600000>;
++				regulator-max-microvolt = <2187500>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			buck4_reg: BUCK4 {
++				regulator-name = "BUCK4";
++				regulator-min-microvolt = <600000>;
++				regulator-max-microvolt = <3400000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			buck5_reg: BUCK5 {
++				regulator-name = "BUCK5";
++				regulator-min-microvolt = <600000>;
++				regulator-max-microvolt = <3400000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			buck6_reg: BUCK6 {
++				regulator-name = "BUCK6";
++				regulator-min-microvolt = <600000>;
++				regulator-max-microvolt = <3400000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			ldo1_reg: LDO1 {
++				regulator-name = "LDO1";
++				regulator-min-microvolt = <1600000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			ldo2_reg: LDO2 {
++				regulator-name = "LDO2";
++				regulator-min-microvolt = <800000>;
++				regulator-max-microvolt = <1150000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			ldo3_reg: LDO3 {
++				regulator-name = "LDO3";
++				regulator-min-microvolt = <800000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			ldo4_reg: LDO4 {
++				regulator-name = "LDO4";
++				regulator-min-microvolt = <800000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			ldo5_reg: LDO5 {
++				regulator-name = "LDO5";
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <3300000>;
++			};
++		};
++	};
++};
++
++&usdhc3 {
++	pinctrl-names = "default", "state_100mhz", "state_200mhz";
++	pinctrl-0 = <&pinctrl_usdhc3>;
++	pinctrl-1 = <&pinctrl_usdhc3_100mhz>;
++	pinctrl-2 = <&pinctrl_usdhc3_200mhz>;
++	bus-width = <8>;
++	non-removable;
++	status = "okay";
++};
++
++&wdog1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_wdog>;
++	fsl,ext-reset-output;
++	status = "okay";
++};
++
++&gpu {
++	status = "okay";
++};
++
++&vpu_g1 {
++	status = "okay";
++};
++
++&vpu_g2 {
++	status = "okay";
++};
++
++&vpu_h1 {
++	status = "okay";
++};
++
++&A53_0 {
++	cpu-supply = <&buck2_reg>;
++};

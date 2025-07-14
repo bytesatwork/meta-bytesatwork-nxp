@@ -1,4 +1,4 @@
-From d988ee59b8e42b25f6c4f16c073f440507475f57 Mon Sep 17 00:00:00 2001
+From ff04b0c9cf9364b7a682557d360cb8bf21b26c79 Mon Sep 17 00:00:00 2001
 From: Simone Schwizer <simone.schwizer@bytesatwork.ch>
 Date: Mon, 17 Jun 2024 10:37:55 +0200
 Subject: [PATCH] arm64: freescale: imx93-byte(devkit|engine).dts(i): Add
@@ -9,14 +9,15 @@ Add support for byteENGINE i.MX93 and byteDEVKIT i.MX93.
 Signed-off-by: Simone Schwizer <simone.schwizer@bytesatwork.ch>
 ---
  MAINTAINERS                                   |   2 +
+ arch/arm64/boot/dts/freescale/Makefile        |   1 +
  .../boot/dts/freescale/imx93-bytedevkit.dts   | 512 ++++++++++++++++++
- .../boot/dts/freescale/imx93-byteengine.dtsi  | 192 +++++++
- 3 files changed, 706 insertions(+)
+ .../boot/dts/freescale/imx93-byteengine.dtsi  | 195 +++++++
+ 4 files changed, 710 insertions(+)
  create mode 100644 arch/arm64/boot/dts/freescale/imx93-bytedevkit.dts
  create mode 100644 arch/arm64/boot/dts/freescale/imx93-byteengine.dtsi
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 442de42ceeca..daf2dc8dc372 100644
+index 5b545be65c33..92fe917ee89b 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
 @@ -4443,6 +4443,8 @@ S:	Maintained
@@ -26,11 +27,23 @@ index 442de42ceeca..daf2dc8dc372 100644
 +F:	arch/arm64/boot/dts/freescale/imx93-bytedevkit.dts
 +F:	arch/arm64/boot/dts/freescale/imx93-byteengine.dtsi
  F:	arch/arm64/configs/bytedevkit_imx93_defconfig
+ F:	drivers/gpio/gpio-tca6418.c
  F:	drivers/gpu/drm/panel/panel-youritech-ili9806e.c
- F:	drivers/video/logo/logo_baw_clut224.ppm
+diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
+index efe32533733e..1cd68f50931b 100644
+--- a/arch/arm64/boot/dts/freescale/Makefile
++++ b/arch/arm64/boot/dts/freescale/Makefile
+@@ -441,6 +441,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx93-9x9-qsb.dtb \
+ 			  imx93-9x9-qsb-aud-hat.dtb \
+ 			  imx93-9x9-qsb-ld.dtb \
+ 			  imx93-9x9-qsb-rpmsg.dtb imx93-9x9-qsb-rpmsg-lpv.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx93-bytedevkit.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx93-tqma9352-mba93xxla.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx91-9x9-qsb.dtb \
+ 			  imx91-9x9-qsb-can1.dtb \
 diff --git a/arch/arm64/boot/dts/freescale/imx93-bytedevkit.dts b/arch/arm64/boot/dts/freescale/imx93-bytedevkit.dts
 new file mode 100644
-index 000000000000..0eacfec94180
+index 000000000000..0a6a1fccd997
 --- /dev/null
 +++ b/arch/arm64/boot/dts/freescale/imx93-bytedevkit.dts
 @@ -0,0 +1,512 @@
@@ -45,8 +58,8 @@ index 000000000000..0eacfec94180
 +#include "imx93-byteengine.dtsi"
 +
 +/ {
-+	model = "bytesatwork byteDEVKIT i.MX93";
-+	compatible = "bytesatwork,bytedevkit", "fsl,imx93";
++	model = "bytesatwork byteDEVKIT OSM i.MX93";
++	compatible = "bytesatwork,bytedevkit-imx93", "bytesatwork,byteengine-imx93", "fsl,imx93";
 +
 +	chosen {
 +		stdout-path = &lpuart1;
@@ -233,9 +246,9 @@ index 000000000000..0eacfec94180
 +		compatible = "goodix,gt911";
 +		reg = <0x5d>;
 +		interrupt-parent = <&gpio2>;
-+		interrupts = <23 0>;
-+		irq-gpios = <&gpio2 23 0>;
-+		reset-gpios = <&gpio2 24 0>;
++		interrupts = <21 0>;
++		irq-gpios = <&gpio2 21 0>;
++		reset-gpios = <&gpio2 20 0>;
 +	};
 +};
 +
@@ -315,7 +328,7 @@ index 000000000000..0eacfec94180
 +		compatible = "youritech,ili9806e";
 +		reg = <0>;
 +		backlight = <&mipi_bl>;
-+		reset-gpio = <&gpio2 22 GPIO_ACTIVE_HIGH>;
++		reset-gpio = <&gpio2 10 GPIO_ACTIVE_HIGH>;
 +		dsi-lanes = <2>;
 +		video-mode = <2>;	/* 0: burst mode
 +					 * 1: non-burst mode with sync event
@@ -530,15 +543,15 @@ index 000000000000..0eacfec94180
 +
 +	pinctrl_mipi_touch: mipi_touch_grp {
 +		fsl,pins = <
-+			MX93_PAD_GPIO_IO23__GPIO2_IO23		0x31e	/* MIPI Touch INT */
-+			MX93_PAD_GPIO_IO24__GPIO2_IO24		0x31e	/* MIPI Touch RST */
++			MX93_PAD_GPIO_IO21__GPIO2_IO21		0x31e	/* MIPI Touch INT */
++			MX93_PAD_GPIO_IO20__GPIO2_IO20		0x31e	/* MIPI Touch RST */
 +		>;
 +	};
 +
 +	pinctrl_mipi_blacklight: mipi_bl_grp {
 +		fsl,pins = <
 +			MX93_PAD_CCM_CLKO1__GPIO3_IO26		0x31e	/* MIPI Backlight */
-+			MX93_PAD_GPIO_IO22__GPIO2_IO22		0x31e	/* MIPI Reset */
++			MX93_PAD_GPIO_IO10__GPIO2_IO10		0x31e	/* MIPI Reset */
 +		>;
 +	};
 +};
@@ -548,10 +561,10 @@ index 000000000000..0eacfec94180
 +};
 diff --git a/arch/arm64/boot/dts/freescale/imx93-byteengine.dtsi b/arch/arm64/boot/dts/freescale/imx93-byteengine.dtsi
 new file mode 100644
-index 000000000000..06e58094f22b
+index 000000000000..666cef71cc82
 --- /dev/null
 +++ b/arch/arm64/boot/dts/freescale/imx93-byteengine.dtsi
-@@ -0,0 +1,192 @@
+@@ -0,0 +1,195 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/*
 + * Copyright 2024 bytesatwork AG
@@ -667,6 +680,8 @@ index 000000000000..06e58094f22b
 +		reg = <0x34>;
 +		gpio-controller;
 +		#gpio-cells = <2>;
++		interrupt-parent = <&gpio1>;
++		interrupts = <10 IRQ_TYPE_EDGE_FALLING>;
 +	};
 +};
 +
@@ -740,6 +755,7 @@ index 000000000000..06e58094f22b
 +		fsl,pins = <
 +			MX93_PAD_I2C2_SCL__LPI2C2_SCL		0x40000b9e
 +			MX93_PAD_I2C2_SDA__LPI2C2_SDA		0x40000b9e
++			MX93_PAD_PDM_BIT_STREAM1__GPIO1_IO10	0x1280
 +		>;
 +	};
 +

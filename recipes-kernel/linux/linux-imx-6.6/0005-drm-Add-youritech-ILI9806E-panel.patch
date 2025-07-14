@@ -1,4 +1,4 @@
-From 15e1c50d131c8f2a1ea73eddcb2f7ad9ea7798bd Mon Sep 17 00:00:00 2001
+From a5d941d043c25c0bc1806e72dfe0e848ef819381 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Stephan=20D=C3=BCnner?= <stephan.duenner@bytesatwork.ch>
 Date: Fri, 3 May 2024 08:13:32 +0200
 Subject: [PATCH] drm: Add youritech ILI9806E panel
@@ -20,7 +20,7 @@ Signed-off-by: Simone Schwizer <simone.schwizer@bytesatwork.ch>
  create mode 100644 drivers/gpu/drm/panel/panel-youritech-ili9806e.c
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 56e0ccb3980f..5c061b4fbc81 100644
+index 4497beb0caf2..fe8ac3bb4156 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
 @@ -4442,6 +4442,7 @@ M:	Daniel Ammann <daniel.ammann@bytesatwork.ch>
@@ -32,10 +32,10 @@ index 56e0ccb3980f..5c061b4fbc81 100644
  C-MEDIA CMI8788 DRIVER
  M:	Clemens Ladisch <clemens@ladisch.de>
 diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
-index c37f9eda977c..6701501a7512 100644
+index 2fc8ac09efe5..a135a1b2cab3 100644
 --- a/drivers/gpu/drm/panel/Kconfig
 +++ b/drivers/gpu/drm/panel/Kconfig
-@@ -864,4 +864,12 @@ config DRM_PANEL_WKS_101WX001
+@@ -872,4 +872,12 @@ config DRM_PANEL_WKS_101WX001
  	  Say Y here if you want to enable support for the WKS
  	  101WX001 controller for 1280x800 LCD panel
  
@@ -49,10 +49,10 @@ index c37f9eda977c..6701501a7512 100644
 +	  ILI9806E DSI panel.
  endmenu
 diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
-index f6aa07828a01..48db30f8837b 100644
+index e1bd080a06c6..102ab64f6044 100644
 --- a/drivers/gpu/drm/panel/Makefile
 +++ b/drivers/gpu/drm/panel/Makefile
-@@ -88,3 +88,4 @@ obj-$(CONFIG_DRM_PANEL_VISIONOX_R66451) += panel-visionox-r66451.o
+@@ -89,3 +89,4 @@ obj-$(CONFIG_DRM_PANEL_VISIONOX_R66451) += panel-visionox-r66451.o
  obj-$(CONFIG_DRM_PANEL_WIDECHIPS_WS2401) += panel-widechips-ws2401.o
  obj-$(CONFIG_DRM_PANEL_XINPENG_XPP055C272) += panel-xinpeng-xpp055c272.o
  obj-$(CONFIG_DRM_PANEL_WKS_101WX001) += panel-wks-101wx001.o

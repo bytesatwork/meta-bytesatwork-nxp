@@ -1,4 +1,4 @@
-From 30b19f9a7f4c1a05ce1c3894a175b8213bbb319f Mon Sep 17 00:00:00 2001
+From 3745f755453705d7babdb12da0de899febe4aec8 Mon Sep 17 00:00:00 2001
 From: Guy Morand <guy.morand@bytesatwork.ch>
 Date: Thu, 23 May 2024 10:58:23 +0200
 Subject: [PATCH] drivers: gpio: Introduce tca6418 driver
@@ -15,19 +15,19 @@ Signed-off-by: Guy Morand <guy.morand@bytesatwork.ch>
  create mode 100644 drivers/gpio/gpio-tca6418.c
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index daf2dc8dc372..20649bcf8c33 100644
+index 3cd1006128b1..52a029bcd6d4 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -4446,6 +4446,7 @@ F:	Documentation/devicetree/bindings/display/panel/youritech,ili9806e.yaml
- F:	arch/arm64/boot/dts/freescale/imx93-bytedevkit.dts
- F:	arch/arm64/boot/dts/freescale/imx93-byteengine.dtsi
- F:	arch/arm64/configs/bytedevkit_imx93_defconfig
+@@ -4443,6 +4443,7 @@ S:	Maintained
+ F:	.github/workflows/checkpatch.yml
+ F:	Documentation/devicetree/bindings/arm/bytesatwork/bytesatwork.yaml
+ F:	Documentation/devicetree/bindings/display/panel/youritech,ili9806e.yaml
 +F:	drivers/gpio/gpio-tca6418.c
  F:	drivers/gpu/drm/panel/panel-youritech-ili9806e.c
- F:	drivers/video/logo/logo_baw_clut224.ppm
  
+ C-MEDIA CMI8788 DRIVER
 diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-index 5f7c10faa399..f52a4c8e2277 100644
+index 6dcd39a31a0b..26c3539647d2 100644
 --- a/drivers/gpio/Kconfig
 +++ b/drivers/gpio/Kconfig
 @@ -1153,6 +1153,15 @@ config GPIO_PCF857X
