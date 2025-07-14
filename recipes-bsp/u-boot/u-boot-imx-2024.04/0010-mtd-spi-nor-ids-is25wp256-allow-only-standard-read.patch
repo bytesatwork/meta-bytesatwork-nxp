@@ -1,4 +1,4 @@
-From d11dda1405fcc686fee467b8f0bbfde0fea00145 Mon Sep 17 00:00:00 2001
+From e456a0f64f69b8a0d75d2b6ac2df0ef2122e5965 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Stephan=20D=C3=BCnner?= <stephan.duenner@bytesatwork.ch>
 Date: Thu, 20 Jan 2022 09:00:38 +0100
 Subject: [PATCH] mtd: spi-nor-ids: is25wp256 allow only standard read
@@ -22,7 +22,7 @@ Signed-off-by: Simone Schwizer <simone.schwizer@bytesatwork.ch>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/spi/spi-nor-ids.c b/drivers/mtd/spi/spi-nor-ids.c
-index 69008280d0..63aa8d5205 100644
+index ed2ced46cd..c58f8b84b8 100644
 --- a/drivers/mtd/spi/spi-nor-ids.c
 +++ b/drivers/mtd/spi/spi-nor-ids.c
 @@ -241,8 +241,7 @@ const struct flash_info spi_nor_ids[] = {

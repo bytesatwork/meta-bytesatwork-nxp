@@ -1,7 +1,7 @@
-From 56b5fe6f28efd701d359d2e2c38129653511f74e Mon Sep 17 00:00:00 2001
+From 4f5cdef210d36d9a1be860fa3227d2a54a51636a Mon Sep 17 00:00:00 2001
 From: Alexander Forsch <alexander.forsch@bytesatwork.ch>
 Date: Fri, 8 Mar 2024 13:08:52 +0100
-Subject: [PATCH] imx: add i.MX8MP bytesatwork byteDEVKIT board
+Subject: [PATCH] imx: Add i.MX8MP bytesatwork byteDEVKIT board
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -14,20 +14,21 @@ Signed-off-by: Daniel Ammann <daniel.ammann@bytesatwork.ch>
 Signed-off-by: Simone Schwizer <simone.schwizer@bytesatwork.ch>
 ---
  MAINTAINERS                                   |    5 +
- arch/arm/dts/imx8mp-bytedevkit-u-boot.dtsi    |  244 +++
- arch/arm/dts/imx8mp-bytedevkit.dts            |  503 +++++
+ arch/arm/dts/Makefile                         |    1 +
+ arch/arm/dts/imx8mp-bytedevkit-u-boot.dtsi    |  220 ++
+ arch/arm/dts/imx8mp-bytedevkit.dts            |  497 +++++
  arch/arm/mach-imx/imx8m/Kconfig               |   11 +
  board/bytesatwork/bytedevkit_imx8mp/Kconfig   |   15 +
  board/bytesatwork/bytedevkit_imx8mp/Makefile  |   21 +
  .../bytedevkit_imx8mp/ddr4_timing.c           | 1306 ++++++++++++
- .../bytedevkit_imx8mp/imx8mp_bytedevkit.c     |  537 +++++
+ .../bytedevkit_imx8mp/imx8mp_bytedevkit.c     |  483 +++++
  .../bytedevkit_imx8mp/imximage-8mp-lpddr4.cfg |   13 +
  .../bytedevkit_imx8mp/lpddr4_timing.c         | 1848 +++++++++++++++++
  .../bytedevkit_imx8mp/lpddr4_timing_ndm.c     | 1847 ++++++++++++++++
- board/bytesatwork/bytedevkit_imx8mp/spl.c     |  184 ++
- configs/imx8mp_bytedevkit_defconfig           |  216 ++
- include/configs/imx8mp_bytedevkit.h           |  124 ++
- 14 files changed, 6874 insertions(+)
+ board/bytesatwork/bytedevkit_imx8mp/spl.c     |  188 ++
+ configs/imx8mp_bytedevkit_defconfig           |  203 ++
+ include/configs/imx8mp_bytedevkit.h           |  122 ++
+ 15 files changed, 6780 insertions(+)
  create mode 100644 arch/arm/dts/imx8mp-bytedevkit-u-boot.dtsi
  create mode 100644 arch/arm/dts/imx8mp-bytedevkit.dts
  create mode 100644 board/bytesatwork/bytedevkit_imx8mp/Kconfig
@@ -42,32 +43,48 @@ Signed-off-by: Simone Schwizer <simone.schwizer@bytesatwork.ch>
  create mode 100644 include/configs/imx8mp_bytedevkit.h
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 147255da55..e0994d9660 100644
+index 34413923d9..7008c31e5a 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -252,6 +252,11 @@ M:	Stephan Dünner <stephan.duenner@bytesatwork.ch>
- S:	Maintained
+@@ -261,10 +261,15 @@ S:	Maintained
+ W:	https://www.bytesatwork.io/
  T:	git https://github.com/bytesatwork/u-boot-imx
  F:	.github/workflows/checkpatch.yml
 +F:	arch/arm/dts/imx8mp-bytedevkit-u-boot.dtsi
 +F:	arch/arm/dts/imx8mp-bytedevkit.dts
+ F:	arch/arm/dts/imx93-bytedevkit.dts
 +F:	board/bytesatwork/bytedevkit_imx8mp/
+ F:	board/bytesatwork/bytedevkit_imx93/
+ F:	cmd/cpuinfo.c
 +F:	configs/imx8mp_bytedevkit_defconfig
+ F:	configs/imx93_bytedevkit_defconfig
 +F:	include/configs/imx8mp_bytedevkit.h
+ F:	include/configs/imx93_bytedevkit.h
  
  ARM CORTINA ACCESS CAxxxx
- M:	Alex Nemirovsky <alex.nemirovsky@cortina-access.com>
+diff --git a/arch/arm/dts/Makefile b/arch/arm/dts/Makefile
+index 5a54ef34e2..2484ed9013 100644
+--- a/arch/arm/dts/Makefile
++++ b/arch/arm/dts/Makefile
+@@ -1157,6 +1157,7 @@ dtb-$(CONFIG_ARCH_IMX8M) += \
+ 	imx8mq-mnt-reform2.dtb \
+ 	imx8mq-phanbell.dtb \
+ 	imx8mp-beacon-kit.dtb \
++	imx8mp-bytedevkit.dtb \
+ 	imx8mp-data-modul-edm-sbc.dtb \
+ 	imx8mp-dhcom-som-overlay-rev100.dtbo \
+ 	imx8mp-dhcom-som-overlay-eth1xfast.dtbo \
 diff --git a/arch/arm/dts/imx8mp-bytedevkit-u-boot.dtsi b/arch/arm/dts/imx8mp-bytedevkit-u-boot.dtsi
 new file mode 100644
-index 0000000000..e7754b61d2
+index 0000000000..77be58ce42
 --- /dev/null
 +++ b/arch/arm/dts/imx8mp-bytedevkit-u-boot.dtsi
-@@ -0,0 +1,244 @@
+@@ -0,0 +1,220 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
-+ * Copyright (C) 2024 bytesatwork AG - https://www.bytesatwork.io
++ * Copyright (C) 2025 bytesatwork AG - https://www.bytesatwork.io
 + *
-+ * Based on arch/arm/dts/imx8mp-evk-u-boot.dtsi
++ * Based on imx8mp-evk-u-boot.dtsi
 + * Copyright 2019, 2021 NXP
 + *
 + */
@@ -79,13 +96,7 @@ index 0000000000..e7754b61d2
 +	wdt-reboot {
 +		compatible = "wdt-reboot";
 +		wdt = <&wdog1>;
-+		u-boot,dm-spl;
-+	};
-+	firmware {
-+		optee {
-+			compatible = "linaro,optee-tz";
-+			method = "smc";
-+		};
++		bootph-pre-ram;
 +	};
 +
 +	mcu_rdc {
@@ -136,104 +147,100 @@ index 0000000000..e7754b61d2
 +	};
 +};
 +
-+&pinctrl_reg_usdhc2_vmmc {
-+	u-boot,dm-spl;
-+};
-+
-+&reg_usdhc2_vmmc {
-+	u-boot,dm-spl;
-+	u-boot,off-on-delay-us = <20000>;
-+};
-+
-+&pinctrl_uart1 {
-+	u-boot,dm-spl;
-+};
-+
-+&pinctrl_usdhc2_gpio {
-+	u-boot,dm-spl;
-+};
-+
-+&pinctrl_usdhc2 {
-+	u-boot,dm-spl;
-+};
-+
-+&pinctrl_usdhc3 {
-+	u-boot,dm-spl;
-+};
-+
-+&pinctrl_wdog {
-+	u-boot,dm-spl;
-+};
-+
-+&gpio1 {
-+	u-boot,dm-spl;
-+};
-+
-+&gpio2 {
-+	u-boot,dm-spl;
-+};
-+
-+&gpio3 {
-+	u-boot,dm-spl;
-+};
-+
-+&gpio4 {
-+	u-boot,dm-spl;
-+};
-+
-+&gpio5 {
-+	u-boot,dm-spl;
-+};
-+
-+&uart1 {
-+	u-boot,dm-spl;
-+};
-+
-+&crypto {
-+	u-boot,dm-spl;
-+};
-+
-+&sec_jr0 {
-+	u-boot,dm-spl;
-+};
-+
-+&sec_jr1 {
-+	u-boot,dm-spl;
-+};
-+
-+&sec_jr2 {
-+	u-boot,dm-spl;
-+};
-+
-+&i2c1 {
-+	u-boot,dm-spl;
-+};
-+
-+&i2c2 {
-+	u-boot,dm-spl;
-+};
-+
-+&i2c3 {
-+	u-boot,dm-spl;
-+};
-+
 +&pinctrl_i2c1 {
-+	u-boot,dm-spl;
++	bootph-all;
 +};
 +
 +&pinctrl_i2c1_gpio {
-+	u-boot,dm-spl;
++	bootph-all;
++};
++
++&pinctrl_pmic {
++	bootph-all;
++};
++
++&{/soc@0/bus@30800000/i2c@30a20000/pmic@25} {
++	bootph-all;
++};
++
++&{/soc@0/bus@30800000/i2c@30a20000/pmic@25/regulators} {
++	bootph-all;
++};
++
++&reg_usdhc2_vmmc {
++	bootph-pre-ram;
++	u-boot,off-on-delay-us = <20000>;
++};
++
++&pinctrl_reg_usdhc2_vmmc {
++	bootph-pre-ram;
++};
++
++&pinctrl_uart1 {
++	bootph-pre-ram;
++};
++
++&pinctrl_usdhc2_gpio {
++	bootph-pre-ram;
++};
++
++&pinctrl_usdhc2 {
++	bootph-pre-ram;
++};
++
++&pinctrl_usdhc3 {
++	bootph-pre-ram;
++};
++
++&pinctrl_wdog {
++	bootph-pre-ram;
++};
++
++&gpio1 {
++	bootph-pre-ram;
++};
++
++&gpio2 {
++	bootph-pre-ram;
++};
++
++&gpio3 {
++	bootph-pre-ram;
++};
++
++&gpio4 {
++	bootph-pre-ram;
++};
++
++&gpio5 {
++	bootph-pre-ram;
++};
++
++&uart1 {
++	bootph-pre-ram;
++};
++
++&i2c1 {
++	bootph-all;
++};
++
++&i2c2 {
++	bootph-pre-ram;
++};
++
++&i2c3 {
++	bootph-pre-ram;
 +};
 +
 +&usdhc1 {
-+	u-boot,dm-spl;
++	bootph-pre-ram;
 +	assigned-clocks = <&clk IMX8MP_CLK_USDHC1>;
 +	assigned-clock-rates = <400000000>;
 +	assigned-clock-parents = <&clk IMX8MP_SYS_PLL1_400M>;
 +};
 +
 +&usdhc2 {
-+	u-boot,dm-spl;
++	bootph-pre-ram;
 +	sd-uhs-sdr104;
 +	sd-uhs-ddr50;
 +	assigned-clocks = <&clk IMX8MP_CLK_USDHC2>;
@@ -242,7 +249,7 @@ index 0000000000..e7754b61d2
 +};
 +
 +&usdhc3 {
-+	u-boot,dm-spl;
++	bootph-pre-ram;
 +	mmc-hs400-1_8v;
 +	mmc-hs400-enhanced-strobe;
 +	assigned-clocks = <&clk IMX8MP_CLK_USDHC3>;
@@ -251,25 +258,7 @@ index 0000000000..e7754b61d2
 +};
 +
 +&wdog1 {
-+	u-boot,dm-spl;
-+};
-+
-+&{/soc@0/bus@30800000/i2c@30a20000/pmic@25} {
-+	u-boot,dm-spl;
-+};
-+
-+&{/soc@0/bus@30800000/i2c@30a20000/pmic@25/regulators} {
-+	u-boot,dm-spl;
-+};
-+
-+&pinctrl_pmic {
-+	u-boot,dm-spl;
-+};
-+
-+&eqos {
-+	/delete-property/ assigned-clocks;
-+	/delete-property/ assigned-clock-parents;
-+	/delete-property/ assigned-clock-rates;
++	bootph-pre-ram;
 +};
 +
 +&ethphy0 {
@@ -294,6 +283,10 @@ index 0000000000..e7754b61d2
 +	/delete-property/ assigned-clock-rates;
 +};
 +
++&media_blk_ctrl {
++	assigned-clock-rates = <500000000>, <200000000>;
++};
++
 +&usb_dwc3_0 {
 +	compatible = "fsl,imx8mq-dwc3", "snps,dwc3";
 +	assigned-clocks = <&clk IMX8MP_CLK_HSIO_AXI>;
@@ -309,15 +302,15 @@ index 0000000000..e7754b61d2
 +};
 diff --git a/arch/arm/dts/imx8mp-bytedevkit.dts b/arch/arm/dts/imx8mp-bytedevkit.dts
 new file mode 100644
-index 0000000000..ad56bf9a08
+index 0000000000..fd85ba576a
 --- /dev/null
 +++ b/arch/arm/dts/imx8mp-bytedevkit.dts
-@@ -0,0 +1,503 @@
+@@ -0,0 +1,497 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/*
-+ * Copyright (C) 2024 bytesatwork AG - https://www.bytesatwork.io
++ * Copyright (C) 2025 bytesatwork AG - https://www.bytesatwork.io
 + *
-+ * Based on arch/arm/dts/imx8mp-evk.dts
++ * Based on imx8mp-evk.dts
 + * Copyright 2019 NXP
 + *
 + */
@@ -404,7 +397,7 @@ index 0000000000..ad56bf9a08
 +			compatible = "ethernet-phy-ieee802.3-c22";
 +			reg = <0>;
 +			eee-broken-1000t;
-+			reset-gpios = <&gpio4 27 GPIO_ACTIVE_LOW>;
++			reset-gpios = <&gpio4 27 GPIO_ACTIVE_HIGH>;
 +			reset-assert-us = <1000>;
 +			reset-deassert-us = <1000>;
 +			ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_25_NS>;
@@ -682,12 +675,6 @@ index 0000000000..ad56bf9a08
 +		>;
 +	};
 +
-+	pinctrl_mipi_dsi_en: mipidsiengrp {
-+		fsl,pins = <
-+			MX8MP_IOMUXC_GPIO1_IO08__GPIO1_IO08	0x16
-+		>;
-+	};
-+
 +	pinctrl_pmic: pmicirqgrp {
 +		fsl,pins = <
 +			MX8MP_IOMUXC_GPIO1_IO03__GPIO1_IO03	0x000001c0
@@ -817,10 +804,10 @@ index 0000000000..ad56bf9a08
 +	};
 +};
 diff --git a/arch/arm/mach-imx/imx8m/Kconfig b/arch/arm/mach-imx/imx8m/Kconfig
-index b124027910..246c628d67 100644
+index 473cfa8e5e..8a355c6773 100644
 --- a/arch/arm/mach-imx/imx8m/Kconfig
 +++ b/arch/arm/mach-imx/imx8m/Kconfig
-@@ -337,6 +337,16 @@ config TARGET_IMX8MP_DDR4_EVK
+@@ -336,6 +336,16 @@ config TARGET_IMX8MP_DDR4_EVK
  	select ARCH_MISC_INIT
  	select SPL_CRYPTO if SPL
  
@@ -836,10 +823,10 @@ index b124027910..246c628d67 100644
 +
  config TARGET_PICO_IMX8MQ
  	bool "Support Technexion Pico iMX8MQ"
- 	select BINMAN
-@@ -454,6 +464,7 @@ source "board/advantech/imx8mp_rsb3720a1/Kconfig"
- source "board/beacon/imx8mm/Kconfig"
+ 	select IMX8MQ
+@@ -453,6 +463,7 @@ source "board/beacon/imx8mm/Kconfig"
  source "board/beacon/imx8mn/Kconfig"
+ source "board/beacon/imx8mp/Kconfig"
  source "board/bsh/imx8mn_smm_s2/Kconfig"
 +source "board/bytesatwork/bytedevkit_imx8mp/Kconfig"
  source "board/cloos/imx8mm_phg/Kconfig"
@@ -868,12 +855,12 @@ index 0000000000..cff47a7922
 +endif
 diff --git a/board/bytesatwork/bytedevkit_imx8mp/Makefile b/board/bytesatwork/bytedevkit_imx8mp/Makefile
 new file mode 100644
-index 0000000000..40687bd038
+index 0000000000..0fea9d9ce5
 --- /dev/null
 +++ b/board/bytesatwork/bytedevkit_imx8mp/Makefile
 @@ -0,0 +1,21 @@
 +#
-+# Copyright (C) 2024 bytesatwork AG - https://www.bytesatwork.io
++# Copyright (C) 2025 bytesatwork AG - https://www.bytesatwork.io
 +#
 +# Based on board/freescale/imx8mp_evk/Makefile
 +# Copyright 2019 NXP
@@ -895,13 +882,13 @@ index 0000000000..40687bd038
 +endif
 diff --git a/board/bytesatwork/bytedevkit_imx8mp/ddr4_timing.c b/board/bytesatwork/bytedevkit_imx8mp/ddr4_timing.c
 new file mode 100644
-index 0000000000..4f156c4348
+index 0000000000..e22ef42dcb
 --- /dev/null
 +++ b/board/bytesatwork/bytedevkit_imx8mp/ddr4_timing.c
 @@ -0,0 +1,1306 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
-+ * Copyright (C) 2024 bytesatwork AG - https://www.bytesatwork.io
++ * Copyright (C) 2025 bytesatwork AG - https://www.bytesatwork.io
 + *
 + * Based on board/freescale/imx8mp_evk/ddr4_timing.c
 + * Copyright 2019 NXP
@@ -2207,13 +2194,13 @@ index 0000000000..4f156c4348
 +#endif
 diff --git a/board/bytesatwork/bytedevkit_imx8mp/imx8mp_bytedevkit.c b/board/bytesatwork/bytedevkit_imx8mp/imx8mp_bytedevkit.c
 new file mode 100644
-index 0000000000..8902825026
+index 0000000000..582a753970
 --- /dev/null
 +++ b/board/bytesatwork/bytedevkit_imx8mp/imx8mp_bytedevkit.c
-@@ -0,0 +1,537 @@
+@@ -0,0 +1,483 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
-+ * Copyright (C) 2024 bytesatwork AG - https://www.bytesatwork.io
++ * Copyright (C) 2025 bytesatwork AG - https://www.bytesatwork.io
 + *
 + * Based on board/freescale/imx8mp_evk/imx8mp_evk.c
 + * Copyright 2019 NXP
@@ -2279,10 +2266,10 @@ index 0000000000..8902825026
 +
 +struct efi_capsule_update_info update_info = {
 +	.dfu_string = "mmc 2=flash-bin raw 0 0x2000 mmcpart 1",
++	.num_images = ARRAY_SIZE(fw_images),
 +	.images = fw_images,
 +};
 +
-+u8 num_image_type_guids = ARRAY_SIZE(fw_images);
 +#endif /* EFI_HAVE_CAPSULE_SUPPORT */
 +
 +int board_early_init_f(void)
@@ -2523,9 +2510,9 @@ index 0000000000..8902825026
 +	.power_down_scale = 2,
 +};
 +
-+int usb_gadget_handle_interrupts(int index)
++int dm_usb_gadget_handle_interrupts(struct udevice *dev)
 +{
-+	dwc3_uboot_handle_interrupt(index);
++	dwc3_uboot_handle_interrupt(dev);
 +	return 0;
 +}
 +
@@ -2633,37 +2620,6 @@ index 0000000000..8902825026
 +#endif
 +#endif
 +
-+static void setup_fec(void)
-+{
-+	struct iomuxc_gpr_base_regs *gpr =
-+		(struct iomuxc_gpr_base_regs *)IOMUXC_GPR_BASE_ADDR;
-+
-+	/* Enable RGMII TX clk output */
-+	setbits_le32(&gpr->gpr[1], BIT(22));
-+}
-+
-+static int setup_eqos(void)
-+{
-+	struct iomuxc_gpr_base_regs *gpr =
-+		(struct iomuxc_gpr_base_regs *)IOMUXC_GPR_BASE_ADDR;
-+
-+	/* set INTF as RGMII, enable RGMII TXC clock */
-+	clrsetbits_le32(&gpr->gpr[1],
-+			IOMUXC_GPR_GPR1_GPR_ENET_QOS_INTF_SEL_MASK, BIT(16));
-+	setbits_le32(&gpr->gpr[1], BIT(19) | BIT(21));
-+
-+	return set_clk_eqos(ENET_125MHZ);
-+}
-+
-+#if CONFIG_IS_ENABLED(NET)
-+int board_phy_config(struct phy_device *phydev)
-+{
-+	if (phydev->drv->config)
-+		phydev->drv->config(phydev);
-+	return 0;
-+}
-+#endif
-+
 +#define DISPMIX				13
 +#define MIPI				15
 +
@@ -2673,14 +2629,7 @@ index 0000000000..8902825026
 +
 +#ifdef CONFIG_USB_TCPC
 +	setup_typec();
-+
 +#endif
-+
-+	if (IS_ENABLED(CONFIG_FEC_MXC))
-+		setup_fec();
-+
-+	if (IS_ENABLED(CONFIG_DWC_ETH_QOS))
-+		setup_eqos();
 +
 +#ifdef CONFIG_NAND_MXS
 +	setup_gpmi_nand();
@@ -2718,16 +2667,9 @@ index 0000000000..8902825026
 +#endif
 +}
 +
-+#ifdef CONFIG_ANDROID_SUPPORT
-+bool is_power_key_pressed(void)
-+{
-+	return (bool)(!!(readl(SNVS_HPSR) & (0x1 << 6)));
-+}
-+#endif
-+
 +#ifdef CONFIG_SPL_MMC
 +#define UBOOT_RAW_SECTOR_OFFSET 0x40
-+unsigned long spl_mmc_get_uboot_raw_sector(struct mmc *mmc)
++unsigned long spl_mmc_get_uboot_raw_sector(struct mmc *mmc, unsigned long raw_sect)
 +{
 +	u32 boot_dev = spl_boot_device();
 +
@@ -2739,24 +2681,15 @@ index 0000000000..8902825026
 +	}
 +}
 +#endif
-+
-+#ifdef CONFIG_FSL_FASTBOOT
-+#ifdef CONFIG_ANDROID_RECOVERY
-+int is_recovery_key_pressing(void)
-+{
-+	return 0; /* TODO */
-+}
-+#endif /* CONFIG_ANDROID_RECOVERY */
-+#endif /* CONFIG_FSL_FASTBOOT */
 diff --git a/board/bytesatwork/bytedevkit_imx8mp/imximage-8mp-lpddr4.cfg b/board/bytesatwork/bytedevkit_imx8mp/imximage-8mp-lpddr4.cfg
 new file mode 100644
-index 0000000000..f1ca6cfb73
+index 0000000000..486a3c9b6f
 --- /dev/null
 +++ b/board/bytesatwork/bytedevkit_imx8mp/imximage-8mp-lpddr4.cfg
 @@ -0,0 +1,13 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
-+ * Copyright (C) 2024 bytesatwork AG - https://www.bytesatwork.io
++ * Copyright (C) 2025 bytesatwork AG - https://www.bytesatwork.io
 + *
 + * Based on board/freescale/imx8mp_evk/imximage-8mp-lpddr4.cfg
 + * Copyright 2021 NXP
@@ -2769,13 +2702,13 @@ index 0000000000..f1ca6cfb73
 +LOADER		u-boot-spl-ddr.bin	0x920000
 diff --git a/board/bytesatwork/bytedevkit_imx8mp/lpddr4_timing.c b/board/bytesatwork/bytedevkit_imx8mp/lpddr4_timing.c
 new file mode 100644
-index 0000000000..299d497640
+index 0000000000..73ef9c702b
 --- /dev/null
 +++ b/board/bytesatwork/bytedevkit_imx8mp/lpddr4_timing.c
 @@ -0,0 +1,1848 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
-+ * Copyright (C) 2024 bytesatwork AG - https://www.bytesatwork.io
++ * Copyright (C) 2025 bytesatwork AG - https://www.bytesatwork.io
 + *
 + * Based on board/freescale/imx8mp_evk/lpddr4_timing.c
 + * Copyright 2019 NXP
@@ -4623,13 +4556,13 @@ index 0000000000..299d497640
 +
 diff --git a/board/bytesatwork/bytedevkit_imx8mp/lpddr4_timing_ndm.c b/board/bytesatwork/bytedevkit_imx8mp/lpddr4_timing_ndm.c
 new file mode 100644
-index 0000000000..fba94a912e
+index 0000000000..7bf12dada6
 --- /dev/null
 +++ b/board/bytesatwork/bytedevkit_imx8mp/lpddr4_timing_ndm.c
 @@ -0,0 +1,1847 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
-+ * Copyright (C) 2024 bytesatwork AG - https://www.bytesatwork.io
++ * Copyright (C) 2025 bytesatwork AG - https://www.bytesatwork.io
 + *
 + * Based on board/freescale/imx8mp_evk/lpddr4_timing_ndm.c
 + * Copyright 2021 NXP
@@ -6476,13 +6409,13 @@ index 0000000000..fba94a912e
 +};
 diff --git a/board/bytesatwork/bytedevkit_imx8mp/spl.c b/board/bytesatwork/bytedevkit_imx8mp/spl.c
 new file mode 100644
-index 0000000000..28fc42ea98
+index 0000000000..e55928cf86
 --- /dev/null
 +++ b/board/bytesatwork/bytedevkit_imx8mp/spl.c
-@@ -0,0 +1,184 @@
+@@ -0,0 +1,188 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Copyright (C) 2024 bytesatwork AG - https://www.bytesatwork.io
++ * Copyright (C) 2025 bytesatwork AG - https://www.bytesatwork.io
 + *
 + * Based on board/freescale/imx8mp_evk/spl.c
 + * Copyright 2018-2019, 2021 NXP
@@ -6511,6 +6444,7 @@ index 0000000000..28fc42ea98
 +#include <fsl_esdhc_imx.h>
 +#include <mmc.h>
 +#include <asm/arch/ddr.h>
++#include <asm/sections.h>
 +
 +DECLARE_GLOBAL_DATA_PTR;
 +
@@ -6570,12 +6504,12 @@ index 0000000000..28fc42ea98
 +	struct udevice *dev;
 +	int ret;
 +
-+	ret = pmic_get("pca9450@25", &dev);
++	ret = pmic_get("pmic@25", &dev);
 +	if (ret == -ENODEV) {
-+		puts("No pca9450@25\n");
++		puts("No pmic@25\n");
 +		return 0;
 +	}
-+	if (ret != 0)
++	if (ret < 0)
 +		return ret;
 +
 +	/* BUCKxOUT_DVS0/1 control BUCK123 output */
@@ -6583,22 +6517,25 @@ index 0000000000..28fc42ea98
 +
 +#ifdef CONFIG_IMX8M_LPDDR4
 +	/*
-+	 * increase VDD_SOC to typical value 0.95V before first
-+	 * DRAM access, set DVS1 to 0.85v for suspend.
++	 * Increase VDD_SOC to typical value 0.95V before first
++	 * DRAM access, set DVS1 to 0.85V for suspend.
 +	 * Enable DVS control through PMIC_STBY_REQ and
 +	 * set B1_ENMODE=1 (ON by PMIC_ON_REQ=H)
 +	 */
-+#ifdef CONFIG_IMX8M_VDD_SOC_850MV
-+	/* set DVS0 to 0.85v for special case*/
-+	pmic_reg_write(dev, PCA9450_BUCK1OUT_DVS0, 0x14);
-+#else
-+	pmic_reg_write(dev, PCA9450_BUCK1OUT_DVS0, 0x1C);
-+#endif
++	if (CONFIG_IS_ENABLED(IMX8M_VDD_SOC_850MV))
++		pmic_reg_write(dev, PCA9450_BUCK1OUT_DVS0, 0x14);
++	else
++		pmic_reg_write(dev, PCA9450_BUCK1OUT_DVS0, 0x1C);
++
 +	pmic_reg_write(dev, PCA9450_BUCK1OUT_DVS1, 0x14);
 +	pmic_reg_write(dev, PCA9450_BUCK1CTRL, 0x59);
 +
-+	/* Kernel uses OD/OD freq for SOC */
-+	/* To avoid timing risk from SOC to ARM,increase VDD_ARM to OD voltage 0.95v */
++	/*
++	 * Kernel uses OD/OD freq for SOC.
++	 * To avoid timing risk from SOC to ARM,increase VDD_ARM to OD
++	 * voltage 0.95V.
++	 */
++
 +	pmic_reg_write(dev, PCA9450_BUCK2OUT_DVS0, 0x1C);
 +#elif defined(CONFIG_IMX8M_DDR4)
 +	/* DDR4 runs at 3200MTS, uses default ND 0.85v for VDD_SOC and VDD_ARM */
@@ -6666,51 +6603,54 @@ index 0000000000..28fc42ea98
 +}
 diff --git a/configs/imx8mp_bytedevkit_defconfig b/configs/imx8mp_bytedevkit_defconfig
 new file mode 100644
-index 0000000000..52e1adc9e6
+index 0000000000..54346f4693
 --- /dev/null
 +++ b/configs/imx8mp_bytedevkit_defconfig
-@@ -0,0 +1,216 @@
+@@ -0,0 +1,203 @@
 +CONFIG_ARM=y
 +CONFIG_ARCH_IMX8M=y
 +CONFIG_TEXT_BASE=0x40200000
-+CONFIG_SYS_BARGSIZE=2048
 +CONFIG_SYS_MALLOC_LEN=0x2000000
 +CONFIG_SPL_GPIO=y
 +CONFIG_SPL_LIBCOMMON_SUPPORT=y
 +CONFIG_SPL_LIBGENERIC_SUPPORT=y
-+CONFIG_IMX_BOOTAUX=y
 +CONFIG_NR_DRAM_BANKS=3
-+CONFIG_SYS_MEMTEST_START=0x60000000
-+CONFIG_SYS_MEMTEST_END=0xC0000000
++CONFIG_SF_DEFAULT_SPEED=40000000
++CONFIG_SF_DEFAULT_MODE=0
 +CONFIG_ENV_SIZE=0x20000
 +CONFIG_ENV_OFFSET=0xC0000
-+CONFIG_ENV_SECT_SIZE=0x10000
-+CONFIG_SYS_I2C_MXC_I2C1=y
-+CONFIG_SYS_I2C_MXC_I2C2=y
-+CONFIG_SYS_I2C_MXC_I2C3=y
 +CONFIG_DM_GPIO=y
++CONFIG_DEFAULT_DEVICE_TREE="imx8mp-bytedevkit"
 +CONFIG_SPL_TEXT_BASE=0x920000
 +CONFIG_TARGET_IMX8MP_BYTEDEVKIT=y
++CONFIG_OF_LIBFDT_OVERLAY=y
++CONFIG_SYS_MONITOR_LEN=524288
 +CONFIG_SPL_SERIAL=y
 +CONFIG_SPL_DRIVERS_MISC=y
 +CONFIG_SPL_STACK=0x96dff0
 +CONFIG_SPL=y
 +CONFIG_ENV_OFFSET_REDUND=0xE0000
++CONFIG_IMX_BOOTAUX=y
 +CONFIG_SPL_IMX_ROMAPI_LOADADDR=0x48000000
 +CONFIG_SYS_LOAD_ADDR=0x40400000
-+CONFIG_DISTRO_DEFAULTS=y
-+CONFIG_SYS_MONITOR_LEN=524288
-+CONFIG_DEFAULT_DEVICE_TREE="imx8mp-bytedevkit"
-+CONFIG_BOOTCOMMAND="run bsp_bootcmd"
++CONFIG_OF_BOARD_FIXUP=y
++CONFIG_SYS_MEMTEST_START=0x60000000
++CONFIG_SYS_MEMTEST_END=0xC0000000
++CONFIG_REMAKE_ELF=y
++# CONFIG_ANDROID_BOOT_IMAGE is not set
 +CONFIG_FIT=y
 +CONFIG_FIT_EXTERNAL_OFFSET=0x3000
++CONFIG_FIT_SIGNATURE=y
 +CONFIG_SPL_LOAD_FIT=y
-+CONFIG_REMAKE_ELF=y
-+CONFIG_OF_BOARD_FIXUP=y
++CONFIG_LEGACY_IMAGE_FORMAT=y
++CONFIG_SYS_BOOTM_LEN=0x2000000
++CONFIG_DISTRO_DEFAULTS=y
 +CONFIG_OF_BOARD_SETUP=y
 +CONFIG_OF_SYSTEM_SETUP=y
++CONFIG_BOOTCOMMAND="run bsp_bootcmd"
 +CONFIG_DEFAULT_FDT_FILE="imx8mp-bytedevkit.dtb"
-+CONFIG_ARCH_MISC_INIT=y
++CONFIG_SYS_CBSIZE=2048
++CONFIG_SYS_PBSIZE=2068
 +CONFIG_BOARD_EARLY_INIT_F=y
 +CONFIG_BOARD_LATE_INIT=y
 +CONFIG_SPL_MAX_SIZE=0x26000
@@ -6720,27 +6660,21 @@ index 0000000000..52e1adc9e6
 +CONFIG_SPL_BOARD_INIT=y
 +CONFIG_SPL_BOOTROM_SUPPORT=y
 +# CONFIG_SPL_SHARES_INIT_SP_ADDR is not set
-+CONFIG_SYS_SPL_MALLOC=y
-+CONFIG_HAS_CUSTOM_SPL_MALLOC_START=y
-+CONFIG_CUSTOM_SYS_SPL_MALLOC_ADDR=0x42200000
-+CONFIG_SYS_SPL_MALLOC_SIZE=0x80000
++CONFIG_SPL_SYS_MALLOC=y
++CONFIG_SPL_HAS_CUSTOM_MALLOC_START=y
++CONFIG_SPL_CUSTOM_SYS_MALLOC_ADDR=0x42200000
++CONFIG_SPL_SYS_MALLOC_SIZE=0x80000
 +CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_USE_SECTOR=y
 +CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_SECTOR=0x300
 +CONFIG_SPL_I2C=y
 +CONFIG_SPL_POWER=y
 +CONFIG_SPL_WATCHDOG=y
-+CONFIG_SYS_MAXARGS=64
-+CONFIG_SYS_CBSIZE=2048
-+CONFIG_SYS_PBSIZE=2068
-+CONFIG_SYS_BOOTM_LEN=0x2000000
-+CONFIG_SYS_PROMPT="=> "
 +CONFIG_CMD_CPUINFO=y
 +# CONFIG_BOOTM_NETBSD is not set
 +# CONFIG_CMD_EXPORTENV is not set
 +# CONFIG_CMD_IMPORTENV is not set
 +CONFIG_CMD_ERASEENV=y
 +CONFIG_CMD_NVEDIT_EFI=y
-+CONFIG_CMD_CRC32=y
 +CONFIG_CRC32_VERIFY=y
 +CONFIG_CMD_MEMINFO=y
 +CONFIG_CMD_MEMTEST=y
@@ -6750,6 +6684,7 @@ index 0000000000..52e1adc9e6
 +CONFIG_CMD_GPIO=y
 +CONFIG_CMD_I2C=y
 +CONFIG_CMD_MMC=y
++CONFIG_CMD_OPTEE_RPMB=y
 +CONFIG_CMD_POWEROFF=y
 +CONFIG_CMD_USB=y
 +CONFIG_CMD_USB_MASS_STORAGE=y
@@ -6763,17 +6698,14 @@ index 0000000000..52e1adc9e6
 +CONFIG_CMD_TIMER=y
 +CONFIG_CMD_REGULATOR=y
 +CONFIG_CMD_EXT4_WRITE=y
-+CONFIG_CMD_LED=y
 +CONFIG_OF_CONTROL=y
 +CONFIG_SPL_OF_CONTROL=y
 +CONFIG_ENV_OVERWRITE=y
 +CONFIG_ENV_IS_NOWHERE=y
 +CONFIG_ENV_IS_IN_MMC=y
-+CONFIG_ENV_IS_IN_SPI_FLASH=y
 +CONFIG_SYS_REDUNDAND_ENVIRONMENT=y
 +CONFIG_SYS_RELOC_GD_ENV_ADDR=y
 +CONFIG_SYS_MMC_ENV_DEV=2
-+CONFIG_ENV_VARS_UBOOT_RUNTIME_CONFIG=y
 +CONFIG_USE_ETHPRIME=y
 +CONFIG_ETHPRIME="eth1"
 +CONFIG_NET_RANDOM_ETHADDR=y
@@ -6795,10 +6727,8 @@ index 0000000000..52e1adc9e6
 +CONFIG_MXC_GPIO=y
 +CONFIG_DM_PCA953X=y
 +CONFIG_DM_I2C=y
-+CONFIG_SYS_I2C_MXC=y
 +CONFIG_LED=y
 +CONFIG_LED_GPIO=y
-+CONFIG_DM_MMC=y
 +CONFIG_SUPPORT_EMMC_RPMB=y
 +CONFIG_SUPPORT_EMMC_BOOT=y
 +CONFIG_MMC_IO_VOLTAGE=y
@@ -6806,44 +6736,47 @@ index 0000000000..52e1adc9e6
 +CONFIG_MMC_HS400_ES_SUPPORT=y
 +CONFIG_MMC_HS400_SUPPORT=y
 +CONFIG_FSL_USDHC=y
++CONFIG_MTD=y
 +CONFIG_DM_SPI_FLASH=y
-+CONFIG_SF_DEFAULT_MODE=0
-+CONFIG_SF_DEFAULT_SPEED=40000000
 +CONFIG_SPI_FLASH_BAR=y
 +CONFIG_SPI_FLASH_STMICRO=y
 +CONFIG_PHY_REALTEK=y
 +CONFIG_DM_ETH_PHY=y
 +CONFIG_PHY_GIGE=y
-+CONFIG_PHY=y
-+CONFIG_PHY_IMX8MQ_USB=y
 +CONFIG_DWC_ETH_QOS=y
 +CONFIG_DWC_ETH_QOS_IMX=y
 +CONFIG_FEC_MXC=y
 +CONFIG_MII=y
++CONFIG_PHY=y
++CONFIG_PHY_IMX8MQ_USB=y
 +CONFIG_PINCTRL=y
 +CONFIG_SPL_PINCTRL=y
 +CONFIG_PINCTRL_IMX8M=y
 +CONFIG_POWER_DOMAIN=y
 +CONFIG_IMX8M_POWER_DOMAIN=y
++CONFIG_IMX8M_BLK_CTRL=y
 +CONFIG_IMX8MP_HSIOMIX_BLKCTRL=y
 +CONFIG_DM_PMIC=y
++CONFIG_DM_PMIC_PCA9450=y
 +CONFIG_SPL_DM_PMIC_PCA9450=y
 +CONFIG_DM_REGULATOR=y
++CONFIG_DM_REGULATOR_PCA9450=y
 +CONFIG_DM_REGULATOR_FIXED=y
 +CONFIG_DM_REGULATOR_GPIO=y
-+CONFIG_DM_SERIAL=y
 +CONFIG_DM_RTC=y
 +CONFIG_RTC_EMULATION=y
++CONFIG_DM_SERIAL=y
 +CONFIG_MXC_UART=y
 +CONFIG_SPI=y
 +CONFIG_DM_SPI=y
 +CONFIG_NXP_FSPI=y
 +CONFIG_SYSRESET=y
 +CONFIG_SYSRESET_PSCI=y
++CONFIG_TEE=y
++CONFIG_OPTEE=y
 +CONFIG_DM_THERMAL=y
 +CONFIG_IMX_TMU=y
 +CONFIG_USB=y
-+CONFIG_DM_USB=y
 +CONFIG_USB_XHCI_HCD=y
 +CONFIG_USB_XHCI_DWC3=y
 +CONFIG_USB_DWC3=y
@@ -6852,10 +6785,6 @@ index 0000000000..52e1adc9e6
 +CONFIG_USB_GADGET_VENDOR_NUM=0x1fc9
 +CONFIG_USB_GADGET_PRODUCT_NUM=0x0152
 +CONFIG_VIDEO=y
-+CONFIG_BMP_16BPP=y
-+CONFIG_BMP_24BPP=y
-+CONFIG_BMP_32BPP=y
-+CONFIG_IMX8M_BLK_CTRL=y
 +CONFIG_VIDEO_LOGO=y
 +CONFIG_SYS_WHITE_ON_BLACK=y
 +CONFIG_VIDEO_LCD_RAYDIUM_RM67191=y
@@ -6863,38 +6792,33 @@ index 0000000000..52e1adc9e6
 +CONFIG_VIDEO_IMX_LCDIFV3=y
 +CONFIG_SPLASH_SCREEN=y
 +CONFIG_SPLASH_SCREEN_ALIGN=y
++CONFIG_BMP_16BPP=y
++CONFIG_BMP_24BPP=y
++CONFIG_BMP_32BPP=y
 +CONFIG_VIDEO_ADV7535=y
-+CONFIG_LEGACY_IMAGE_FORMAT=y
++CONFIG_SPL_RSA=y
++CONFIG_SHA384=y
 +CONFIG_LZO=y
 +CONFIG_BZIP2=y
-+CONFIG_OF_LIBFDT_OVERLAY=y
++CONFIG_EFI_MM_COMM_TEE=y
++CONFIG_EFI_VAR_BUF_SIZE=139264
 +CONFIG_EFI_SET_TIME=y
 +CONFIG_EFI_RUNTIME_UPDATE_CAPSULE=y
 +CONFIG_EFI_CAPSULE_ON_DISK=y
-+CONFIG_EFI_CAPSULE_FIRMWARE_RAW=y
-+CONFIG_EFI_SECURE_BOOT=y
-+CONFIG_SPL_RSA=y
-+CONFIG_SHA384=y
-+CONFIG_EFI_VAR_BUF_SIZE=139264
 +CONFIG_EFI_IGNORE_OSINDICATIONS=y
++CONFIG_EFI_CAPSULE_FIRMWARE_RAW=y
 +CONFIG_EFI_CAPSULE_AUTHENTICATE=y
-+CONFIG_OPTEE=y
-+CONFIG_CMD_OPTEE_RPMB=y
-+CONFIG_EFI_MM_COMM_TEE=y
-+CONFIG_TEE=y
-+CONFIG_EFI_ESRT=y
-+CONFIG_EFI_HAVE_CAPSULE_UPDATE=y
-+CONFIG_FIT_SIGNATURE=y
-+CONFIG_ANDROID_BOOT_IMAGE=n
++CONFIG_EFI_CAPSULE_ESL_FILE="CRT.esl"
++CONFIG_EFI_SECURE_BOOT=y
 diff --git a/include/configs/imx8mp_bytedevkit.h b/include/configs/imx8mp_bytedevkit.h
 new file mode 100644
-index 0000000000..298457fe96
+index 0000000000..ba2e0ec3c8
 --- /dev/null
 +++ b/include/configs/imx8mp_bytedevkit.h
-@@ -0,0 +1,124 @@
+@@ -0,0 +1,122 @@
 +/* SPDX-License-Identifier: GPL-2.0+ */
 +/*
-+ * Copyright (C) 2024 bytesatwork AG - https://www.bytesatwork.io
++ * Copyright (C) 2025 bytesatwork AG - https://www.bytesatwork.io
 + *
 + * Based on include/configs/imx8mp_evk.h
 + * Copyright 2019 NXP
@@ -6992,9 +6916,7 @@ index 0000000000..298457fe96
 +			"fi; " \
 +		"fi;\0" \
 +	"bsp_bootcmd=echo Running BSP bootcmd ...; " \
-+		"mmc dev 1; " \
-+		"setenv mmcdev 1; " \
-+		"setenv mmcroot \"/dev/mmcblk1p1 rootwait rw\"; " \
++		"mmc dev ${mmcdev}; " \
 +		"run loadimage; " \
 +		"run mmcboot;" \
 +

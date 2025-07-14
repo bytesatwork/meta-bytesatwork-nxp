@@ -1,17 +1,31 @@
-From 23cc22851773a956c8a2a571ef74f02c60b9da86 Mon Sep 17 00:00:00 2001
-From: Michael Meister <michael.meister@bytesatwork.ch>
-Date: Mon, 11 Jul 2022 16:02:24 +0200
+From e57d2245deb27c5db6810f91bef55b86d648bb4e Mon Sep 17 00:00:00 2001
+From: Simone Schwizer <simone.schwizer@bytesatwork.ch>
+Date: Tue, 29 Jul 2025 09:14:28 +0200
 Subject: [PATCH] github: workflows: Add action to analyze patches
 
 Add github action running checkpatch on pull request.
 
-Signed-off-by: Michael Meister <michael.meister@bytesatwork.ch>
+Signed-off-by: Simone Schwizer <simone.schwizer@bytesatwork.ch>
 ---
+ .checkpatch.conf                 |   2 +-
  .github/workflows/checkpatch.yml | 120 +++++++++++++++++++++++++++++++
- MAINTAINERS                      |   6 ++
- 2 files changed, 126 insertions(+)
+ MAINTAINERS                      |   7 ++
+ 3 files changed, 128 insertions(+), 1 deletion(-)
  create mode 100644 .github/workflows/checkpatch.yml
 
+diff --git a/.checkpatch.conf b/.checkpatch.conf
+index c368d41472..e79d6f2034 100644
+--- a/.checkpatch.conf
++++ b/.checkpatch.conf
+@@ -30,7 +30,7 @@
+ --ignore ENOSYS
+ 
+ # A bit shorter of a description is OK with us.
+---min-conf-desc-length=2
++--min-conf-desc-length=1
+ 
+ # Extra checks for U-Boot
+ --u-boot
 diff --git a/.github/workflows/checkpatch.yml b/.github/workflows/checkpatch.yml
 new file mode 100644
 index 0000000000..dc75adb9e0
@@ -139,18 +153,19 @@ index 0000000000..dc75adb9e0
 +            ./scripts/checkpatch.pl --no-tree ${{ matrix.patch }}
 +          fi
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 91d40ea4b6..2c8d7727d0 100644
+index cd9b2d42e8..01bc763b07 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -247,6 +247,12 @@ F:	doc/README.bcm7xxx
+@@ -255,6 +255,13 @@ F:	doc/README.bcm7xxx
  F:	drivers/mmc/bcmstb_sdhci.c
  F:	drivers/spi/bcmstb_spi.c
  
-+ARM BYTESATWORK BYTEDEVKIT IMX93
-+M:	Rico Ganahl <rico.ganahl@bytesatwork.ch>
++ARM BYTESATWORK BYTEDEVKIT IMX8MM/IMX8MP/IMX93
++M:	Simone Schwizer <simone.schwizer@bytesatwork.ch>
 +S:	Maintained
 +W:	https://www.bytesatwork.io/
-+F:	.github/workflows/checkpatch.yaml
++T:	git https://github.com/bytesatwork/u-boot-imx
++F:	.github/workflows/checkpatch.yml
 +
  ARM CORTINA ACCESS CAxxxx
  M:	Alex Nemirovsky <alex.nemirovsky@cortina-access.com>

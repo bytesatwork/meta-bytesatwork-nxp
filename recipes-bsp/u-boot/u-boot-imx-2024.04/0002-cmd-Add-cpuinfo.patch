@@ -1,55 +1,57 @@
-From 0212d2601db8b05a7e3d4777e3e91a2deef2c544 Mon Sep 17 00:00:00 2001
+From ac023758cc4eaac4691522b3bafd7352cf17f09b Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Stephan=20D=C3=BCnner?= <stephan.duenner@bytesatwork.ch>
 Date: Fri, 9 Aug 2019 19:17:33 +0200
-Subject: [PATCH] cmd: add cpuinfo
+Subject: [PATCH] cmd: Add cpuinfo
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Add command for print_cpuinfo.
+Add command to print information about CPU.
 
 Signed-off-by: Stephan Dünner <stephan.duenner@bytesatwork.ch>
+Signed-off-by: Simone Schwizer <simone.schwizer@bytesatwork.ch>
 ---
  MAINTAINERS   |  1 +
- cmd/Kconfig   |  5 +++++
+ cmd/Kconfig   |  6 ++++++
  cmd/Makefile  |  1 +
- cmd/cpuinfo.c | 15 +++++++++++++++
- 4 files changed, 22 insertions(+)
+ cmd/cpuinfo.c | 37 +++++++++++++++++++++++++++++++++++++
+ 4 files changed, 45 insertions(+)
  create mode 100644 cmd/cpuinfo.c
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index e0994d9660..676ecc973d 100644
+index 01bc763b07..1918500c80 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -255,6 +255,7 @@ F:	.github/workflows/checkpatch.yml
- F:	arch/arm/dts/imx8mp-bytedevkit-u-boot.dtsi
- F:	arch/arm/dts/imx8mp-bytedevkit.dts
- F:	board/bytesatwork/bytedevkit_imx8mp/
+@@ -261,6 +261,7 @@ S:	Maintained
+ W:	https://www.bytesatwork.io/
+ T:	git https://github.com/bytesatwork/u-boot-imx
+ F:	.github/workflows/checkpatch.yml
 +F:	cmd/cpuinfo.c
- F:	configs/imx8mp_bytedevkit_defconfig
- F:	include/configs/imx8mp_bytedevkit.h
  
+ ARM CORTINA ACCESS CAxxxx
+ M:	Alex Nemirovsky <alex.nemirovsky@cortina-access.com>
 diff --git a/cmd/Kconfig b/cmd/Kconfig
-index b696cb6ccb..35090f464e 100644
+index 413051ac4a..d78ad03da0 100644
 --- a/cmd/Kconfig
 +++ b/cmd/Kconfig
-@@ -162,6 +162,11 @@ config CMD_CPU
+@@ -176,6 +176,12 @@ config CMD_CPU
  	  internal name) and clock frequency. Other information may be
  	  available depending on the CPU driver.
  
 +config CMD_CPUINFO
 +	bool "cpuinfo"
 +	help
-+	  Print information about the CPU.
++	  Print information about the CPU such as type, revision, clock rate
++	  and temperature grade.
 +
  config CMD_FWU_METADATA
  	bool "fwu metadata read"
  	depends on FWU_MULTI_BANK_UPDATE
 diff --git a/cmd/Makefile b/cmd/Makefile
-index 36d2daf22a..844162b8cd 100644
+index 87133cc27a..2b676e13f5 100644
 --- a/cmd/Makefile
 +++ b/cmd/Makefile
-@@ -47,6 +47,7 @@ obj-$(CONFIG_CMD_CONFIG) += config.o
+@@ -51,6 +51,7 @@ obj-$(CONFIG_CMD_CONFIG) += config.o
  obj-$(CONFIG_CMD_CONITRACE) += conitrace.o
  obj-$(CONFIG_CMD_CONSOLE) += console.o
  obj-$(CONFIG_CMD_CPU) += cpu.o
@@ -59,22 +61,44 @@ index 36d2daf22a..844162b8cd 100644
  obj-$(CONFIG_CMD_DM) += dm.o
 diff --git a/cmd/cpuinfo.c b/cmd/cpuinfo.c
 new file mode 100644
-index 0000000000..62016aad53
+index 0000000000..9a5a0081f1
 --- /dev/null
 +++ b/cmd/cpuinfo.c
-@@ -0,0 +1,15 @@
+@@ -0,0 +1,37 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
-+ * Copyright (C) 2024 bytesatwork AG - https://www.bytesatwork.io
++ * Copyright (C) 2025 bytesatwork AG - https://www.bytesatwork.io
 + */
 +
-+#include <common.h>
 +#include <command.h>
++#include <cpu.h>
++#include <dm.h>
 +#include <init.h>
 +
 +static int do_cpuinfo(struct cmd_tbl *cmdtp, int flag, int argc, char * const argv[])
 +{
++#if IS_ENABLED(CONFIG_DM) && IS_ENABLED(CONFIG_CPU)
++	struct udevice *dev;
++	char buf[256];
++	int ret;
++
++	ret = uclass_get_device(UCLASS_CPU, 0, &dev);
++	if (ret) {
++		printf("Failed to get CPU device: %d\n", ret);
++		return ret;
++	}
++
++	ret = cpu_get_desc(dev, buf, sizeof(buf));
++	if (ret) {
++		printf("Failed to get CPU description: %d\n", ret);
++		return ret;
++	}
++
++	puts(buf);
++	return 0;
++#else
 +	return print_cpuinfo();
++#endif
 +}
 +
 +U_BOOT_CMD(cpuinfo, 1, 1, do_cpuinfo, "show cpu info", "");

@@ -1,7 +1,7 @@
-From 39dfd232a3356c9c6765aecd2dad58b04ae4dd0b Mon Sep 17 00:00:00 2001
+From 34e82f5b5d646264fbba7eec99499ba037abf808 Mon Sep 17 00:00:00 2001
 From: Rico Ganahl <rico.ganahl@bytesatwork.ch>
 Date: Thu, 13 Jan 2022 10:53:32 +0100
-Subject: [PATCH] imx: add i.MX8MM bytesatwork byteDEVKIT board
+Subject: [PATCH] imx: Add i.MX8MM bytesatwork byteDEVKIT board
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -16,58 +16,63 @@ Signed-off-by: Simone Schwizer <simone.schwizer@bytesatwork.ch>
  arch/arm/dts/Makefile                         |    1 +
  arch/arm/dts/imx8mm-bytedevkit-u-boot.dtsi    |  114 +
  arch/arm/dts/imx8mm-bytedevkit.dts            |  122 +
- arch/arm/dts/imx8mm-byteengine-m6.dtsi        |  273 ++
- arch/arm/mach-imx/imx8m/Kconfig               |   30 +
- board/bytesatwork/bytedevkit/Kconfig          |   20 +
- board/bytesatwork/bytedevkit/Makefile         |   15 +
- board/bytesatwork/bytedevkit/bytedevkit.c     |  193 ++
- .../bytedevkit/imximage-8mm-lpddr4-fspi.cfg   |   10 +
- .../bytedevkit/lpddr4_timing_3072_4096.c      | 1966 +++++++++++++++
+ arch/arm/dts/imx8mm-byteengine.dtsi           |  273 ++
+ arch/arm/mach-imx/imx8m/Kconfig               |    7 +
+ board/bytesatwork/bytedevkit_imx8mm/Kconfig   |   20 +
+ board/bytesatwork/bytedevkit_imx8mm/Makefile  |   16 +
+ .../bytedevkit_imx8mm/imx8mm_bytedevkit.c     |  177 ++
+ .../imximage-8mm-lpddr4-fspi.cfg              |   10 +
+ .../lpddr4_timing_3072_4096.c                 | 1966 +++++++++++++++
  .../lpddr4_timing_512_1024_1536_2048.c        | 2212 +++++++++++++++++
- board/bytesatwork/bytedevkit/lpddr4_timings.h |   17 +
- board/bytesatwork/bytedevkit/spl.c            |  200 ++
- board/bytesatwork/common                      |    1 +
+ .../bytedevkit_imx8mm/lpddr4_timings.h        |   17 +
+ board/bytesatwork/bytedevkit_imx8mm/spl.c     |  203 ++
  configs/imx8mm_bytedevkit_defconfig           |  136 +
  configs/imx8mm_bytedevkit_fspi_defconfig      |  137 +
- include/configs/bytedevkit.h                  |   94 +
- 18 files changed, 5548 insertions(+)
+ include/configs/imx8mm_bytedevkit.h           |   94 +
+ 17 files changed, 5512 insertions(+)
  create mode 100644 arch/arm/dts/imx8mm-bytedevkit-u-boot.dtsi
  create mode 100644 arch/arm/dts/imx8mm-bytedevkit.dts
- create mode 100644 arch/arm/dts/imx8mm-byteengine-m6.dtsi
- create mode 100644 board/bytesatwork/bytedevkit/Kconfig
- create mode 100644 board/bytesatwork/bytedevkit/Makefile
- create mode 100644 board/bytesatwork/bytedevkit/bytedevkit.c
- create mode 100644 board/bytesatwork/bytedevkit/imximage-8mm-lpddr4-fspi.cfg
- create mode 100644 board/bytesatwork/bytedevkit/lpddr4_timing_3072_4096.c
- create mode 100644 board/bytesatwork/bytedevkit/lpddr4_timing_512_1024_1536_2048.c
- create mode 100644 board/bytesatwork/bytedevkit/lpddr4_timings.h
- create mode 100644 board/bytesatwork/bytedevkit/spl.c
- create mode 120000 board/bytesatwork/common
+ create mode 100644 arch/arm/dts/imx8mm-byteengine.dtsi
+ create mode 100644 board/bytesatwork/bytedevkit_imx8mm/Kconfig
+ create mode 100644 board/bytesatwork/bytedevkit_imx8mm/Makefile
+ create mode 100644 board/bytesatwork/bytedevkit_imx8mm/imx8mm_bytedevkit.c
+ create mode 100644 board/bytesatwork/bytedevkit_imx8mm/imximage-8mm-lpddr4-fspi.cfg
+ create mode 100644 board/bytesatwork/bytedevkit_imx8mm/lpddr4_timing_3072_4096.c
+ create mode 100644 board/bytesatwork/bytedevkit_imx8mm/lpddr4_timing_512_1024_1536_2048.c
+ create mode 100644 board/bytesatwork/bytedevkit_imx8mm/lpddr4_timings.h
+ create mode 100644 board/bytesatwork/bytedevkit_imx8mm/spl.c
  create mode 100644 configs/imx8mm_bytedevkit_defconfig
  create mode 100644 configs/imx8mm_bytedevkit_fspi_defconfig
- create mode 100644 include/configs/bytedevkit.h
+ create mode 100644 include/configs/imx8mm_bytedevkit.h
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 26b2d65a6f..7c71904ffd 100644
+index 7008c31e5a..e912ed9a31 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -260,7 +260,14 @@ M:	Daniel Ammann <daniel.ammann@bytesatwork.ch>
- S:	Maintained
+@@ -261,14 +261,21 @@ S:	Maintained
+ W:	https://www.bytesatwork.io/
  T:	git https://github.com/bytesatwork/u-boot-imx
  F:	.github/workflows/checkpatch.yml
 +F:	arch/arm/dts/imx8mm-bytedevkit-u-boot.dtsi
 +F:	arch/arm/dts/imx8mm-bytedevkit.dts
-+F:	arch/arm/dts/imx8mm-byteengine-m6.dtsi
-+F:	board/bytesatwork/bytedevkit/
++F:	arch/arm/dts/imx8mm-byteengine.dtsi
+ F:	arch/arm/dts/imx8mp-bytedevkit-u-boot.dtsi
+ F:	arch/arm/dts/imx8mp-bytedevkit.dts
+ F:	arch/arm/dts/imx93-bytedevkit.dts
++F:	board/bytesatwork/bytedevkit_imx8mm/
+ F:	board/bytesatwork/bytedevkit_imx8mp/
+ F:	board/bytesatwork/bytedevkit_imx93/
  F:	cmd/cpuinfo.c
 +F:	configs/imx8mm_bytedevkit_defconfig
 +F:	configs/imx8mm_bytedevkit_fspi_defconfig
-+F:	include/configs/bytedevkit.h
+ F:	configs/imx8mp_bytedevkit_defconfig
+ F:	configs/imx93_bytedevkit_defconfig
++F:	include/configs/imx8mm_bytedevkit.h
+ F:	include/configs/imx8mp_bytedevkit.h
+ F:	include/configs/imx93_bytedevkit.h
  
- ARM CORTINA ACCESS CAxxxx
- M:	Alex Nemirovsky <alex.nemirovsky@cortina-access.com>
 diff --git a/arch/arm/dts/Makefile b/arch/arm/dts/Makefile
-index e494d16ffc..f274efbed1 100644
+index 2484ed9013..c1758899ba 100644
 --- a/arch/arm/dts/Makefile
 +++ b/arch/arm/dts/Makefile
 @@ -1117,6 +1117,7 @@ dtb-$(CONFIG_ARCH_IMX8ULP) += \
@@ -80,16 +85,16 @@ index e494d16ffc..f274efbed1 100644
  	imx8mm-ddr4-ab2.dtb \
 diff --git a/arch/arm/dts/imx8mm-bytedevkit-u-boot.dtsi b/arch/arm/dts/imx8mm-bytedevkit-u-boot.dtsi
 new file mode 100644
-index 0000000000..6943f7ee36
+index 0000000000..7dadf0efeb
 --- /dev/null
 +++ b/arch/arm/dts/imx8mm-bytedevkit-u-boot.dtsi
 @@ -0,0 +1,114 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
-+ * Copyright (C) 2024 bytesatwork AG - https://www.bytesatwork.io
-+ * Based on imx8mm-evk-u-boot.dtsi
++ * Copyright (C) 2025 bytesatwork AG - https://www.bytesatwork.io
 + *
-+ * Copyright 2019 NXP
++ * Based on imx8mm-evk-u-boot.dtsi
++ * Copyright 2019, 2021 NXP
 + */
 +
 +#include "imx8mm-u-boot.dtsi"
@@ -200,28 +205,28 @@ index 0000000000..6943f7ee36
 +};
 diff --git a/arch/arm/dts/imx8mm-bytedevkit.dts b/arch/arm/dts/imx8mm-bytedevkit.dts
 new file mode 100644
-index 0000000000..5ff3e086f8
+index 0000000000..3f93995aed
 --- /dev/null
 +++ b/arch/arm/dts/imx8mm-bytedevkit.dts
 @@ -0,0 +1,122 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/*
-+ * Copyright (C) 2024 bytesatwork AG - https://www.bytesatwork.io
++ * Copyright (C) 2025 bytesatwork AG - https://www.bytesatwork.io
 + *
-+ * Based on: fsl-imx8mm-evk.dts
-+ * Copyright 2018 NXP
++ * Based on imx8mm-evk.dts
++ * Copyright 2019-2020 NXP
 + *
 + */
 +
 +/dts-v1/;
 +
 +#include "imx8mm.dtsi"
-+#include "imx8mm-byteengine-m6.dtsi"
++#include "imx8mm-byteengine.dtsi"
 +#include <dt-bindings/net/ti-dp83867.h>
 +
 +/ {
-+	model = "i.MX 8M Mini on bytes at work byteDEVKIT";
-+	compatible = "bytesatwork,bytedevkit", "fsl,imx8mm";
++	model = "bytesatwork byteDEVKIT with byteENGINE IMX8MM";
++	compatible = "bytesatwork,bytedevkit-imx8mm", "bytesatwork,byteengine-imx8mm", "fsl,imx8mm";
 +
 +	chosen {
 +		bootargs = "console=ttymxc1,115200 earlycon=ec_imx6q,0x30890000,115200";
@@ -326,18 +331,18 @@ index 0000000000..5ff3e086f8
 +		};
 +	};
 +};
-diff --git a/arch/arm/dts/imx8mm-byteengine-m6.dtsi b/arch/arm/dts/imx8mm-byteengine-m6.dtsi
+diff --git a/arch/arm/dts/imx8mm-byteengine.dtsi b/arch/arm/dts/imx8mm-byteengine.dtsi
 new file mode 100644
-index 0000000000..e56164d34f
+index 0000000000..aa08a49d7c
 --- /dev/null
-+++ b/arch/arm/dts/imx8mm-byteengine-m6.dtsi
++++ b/arch/arm/dts/imx8mm-byteengine.dtsi
 @@ -0,0 +1,273 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/*
-+ * Copyright (C) 2024 bytesatwork AG - https://www.bytesatwork.io
++ * Copyright (C) 2025 bytesatwork AG - https://www.bytesatwork.io
 + *
-+ * Based on: fsl-imx8mm-evk.dts
-+ * Copyright 2018 NXP
++ * Based on imx8mm-evk.dts
++ * Copyright 2019-2020 NXP
 + *
 + */
 +
@@ -606,86 +611,63 @@ index 0000000000..e56164d34f
 +	arm-supply = <&buck2_reg>;
 +};
 diff --git a/arch/arm/mach-imx/imx8m/Kconfig b/arch/arm/mach-imx/imx8m/Kconfig
-index 473cfa8e5e..1a23cc5f2c 100644
+index 8a355c6773..18f7fff025 100644
 --- a/arch/arm/mach-imx/imx8m/Kconfig
 +++ b/arch/arm/mach-imx/imx8m/Kconfig
-@@ -100,6 +100,35 @@ config TARGET_IMX8MM_DATA_MODUL_EDM_SBC
+@@ -94,6 +94,12 @@ config TARGET_IMX8MQ_REFORM2
+ 	select IMX8MQ
  	select IMX8M_LPDDR4
- 	select SUPPORT_SPL
  
-+config TARGET_IMX8MQ_DDR3L_VAL
-+	bool "imx8mq_ddr3l_val"
-+	select IMX8MQ
-+	select SUPPORT_SPL
-+
-+config TARGET_IMX8MQ_DDR4_VAL
-+	bool "imx8mq_ddr4_val"
-+	select IMX8MQ
-+	select SUPPORT_SPL
-+	select IMX8M_DDR4
-+
 +config TARGET_IMX8MM_BYTEDEVKIT
 +	bool "imx8mm byteDEVKIT board"
 +	select IMX8MM
 +	select SUPPORT_SPL
 +	select IMX8M_LPDDR4
 +
-+config TARGET_IMX8MM_DDR4_VAL
-+	bool "imx8mm DDR4 validation board"
-+	select IMX8MM
-+	select SUPPORT_SPL
-+	select IMX8M_DDR4
-+
-+config TARGET_IMX8MM_DDR3L_VAL
-+	bool "imx8mm DDR3L validation board"
-+	select IMX8MM
-+	select SUPPORT_SPL
-+	select IMX8M_DDR3L
-+
- config TARGET_IMX8MM_EVK
- 	bool "imx8mm LPDDR4 EVK board"
+ config TARGET_IMX8MM_DATA_MODUL_EDM_SBC
+ 	bool "Data Modul eDM SBC i.MX8M Mini"
  	select IMX8MM
-@@ -453,6 +482,7 @@ source "board/beacon/imx8mm/Kconfig"
+@@ -463,6 +469,7 @@ source "board/beacon/imx8mm/Kconfig"
  source "board/beacon/imx8mn/Kconfig"
  source "board/beacon/imx8mp/Kconfig"
  source "board/bsh/imx8mn_smm_s2/Kconfig"
-+source "board/bytesatwork/bytedevkit/Kconfig"
++source "board/bytesatwork/bytedevkit_imx8mm/Kconfig"
+ source "board/bytesatwork/bytedevkit_imx8mp/Kconfig"
  source "board/cloos/imx8mm_phg/Kconfig"
  source "board/compulab/imx8mm-cl-iot-gate/Kconfig"
- source "board/data_modul/imx8mm_edm_sbc/Kconfig"
-diff --git a/board/bytesatwork/bytedevkit/Kconfig b/board/bytesatwork/bytedevkit/Kconfig
+diff --git a/board/bytesatwork/bytedevkit_imx8mm/Kconfig b/board/bytesatwork/bytedevkit_imx8mm/Kconfig
 new file mode 100644
-index 0000000000..5c725ca2c1
+index 0000000000..c97eb8fcca
 --- /dev/null
-+++ b/board/bytesatwork/bytedevkit/Kconfig
++++ b/board/bytesatwork/bytedevkit_imx8mm/Kconfig
 @@ -0,0 +1,20 @@
 +if TARGET_IMX8MM_BYTEDEVKIT
 +
 +config SYS_BOARD
-+	default "bytedevkit"
++	default "bytedevkit_imx8mm"
 +
 +config SYS_VENDOR
 +	default "bytesatwork"
 +
 +config SYS_CONFIG_NAME
-+	default "bytedevkit"
++	default "imx8mm_bytedevkit"
 +
 +config IMX8MM_BYTEDEVKIT_FSPI_BOOT
 +	bool "Enable FSPI boot"
 +	default n
 +
 +config IMX_CONFIG
-+	default "board/bytesatwork/bytedevkit/imximage-8mm-lpddr4-fspi.cfg" if IMX8MM_BYTEDEVKIT_FSPI_BOOT
++	default "board/bytesatwork/bytedevkit_imx8mm/imximage-8mm-lpddr4-fspi.cfg" if IMX8MM_BYTEDEVKIT_FSPI_BOOT
 +	default "arch/arm/mach-imx/imx8m/imximage.cfg"
 +
 +endif
-diff --git a/board/bytesatwork/bytedevkit/Makefile b/board/bytesatwork/bytedevkit/Makefile
+diff --git a/board/bytesatwork/bytedevkit_imx8mm/Makefile b/board/bytesatwork/bytedevkit_imx8mm/Makefile
 new file mode 100644
-index 0000000000..2fb468a338
+index 0000000000..8ff7e44165
 --- /dev/null
-+++ b/board/bytesatwork/bytedevkit/Makefile
-@@ -0,0 +1,15 @@
-+# Copyright (C) 2024 bytesatwork AG - https://www.bytesatwork.io
++++ b/board/bytesatwork/bytedevkit_imx8mm/Makefile
+@@ -0,0 +1,16 @@
++# Copyright (C) 2025 bytesatwork AG - https://www.bytesatwork.io
 +#
 +# Based on: imx8mm_evk/Makefile
 +# Copyright 2018 NXP
@@ -693,24 +675,25 @@ index 0000000000..2fb468a338
 +# SPDX-License-Identifier:      GPL-2.0+
 +#
 +
-+obj-y += bytedevkit.o
++obj-y += imx8mm_bytedevkit.o
++obj-y += ../../freescale/common/
 +
 +ifdef CONFIG_SPL_BUILD
 +obj-y += spl.o
 +obj-$(CONFIG_IMX8M_LPDDR4) += lpddr4_timing_512_1024_1536_2048.o
 +obj-$(CONFIG_IMX8M_LPDDR4) += lpddr4_timing_3072_4096.o
 +endif
-diff --git a/board/bytesatwork/bytedevkit/bytedevkit.c b/board/bytesatwork/bytedevkit/bytedevkit.c
+diff --git a/board/bytesatwork/bytedevkit_imx8mm/imx8mm_bytedevkit.c b/board/bytesatwork/bytedevkit_imx8mm/imx8mm_bytedevkit.c
 new file mode 100644
-index 0000000000..8b94795eff
+index 0000000000..dac42dbb5c
 --- /dev/null
-+++ b/board/bytesatwork/bytedevkit/bytedevkit.c
-@@ -0,0 +1,193 @@
++++ b/board/bytesatwork/bytedevkit_imx8mm/imx8mm_bytedevkit.c
+@@ -0,0 +1,177 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
-+ * Copyright (C) 2024 bytesatwork AG - https://www.bytesatwork.io
++ * Copyright (C) 2025 bytesatwork AG - https://www.bytesatwork.io
 + *
-+ * Based on mx8mm_evk/imx8mm_evk.c:
++ * Based on imx8mm_evk/imx8mm_evk.c:
 + * Copyright 2018-2019 NXP
 + */
 +
@@ -732,7 +715,7 @@ index 0000000000..8b94795eff
 +#include <asm/mach-imx/dma.h>
 +#include <power/pmic.h>
 +#include <power/bd71837.h>
-+#include "../common/tcpc.h"
++#include "../../freescale/common/tcpc.h"
 +#include <usb.h>
 +#include <asm/mach-imx/video.h>
 +#include <power/pca9450.h>
@@ -776,23 +759,7 @@ index 0000000000..8b94795eff
 +	return 0;
 +}
 +
-+#ifdef CONFIG_FEC_MXC
-+#define FEC_RST_PAD IMX_GPIO_NR(5, 27)
-+static const iomux_v3_cfg_t fec1_rst_pads[] = {
-+	IMX8MM_PAD_UART3_TXD_GPIO5_IO27 | MUX_PAD_CTRL(NO_PAD_CTRL),
-+};
-+
-+static void setup_iomux_fec(void)
-+{
-+	imx_iomux_v3_setup_multiple_pads(fec1_rst_pads,
-+					 ARRAY_SIZE(fec1_rst_pads));
-+
-+	gpio_request(FEC_RST_PAD, "fec1_rst");
-+	gpio_direction_output(FEC_RST_PAD, 0);
-+	udelay(500);
-+	gpio_direction_output(FEC_RST_PAD, 1);
-+}
-+
++#if IS_ENABLED(CONFIG_FEC_MXC)
 +static int setup_fec(void)
 +{
 +	struct iomuxc_gpr_base_regs *gpr =
@@ -899,15 +866,15 @@ index 0000000000..8b94795eff
 +
 +	return 0;
 +}
-diff --git a/board/bytesatwork/bytedevkit/imximage-8mm-lpddr4-fspi.cfg b/board/bytesatwork/bytedevkit/imximage-8mm-lpddr4-fspi.cfg
+diff --git a/board/bytesatwork/bytedevkit_imx8mm/imximage-8mm-lpddr4-fspi.cfg b/board/bytesatwork/bytedevkit_imx8mm/imximage-8mm-lpddr4-fspi.cfg
 new file mode 100644
-index 0000000000..90dd5ece23
+index 0000000000..a7801a3d90
 --- /dev/null
-+++ b/board/bytesatwork/bytedevkit/imximage-8mm-lpddr4-fspi.cfg
++++ b/board/bytesatwork/bytedevkit_imx8mm/imximage-8mm-lpddr4-fspi.cfg
 @@ -0,0 +1,10 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
-+ * Copyright (C) 2024 bytesatwork AG - https://www.bytesatwork.io
++ * Copyright (C) 2025 bytesatwork AG - https://www.bytesatwork.io
 + *
 + * Based on board/freescale/imx8mm_evk/imximage-8mm-lpddr4-fspi.cfg
 + * Copyright 2021 NXP
@@ -915,15 +882,15 @@ index 0000000000..90dd5ece23
 +
 +BOOT_FROM	fspi
 +LOADER		u-boot-spl-ddr.bin	0x7E2000
-diff --git a/board/bytesatwork/bytedevkit/lpddr4_timing_3072_4096.c b/board/bytesatwork/bytedevkit/lpddr4_timing_3072_4096.c
+diff --git a/board/bytesatwork/bytedevkit_imx8mm/lpddr4_timing_3072_4096.c b/board/bytesatwork/bytedevkit_imx8mm/lpddr4_timing_3072_4096.c
 new file mode 100644
-index 0000000000..890bd47662
+index 0000000000..4b566ed152
 --- /dev/null
-+++ b/board/bytesatwork/bytedevkit/lpddr4_timing_3072_4096.c
++++ b/board/bytesatwork/bytedevkit_imx8mm/lpddr4_timing_3072_4096.c
 @@ -0,0 +1,1966 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
-+ * Copyright (C) 2024 bytesatwork AG - https://www.bytesatwork.io
++ * Copyright (C) 2025 bytesatwork AG - https://www.bytesatwork.io
 + * Copyright 2019 NXP
 + */
 +
@@ -2887,15 +2854,15 @@ index 0000000000..890bd47662
 +	.ddrphy_pie_num = ARRAY_SIZE(ddr_phy_pie),
 +	.fsp_table = { 3000, 400, 100, },
 +};
-diff --git a/board/bytesatwork/bytedevkit/lpddr4_timing_512_1024_1536_2048.c b/board/bytesatwork/bytedevkit/lpddr4_timing_512_1024_1536_2048.c
+diff --git a/board/bytesatwork/bytedevkit_imx8mm/lpddr4_timing_512_1024_1536_2048.c b/board/bytesatwork/bytedevkit_imx8mm/lpddr4_timing_512_1024_1536_2048.c
 new file mode 100644
-index 0000000000..47b153ed56
+index 0000000000..9b4f90dc82
 --- /dev/null
-+++ b/board/bytesatwork/bytedevkit/lpddr4_timing_512_1024_1536_2048.c
++++ b/board/bytesatwork/bytedevkit_imx8mm/lpddr4_timing_512_1024_1536_2048.c
 @@ -0,0 +1,2212 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
-+ * Copyright (C) 2024 bytesatwork AG - https://www.bytesatwork.io
++ * Copyright (C) 2025 bytesatwork AG - https://www.bytesatwork.io
 + * Copyright 2019 NXP
 + */
 +
@@ -5105,15 +5072,15 @@ index 0000000000..47b153ed56
 +	.ddrphy_pie_num = ARRAY_SIZE(ddr_phy_pie),
 +	.fsp_table = { 3000, 400, 100, },
 +};
-diff --git a/board/bytesatwork/bytedevkit/lpddr4_timings.h b/board/bytesatwork/bytedevkit/lpddr4_timings.h
+diff --git a/board/bytesatwork/bytedevkit_imx8mm/lpddr4_timings.h b/board/bytesatwork/bytedevkit_imx8mm/lpddr4_timings.h
 new file mode 100644
-index 0000000000..ad4c29f9d2
+index 0000000000..4b3754772c
 --- /dev/null
-+++ b/board/bytesatwork/bytedevkit/lpddr4_timings.h
++++ b/board/bytesatwork/bytedevkit_imx8mm/lpddr4_timings.h
 @@ -0,0 +1,17 @@
 +/* SPDX-License-Identifier: GPL-2.0+ */
 +/*
-+ * Copyright (C) 2024 bytesatwork AG - https://www.bytesatwork.io
++ * Copyright (C) 2025 bytesatwork AG - https://www.bytesatwork.io
 + */
 +
 +#ifndef _LPDDR4_TIMINGS_H_
@@ -5128,15 +5095,15 @@ index 0000000000..ad4c29f9d2
 +extern struct dram_timing_info dram_timing_4096;
 +
 +#endif /* _LPDDR4_TIMINGS_H_ */
-diff --git a/board/bytesatwork/bytedevkit/spl.c b/board/bytesatwork/bytedevkit/spl.c
+diff --git a/board/bytesatwork/bytedevkit_imx8mm/spl.c b/board/bytesatwork/bytedevkit_imx8mm/spl.c
 new file mode 100644
-index 0000000000..e4f9a150d2
+index 0000000000..4bd2b33706
 --- /dev/null
-+++ b/board/bytesatwork/bytedevkit/spl.c
-@@ -0,0 +1,200 @@
++++ b/board/bytesatwork/bytedevkit_imx8mm/spl.c
+@@ -0,0 +1,203 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
-+ * Copyright (C) 2024 bytesatwork AG - https://www.bytesatwork.io
++ * Copyright (C) 2025 bytesatwork AG - https://www.bytesatwork.io
 + *
 + * Based on mx8mm_evk/spl.c:
 + * Copyright 2019 NXP
@@ -5164,6 +5131,8 @@ index 0000000000..e4f9a150d2
 +#include <mmc.h>
 +#include <linux/delay.h>
 +
++#include "lpddr4_timings.h"
++
 +DECLARE_GLOBAL_DATA_PTR;
 +
 +int spl_board_boot_device(enum boot_device boot_dev_spl)
@@ -5188,7 +5157,8 @@ index 0000000000..e4f9a150d2
 +
 +void spl_dram_init(void)
 +{
-+	ddr_init(&dram_timing);
++	/* Use 512MB RAM as default */
++	ddr_init(&dram_timing_512);
 +}
 +
 +#define USDHC2_CD_GPIO	IMX_GPIO_NR(2, 12)
@@ -5334,14 +5304,6 @@ index 0000000000..e4f9a150d2
 +
 +	board_init_r(NULL, 0);
 +}
-diff --git a/board/bytesatwork/common b/board/bytesatwork/common
-new file mode 120000
-index 0000000000..7506078986
---- /dev/null
-+++ b/board/bytesatwork/common
-@@ -0,0 +1 @@
-+../freescale/common
-\ No newline at end of file
 diff --git a/configs/imx8mm_bytedevkit_defconfig b/configs/imx8mm_bytedevkit_defconfig
 new file mode 100644
 index 0000000000..aef0260248
@@ -5627,22 +5589,22 @@ index 0000000000..e3ed4637a3
 +CONFIG_USB_GADGET_PRODUCT_NUM=0xa4a5
 +CONFIG_CI_UDC=y
 +CONFIG_SDP_LOADADDR=0x40400000
-diff --git a/include/configs/bytedevkit.h b/include/configs/bytedevkit.h
+diff --git a/include/configs/imx8mm_bytedevkit.h b/include/configs/imx8mm_bytedevkit.h
 new file mode 100644
-index 0000000000..25129c1956
+index 0000000000..70adfa8368
 --- /dev/null
-+++ b/include/configs/bytedevkit.h
++++ b/include/configs/imx8mm_bytedevkit.h
 @@ -0,0 +1,94 @@
 +/* SPDX-License-Identifier: GPL-2.0+ */
 +/*
-+ * Copyright (C) 2024 bytesatwork AG - https://www.bytesatwork.io
++ * Copyright (C) 2025 bytesatwork AG - https://www.bytesatwork.io
 + *
 + * Based on imx8mm_evk.h:
 + * Copyright 2018 NXP
 + */
 +
-+#ifndef __BYTEDEVKIT_H
-+#define __BYTEDEVKIT_H
++#ifndef __IMX8MM_BYTEDEVKIT_H
++#define __IMX8MM_BYTEDEVKIT_H
 +
 +#include <linux/sizes.h>
 +#include <asm/arch/imx-regs.h>

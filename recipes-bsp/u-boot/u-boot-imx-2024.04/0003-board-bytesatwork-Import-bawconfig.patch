@@ -1,7 +1,7 @@
-From 4e2b8f47c384f3f729f7e1137ff1ab97d35216f9 Mon Sep 17 00:00:00 2001
+From 6594708ef6a0b2e6365a901637cf4a1f6f5aa03e Mon Sep 17 00:00:00 2001
 From: Rico Ganahl <rico.ganahl@bytesatwork.ch>
 Date: Wed, 2 Feb 2022 09:16:56 +0100
-Subject: [PATCH] board: bytesatwork: import bawconfig
+Subject: [PATCH] board: bytesatwork: Import bawconfig
 
 Bytesatwork tool to store production data in EEPROM.
 
@@ -30,24 +30,28 @@ cac51ab069 bytesatwork: bawconfig: add ti am62x revision
 8e0064a4da bytesatwork: bawconfig: add HW revisions and RAM types
 fd901fb676 bytesatwork: bawconfig: add I2C config options
 81f05f22c8 bytesatwork: bawconfig: add imx8mp 6GB ram type
+ce86484356 bytesatwork: bawconfig: Remove common.h includes
+4d95af5b93 bytesatwork: bawconfig: Add legacy i2c support for SPL
+c5701c8eda bytesatwork: bawconfig: Update attribute unused to
+7351ba8ff7 bytesatwork: bawconfig: Add maintainer
 
 Signed-off-by: Rico Ganahl <rico.ganahl@bytesatwork.ch>
 Signed-off-by: Simone Schwizer <simone.schwizer@bytesatwork.ch>
 ---
- board/bytesatwork/baw_config/Kconfig          |  72 +++++
- board/bytesatwork/baw_config/MAINTAINERS      |   6 +
+ board/bytesatwork/baw_config/Kconfig          |  72 ++++
+ board/bytesatwork/baw_config/MAINTAINERS      |   7 +
  board/bytesatwork/baw_config/Makefile         |  15 +
- board/bytesatwork/baw_config/README           |  71 +++++
+ board/bytesatwork/baw_config/README           |  71 ++++
  board/bytesatwork/baw_config/baw_config.c     |  83 +++++
- board/bytesatwork/baw_config/baw_config.h     | 120 ++++++++
+ board/bytesatwork/baw_config/baw_config.h     | 120 +++++++
  .../baw_config/baw_config_builtin.c           |  15 +
  .../baw_config/baw_config_builtin.h           |  21 ++
- .../baw_config/baw_config_eeprom.c            | 291 ++++++++++++++++++
+ .../baw_config/baw_config_eeprom.c            | 307 ++++++++++++++++++
  .../baw_config/baw_config_eeprom.h            |  38 +++
- board/bytesatwork/baw_config/baw_config_get.c | 104 +++++++
+ board/bytesatwork/baw_config/baw_config_get.c | 104 ++++++
  board/bytesatwork/baw_config/baw_config_get.h |  13 +
- board/bytesatwork/baw_config/cmd_baw_config.c | 223 ++++++++++++++
- 13 files changed, 1072 insertions(+)
+ board/bytesatwork/baw_config/cmd_baw_config.c | 223 +++++++++++++
+ 13 files changed, 1089 insertions(+)
  create mode 100644 board/bytesatwork/baw_config/Kconfig
  create mode 100644 board/bytesatwork/baw_config/MAINTAINERS
  create mode 100644 board/bytesatwork/baw_config/Makefile
@@ -142,12 +146,13 @@ index 0000000000..b49e5f36d8
 +endmenu
 diff --git a/board/bytesatwork/baw_config/MAINTAINERS b/board/bytesatwork/baw_config/MAINTAINERS
 new file mode 100644
-index 0000000000..27dd16973b
+index 0000000000..68cf2510f6
 --- /dev/null
 +++ b/board/bytesatwork/baw_config/MAINTAINERS
-@@ -0,0 +1,6 @@
+@@ -0,0 +1,7 @@
 +BYTESATWORK BAWCONFIG
 +M:	Rico Ganahl <rico.ganahl@bytesatwork.ch>
++M:	Simone Schwizer <simone.schwizer@bytesatwork.ch>
 +S:	Maintained
 +F:	board/bytesatwork/baw_config/*
 +F:	board/bytesatwork/baw_config/Makefile
@@ -515,10 +520,10 @@ index 0000000000..a44445955d
 +#endif
 diff --git a/board/bytesatwork/baw_config/baw_config_eeprom.c b/board/bytesatwork/baw_config/baw_config_eeprom.c
 new file mode 100644
-index 0000000000..da577e2d2e
+index 0000000000..68a2fb4ea2
 --- /dev/null
 +++ b/board/bytesatwork/baw_config/baw_config_eeprom.c
-@@ -0,0 +1,291 @@
+@@ -0,0 +1,307 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright (C) 2015 bytesatwork AG - https://www.bytesatwork.io
@@ -527,7 +532,6 @@ index 0000000000..da577e2d2e
 +#include "baw_config_eeprom.h"
 +#include "baw_config.h"
 +
-+#include <common.h>
 +#include <dm/uclass.h>
 +#include <i2c.h>
 +#include <hexdump.h>
@@ -599,6 +603,7 @@ index 0000000000..da577e2d2e
 +
 +int baw_config_eeprom_init(void)
 +{
++#if (!IS_ENABLED(CONFIG_SPL_BUILD) || IS_ENABLED(CONFIG_SPL_DM_I2C))
 +	int ret;
 +
 +	ret = uclass_get_device_by_name(UCLASS_I2C, CONFIG_BAW_CONFIG_EEPROM_BUS_NAME, &busp);
@@ -621,7 +626,7 @@ index 0000000000..da577e2d2e
 +		printf("%s(): i2c_set_chip_offset_len(): %d\n", __func__, ret);
 +		return ret;
 +	}
-+
++#endif
 +	return 0;
 +}
 +
@@ -635,7 +640,13 @@ index 0000000000..da577e2d2e
 +	u8 dummy = 0xff; /* i2c_write doesn't like to write NULL pointers */
 +
 +	for (i = 0; ret < 0 && i < 10; ++i) {
++#if (IS_ENABLED(CONFIG_SPL_BUILD) && IS_ENABLED(CONFIG_SPL_SYS_I2C_LEGACY))
++		i2c_set_bus_num(CONFIG_BAW_CONFIG_EEPROM_BUS);
++		ret = i2c_write(CONFIG_BAW_CONFIG_EEPROM_ADDRESS, 0,
++				CONFIG_BAW_CONFIG_EEPROM_ADDRESS_BYTES, &dummy, 0);
++#else
 +		ret = dm_i2c_write(baw_config_dev, 0, &dummy, 0);
++#endif
 +		if (ret != 0)
 +			udelay(500);
 +	}
@@ -662,8 +673,12 @@ index 0000000000..da577e2d2e
 +				break;
 +			}
 +		}
-+
++#if (IS_ENABLED(CONFIG_SPL_BUILD) && IS_ENABLED(CONFIG_SPL_SYS_I2C_LEGACY))
++		ret = i2c_write(CONFIG_BAW_CONFIG_EEPROM_ADDRESS, off,
++				CONFIG_BAW_CONFIG_EEPROM_ADDRESS_BYTES, (u8 *)(&frame) + off, wlen);
++#else
 +		ret = dm_i2c_write(baw_config_dev, off, (u8 *)(&frame) + off, wlen);
++#endif
 +		if (ret != 0) {
 +			ret = -EIO;
 +			break;
@@ -683,9 +698,15 @@ index 0000000000..da577e2d2e
 +{
 +	struct eeprom_read_frame frame;
 +
++#if (IS_ENABLED(CONFIG_SPL_BUILD) && IS_ENABLED(CONFIG_SPL_SYS_I2C_LEGACY))
++	i2c_set_bus_num(CONFIG_BAW_CONFIG_EEPROM_BUS);
++	if (i2c_read(CONFIG_BAW_CONFIG_EEPROM_ADDRESS, 0, CONFIG_BAW_CONFIG_EEPROM_ADDRESS_BYTES,
++		     (u8 *)&frame, sizeof(frame)) != 0)
++		return -3;
++#else
 +	if (dm_i2c_read(baw_config_dev, 0, (u8 *)&frame, sizeof(frame)))
 +		return -12;
-+
++#endif
 +	if (frame.content.header.magic != MAGIC)
 +		return -4;
 +
@@ -856,7 +877,7 @@ index 0000000000..c5d943f18c
 +#endif
 diff --git a/board/bytesatwork/baw_config/baw_config_get.c b/board/bytesatwork/baw_config/baw_config_get.c
 new file mode 100644
-index 0000000000..70302bdd3d
+index 0000000000..fd43e38bb1
 --- /dev/null
 +++ b/board/bytesatwork/baw_config/baw_config_get.c
 @@ -0,0 +1,104 @@
@@ -878,7 +899,7 @@ index 0000000000..70302bdd3d
 +
 +void baw_config_get(struct baw_config *config)
 +{
-+	u8 __attribute__((unused)) reg = 0;
++	u8 __maybe_unused reg = 0;
 +
 +	if (baw_config_eeprom_read(config) == 0) {
 +		if (IS_ENABLED(CONFIG_SPL_BUILD)) {
@@ -985,7 +1006,7 @@ index 0000000000..43ac01f14b
 +#endif
 diff --git a/board/bytesatwork/baw_config/cmd_baw_config.c b/board/bytesatwork/baw_config/cmd_baw_config.c
 new file mode 100644
-index 0000000000..922f021701
+index 0000000000..b1076d424c
 --- /dev/null
 +++ b/board/bytesatwork/baw_config/cmd_baw_config.c
 @@ -0,0 +1,223 @@
@@ -994,9 +1015,9 @@ index 0000000000..922f021701
 + * Copyright (C) 2015 bytesatwork AG - https://www.bytesatwork.io
 + */
 +
-+#include <common.h>
 +#include <command.h>
 +#include <post.h>
++#include <vsprintf.h>
 +#include "baw_config_builtin.h"
 +#include "baw_config_eeprom.h"
 +

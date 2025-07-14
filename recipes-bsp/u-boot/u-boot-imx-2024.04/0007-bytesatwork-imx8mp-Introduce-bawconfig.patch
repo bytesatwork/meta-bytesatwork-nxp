@@ -1,19 +1,12 @@
-From b048c7f45a6ec402068d0c17eb1deb6e1440b12e Mon Sep 17 00:00:00 2001
+From fd752e18a007468c236882193512f28721f6c252 Mon Sep 17 00:00:00 2001
 From: Rico Ganahl <rico.ganahl@bytesatwork.ch>
 Date: Mon, 22 Apr 2024 06:46:36 +0200
-Subject: [PATCH] bytesatwork: imx8mp: introduce bawconfig
+Subject: [PATCH] bytesatwork: imx8mp: Introduce bawconfig
 
-Configure defaults for bytes at work tool to store production data
-in EEPROM.
-
-Used cherry picked commits:
-
-cb5924b5a7 bytesatwork: imx8mp: introduce bawconfig
-743520f67c bytesatwork: imx8mp: prepare dynamic ram config
+Enable bytesatwork tool to store production data in EEPROM.
 
 Signed-off-by: Rico Ganahl <rico.ganahl@bytesatwork.ch>
 ---
- MAINTAINERS                                   |  1 +
  board/bytesatwork/bytedevkit_imx8mp/Kconfig   |  2 +
  board/bytesatwork/bytedevkit_imx8mp/Makefile  |  2 +
  .../bytedevkit_imx8mp/imx8mp_bytedevkit.c     | 37 ++++++++++++++++
@@ -21,21 +14,9 @@ Signed-off-by: Rico Ganahl <rico.ganahl@bytesatwork.ch>
  .../bytedevkit_imx8mp/lpddr4_timings.h        | 12 ++++++
  board/bytesatwork/bytedevkit_imx8mp/spl.c     | 43 +++++++++++++++++++
  include/configs/imx8mp_bytedevkit.h           |  5 +++
- 8 files changed, 104 insertions(+), 1 deletion(-)
+ 7 files changed, 103 insertions(+), 1 deletion(-)
  create mode 100644 board/bytesatwork/bytedevkit_imx8mp/lpddr4_timings.h
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 676ecc973d..ea8aaaf8f5 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -255,6 +255,7 @@ F:	.github/workflows/checkpatch.yml
- F:	arch/arm/dts/imx8mp-bytedevkit-u-boot.dtsi
- F:	arch/arm/dts/imx8mp-bytedevkit.dts
- F:	board/bytesatwork/bytedevkit_imx8mp/
-+F:	bytesatwork/bytedevkit_imx8mp/lpddr4_timings.h
- F:	cmd/cpuinfo.c
- F:	configs/imx8mp_bytedevkit_defconfig
- F:	include/configs/imx8mp_bytedevkit.h
 diff --git a/board/bytesatwork/bytedevkit_imx8mp/Kconfig b/board/bytesatwork/bytedevkit_imx8mp/Kconfig
 index cff47a7922..d53eb6c991 100644
 --- a/board/bytesatwork/bytedevkit_imx8mp/Kconfig
@@ -48,7 +29,7 @@ index cff47a7922..d53eb6c991 100644
 +
  endif
 diff --git a/board/bytesatwork/bytedevkit_imx8mp/Makefile b/board/bytesatwork/bytedevkit_imx8mp/Makefile
-index 40687bd038..96cbc73c76 100644
+index 0fea9d9ce5..017a50ba0a 100644
 --- a/board/bytesatwork/bytedevkit_imx8mp/Makefile
 +++ b/board/bytesatwork/bytedevkit_imx8mp/Makefile
 @@ -19,3 +19,5 @@ obj-$(CONFIG_IMX8M_LPDDR4) += lpddr4_timing.o
@@ -58,7 +39,7 @@ index 40687bd038..96cbc73c76 100644
 +
 +obj-y += ../baw_config/
 diff --git a/board/bytesatwork/bytedevkit_imx8mp/imx8mp_bytedevkit.c b/board/bytesatwork/bytedevkit_imx8mp/imx8mp_bytedevkit.c
-index 8902825026..f51a5857ed 100644
+index 582a753970..27ae1b52c7 100644
 --- a/board/bytesatwork/bytedevkit_imx8mp/imx8mp_bytedevkit.c
 +++ b/board/bytesatwork/bytedevkit_imx8mp/imx8mp_bytedevkit.c
 @@ -32,11 +32,13 @@
@@ -96,7 +77,7 @@ index 8902825026..f51a5857ed 100644
  	return 0;
  }
  
-@@ -493,6 +502,10 @@ int board_late_init(void)
+@@ -455,6 +464,10 @@ int board_late_init(void)
  	env_set("board_rev", "iMX8MP");
  #endif
  
@@ -107,10 +88,10 @@ index 8902825026..f51a5857ed 100644
  	return 0;
  }
  
-@@ -535,3 +548,27 @@ int is_recovery_key_pressing(void)
+@@ -481,3 +494,27 @@ unsigned long spl_mmc_get_uboot_raw_sector(struct mmc *mmc, unsigned long raw_se
+ 	}
  }
- #endif /* CONFIG_ANDROID_RECOVERY */
- #endif /* CONFIG_FSL_FASTBOOT */
+ #endif
 +
 +#include <asm/armv8/mmu.h>
 +extern struct mm_region *mem_map;
@@ -136,7 +117,7 @@ index 8902825026..f51a5857ed 100644
 +	return 0;
 +}
 diff --git a/board/bytesatwork/bytedevkit_imx8mp/lpddr4_timing.c b/board/bytesatwork/bytedevkit_imx8mp/lpddr4_timing.c
-index 299d497640..6c08106ba3 100644
+index 73ef9c702b..1fc8eab188 100644
 --- a/board/bytesatwork/bytedevkit_imx8mp/lpddr4_timing.c
 +++ b/board/bytesatwork/bytedevkit_imx8mp/lpddr4_timing.c
 @@ -9,6 +9,7 @@
@@ -158,13 +139,13 @@ index 299d497640..6c08106ba3 100644
  	.ddrphy_cfg = ddr_ddrphy_cfg,
 diff --git a/board/bytesatwork/bytedevkit_imx8mp/lpddr4_timings.h b/board/bytesatwork/bytedevkit_imx8mp/lpddr4_timings.h
 new file mode 100644
-index 0000000000..40a5fa9ded
+index 0000000000..8cf42da730
 --- /dev/null
 +++ b/board/bytesatwork/bytedevkit_imx8mp/lpddr4_timings.h
 @@ -0,0 +1,12 @@
 +/* SPDX-License-Identifier: GPL-2.0+ */
 +/*
-+ * Copyright (C) 2024 bytesatwork AG - https://www.bytesatwork.io
++ * Copyright (C) 2025 bytesatwork AG - https://www.bytesatwork.io
 + */
 +
 +#ifndef _LPDDR4_TIMINGS_H_
@@ -175,12 +156,12 @@ index 0000000000..40a5fa9ded
 +
 +#endif /* _LPDDR4_TIMINGS_H_ */
 diff --git a/board/bytesatwork/bytedevkit_imx8mp/spl.c b/board/bytesatwork/bytedevkit_imx8mp/spl.c
-index 28fc42ea98..cf63e900fc 100644
+index e55928cf86..f7891733c3 100644
 --- a/board/bytesatwork/bytedevkit_imx8mp/spl.c
 +++ b/board/bytesatwork/bytedevkit_imx8mp/spl.c
-@@ -30,6 +30,10 @@
- #include <mmc.h>
+@@ -31,6 +31,10 @@
  #include <asm/arch/ddr.h>
+ #include <asm/sections.h>
  
 +#include "lpddr4_timings.h"
 +#include "../baw_config/baw_config_eeprom.h"
@@ -189,7 +170,7 @@ index 28fc42ea98..cf63e900fc 100644
  DECLARE_GLOBAL_DATA_PTR;
  
  int spl_board_boot_device(enum boot_device boot_dev_spl)
-@@ -58,8 +62,47 @@ int spl_board_boot_device(enum boot_device boot_dev_spl)
+@@ -59,8 +63,47 @@ int spl_board_boot_device(enum boot_device boot_dev_spl)
  #endif
  }
  
@@ -238,7 +219,7 @@ index 28fc42ea98..cf63e900fc 100644
  }
  
 diff --git a/include/configs/imx8mp_bytedevkit.h b/include/configs/imx8mp_bytedevkit.h
-index 298457fe96..3fea0216e3 100644
+index ba2e0ec3c8..4b96c8a672 100644
 --- a/include/configs/imx8mp_bytedevkit.h
 +++ b/include/configs/imx8mp_bytedevkit.h
 @@ -15,6 +15,11 @@
