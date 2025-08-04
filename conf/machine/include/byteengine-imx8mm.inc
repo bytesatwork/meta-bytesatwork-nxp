@@ -34,7 +34,7 @@ IMX_BOOT_SEEK = "33"
 OPTEE_BIN_EXT = "8mm"
 
 PREFERRED_PROVIDER_virtual/kernel = "linux-imx"
-PREFERRED_VERSION_linux-imx = "6.1%"
+PREFERRED_VERSION_linux-imx = "6.6%"
 PREFERRED_PROVIDER_virtual/bootloader = "u-boot-imx"
 
 MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS += " \

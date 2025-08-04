@@ -30,7 +30,7 @@ DDR_FIRMWARE_NAME = " \
 
 IMX_DEFAULT_BOOTLOADER:use-nxp-bsp = "u-boot-imx"
 
-PREFERRED_VERSION_u-boot-imx = "2023.04"
+PREFERRED_VERSION_u-boot-imx = "2024.04"
 IMAGE_BOOTLOADER = "imx-boot"
 BOOT_SPACE = "65536"
 LOADADDR = ""
@@ -47,7 +47,7 @@ OPTEE_BIN_EXT = "8mp"
 TEE_LOAD_ADDR = "0x56000000"
 
 PREFERRED_PROVIDER_virtual/kernel = "linux-imx"
-PREFERRED_VERSION_linux-imx = "6.1%"
+PREFERRED_VERSION_linux-imx = "6.6%"
 PREFERRED_PROVIDER_virtual/bootloader = "u-boot-imx"
 
 MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS += " \
