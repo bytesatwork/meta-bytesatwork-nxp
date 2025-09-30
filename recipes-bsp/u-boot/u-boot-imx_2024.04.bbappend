@@ -13,6 +13,14 @@ SRC_URI += " \
 	file://0008-imx-Add-i.MX8MM-bytesatwork-byteDEVKIT-board.patch \
 	file://0009-bytesatwork-imx8mm-Introduce-bawconfig.patch \
 	file://0010-mtd-spi-nor-ids-is25wp256-allow-only-standard-read.patch \
+	file://0011-bytesatwork-bawconfig-Add-imx8mp-HW-revision-and-RAM.patch \
+	file://0012-board-bytesatwork-imx8mp-Add-2GB-RAM.patch \
+	file://0013-configs-imx8mp_bytedevkit-Add-password.patch \
+	file://0014-configs-imx8mm_bytedevkit-Add-password.patch \
+	file://0015-byteatwork-imx8mm_bytedevkit-Save-env-on-eMMC.patch \
+	file://0016-configs-imx93_bytedevkit-Add-password.patch \
+	file://0017-configs-imx93_bytedevkit-Enable-redundand-environmen.patch \
+	file://0018-configs-Add-quiet-to-kernel-bootargs-for-bytedevkit-.patch \
 "
 
-PR = "r0"
+PR = "r1"

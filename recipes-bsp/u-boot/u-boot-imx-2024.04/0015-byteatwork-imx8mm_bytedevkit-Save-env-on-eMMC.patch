@@ -1,0 +1,108 @@
+From f9ab2e0697b878ceb28215d5ec9327496f270b72 Mon Sep 17 00:00:00 2001
+From: Simone Schwizer <simone.schwizer@bytesatwork.ch>
+Date: Mon, 29 Sep 2025 13:59:50 +0200
+Subject: [PATCH] byteatwork: imx8mm_bytedevkit: Save env on eMMC
+
+Saves environment on eMMC instead of SD card/SPI flash.
+
+Adds redundand environment and corrects offset and size.
+
+Signed-off-by: Simone Schwizer <simone.schwizer@bytesatwork.ch>
+---
+ .../bytesatwork/bytedevkit_imx8mm/imx8mm_bytedevkit.c |  9 +++++++++
+ configs/imx8mm_bytedevkit_defconfig                   | 11 ++++++-----
+ configs/imx8mm_bytedevkit_fspi_defconfig              | 11 ++++++-----
+ 3 files changed, 21 insertions(+), 10 deletions(-)
+
+diff --git a/board/bytesatwork/bytedevkit_imx8mm/imx8mm_bytedevkit.c b/board/bytesatwork/bytedevkit_imx8mm/imx8mm_bytedevkit.c
+index cd00fc61d4..9eee26068f 100644
+--- a/board/bytesatwork/bytedevkit_imx8mm/imx8mm_bytedevkit.c
++++ b/board/bytesatwork/bytedevkit_imx8mm/imx8mm_bytedevkit.c
+@@ -206,6 +206,15 @@ int board_late_init(void)
+ 	return 0;
+ }
+ 
++int board_mmc_get_env_dev(int devno)
++{
++#if defined(CONFIG_SYS_MMC_ENV_DEV)
++	return CONFIG_SYS_MMC_ENV_DEV;
++#else
++	return devno;
++#endif
++}
++
+ #include <asm/armv8/mmu.h>
+ extern struct mm_region *mem_map;
+ 
+diff --git a/configs/imx8mm_bytedevkit_defconfig b/configs/imx8mm_bytedevkit_defconfig
+index d3fa9d1b12..512f479ef1 100644
+--- a/configs/imx8mm_bytedevkit_defconfig
++++ b/configs/imx8mm_bytedevkit_defconfig
+@@ -8,9 +8,8 @@ CONFIG_SPL_LIBGENERIC_SUPPORT=y
+ CONFIG_NR_DRAM_BANKS=1
+ CONFIG_SF_DEFAULT_SPEED=50000000
+ CONFIG_SF_DEFAULT_MODE=0
+-CONFIG_ENV_SIZE=0x1000
+-CONFIG_ENV_OFFSET=0x400000
+-CONFIG_ENV_SECT_SIZE=0x1000
++CONFIG_ENV_SIZE=0x20000
++CONFIG_ENV_OFFSET=0xC0000
+ CONFIG_SYS_I2C_MXC_I2C1=y
+ CONFIG_SYS_I2C_MXC_I2C2=y
+ CONFIG_SYS_I2C_MXC_I2C3=y
+@@ -26,6 +25,7 @@ CONFIG_SPL_MMC=y
+ CONFIG_SPL_SERIAL=y
+ CONFIG_SPL_STACK=0x91fff0
+ CONFIG_SPL=y
++CONFIG_ENV_OFFSET_REDUND=0xE0000
+ CONFIG_IMX_BOOTAUX=y
+ CONFIG_SYS_LOAD_ADDR=0x40400000
+ CONFIG_SYS_MEMTEST_START=0x40000000
+@@ -86,8 +86,9 @@ CONFIG_CMD_FS_GENERIC=y
+ CONFIG_OF_CONTROL=y
+ CONFIG_SPL_OF_CONTROL=y
+ CONFIG_ENV_OVERWRITE=y
+-CONFIG_ENV_IS_IN_SPI_FLASH=y
+-CONFIG_SYS_MMC_ENV_DEV=1
++CONFIG_ENV_IS_IN_MMC=y
++CONFIG_SYS_REDUNDAND_ENVIRONMENT=y
++CONFIG_SYS_MMC_ENV_DEV=2
+ CONFIG_CLK_IMX8MM=y
+ CONFIG_USB_FUNCTION_FASTBOOT=y
+ CONFIG_FASTBOOT_BUF_ADDR=0x42800000
+diff --git a/configs/imx8mm_bytedevkit_fspi_defconfig b/configs/imx8mm_bytedevkit_fspi_defconfig
+index 7187971a1f..c7acd5f05a 100644
+--- a/configs/imx8mm_bytedevkit_fspi_defconfig
++++ b/configs/imx8mm_bytedevkit_fspi_defconfig
+@@ -8,9 +8,8 @@ CONFIG_SPL_LIBGENERIC_SUPPORT=y
+ CONFIG_NR_DRAM_BANKS=1
+ CONFIG_SF_DEFAULT_SPEED=50000000
+ CONFIG_SF_DEFAULT_MODE=0
+-CONFIG_ENV_SIZE=0x1000
+-CONFIG_ENV_OFFSET=0x400000
+-CONFIG_ENV_SECT_SIZE=0x1000
++CONFIG_ENV_SIZE=0x20000
++CONFIG_ENV_OFFSET=0xC0000
+ CONFIG_SYS_I2C_MXC_I2C1=y
+ CONFIG_SYS_I2C_MXC_I2C2=y
+ CONFIG_SYS_I2C_MXC_I2C3=y
+@@ -27,6 +26,7 @@ CONFIG_SPL_MMC=y
+ CONFIG_SPL_SERIAL=y
+ CONFIG_SPL_STACK=0x91fff0
+ CONFIG_SPL=y
++CONFIG_ENV_OFFSET_REDUND=0xE0000
+ CONFIG_IMX_BOOTAUX=y
+ CONFIG_SYS_LOAD_ADDR=0x40400000
+ CONFIG_SYS_MEMTEST_START=0x40000000
+@@ -87,8 +87,9 @@ CONFIG_CMD_FS_GENERIC=y
+ CONFIG_OF_CONTROL=y
+ CONFIG_SPL_OF_CONTROL=y
+ CONFIG_ENV_OVERWRITE=y
+-CONFIG_ENV_IS_IN_SPI_FLASH=y
+-CONFIG_SYS_MMC_ENV_DEV=1
++CONFIG_ENV_IS_IN_MMC=y
++CONFIG_SYS_REDUNDAND_ENVIRONMENT=y
++CONFIG_SYS_MMC_ENV_DEV=2
+ CONFIG_CLK_IMX8MM=y
+ CONFIG_USB_FUNCTION_FASTBOOT=y
+ CONFIG_FASTBOOT_BUF_ADDR=0x42800000
