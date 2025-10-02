@@ -1,0 +1,25 @@
+From 78979be3a2fdd3943380298fb8bf18f83cd91337 Mon Sep 17 00:00:00 2001
+From: Daniel Ammann <daniel.ammann@bytesatwork.ch>
+Date: Wed, 10 Sep 2025 08:59:05 +0200
+Subject: [PATCH] arm64: dts: freescale: imx93-bytedevkit: Remove hard-wired
+ MAC address
+
+The MAC address is set from the fuses.
+
+Signed-off-by: Daniel Ammann <daniel.ammann@bytesatwork.ch>
+---
+ arch/arm64/boot/dts/freescale/imx93-bytedevkit.dts | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/freescale/imx93-bytedevkit.dts b/arch/arm64/boot/dts/freescale/imx93-bytedevkit.dts
+index 8ed3baf3291b..b258c9f49dd5 100644
+--- a/arch/arm64/boot/dts/freescale/imx93-bytedevkit.dts
++++ b/arch/arm64/boot/dts/freescale/imx93-bytedevkit.dts
+@@ -109,7 +109,6 @@ &eqos {
+ 	phy-mode = "rgmii-id";
+ 	phy-handle = <&ethphy_qos>;
+ 	status = "okay";
+-	local-mac-address = [00 0a 35 00 00 01];
+ 
+ 	mdio {
+ 		compatible = "snps,dwmac-mdio";

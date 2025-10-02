@@ -19,9 +19,17 @@ SRC_URI += " \
 	file://0016-arm64-freescale-imx8mm-byte-devkit-engine-.dts-i-Add.patch \
 	file://0017-netfilter-nf_reject_ipv6-fix-nf_reject_ip6_tcphdr_pu.patch \
 	file://0018-arm64-freescale-imx93-bytedevkit.dts-fix-usb.patch \
+	file://0019-arm64-dts-freescale-imx93-byteengine-Remove-PMIC-IRQ.patch \
+	file://0020-arm64-dts-freescale-imx93-bytedevkit-Remove-hard-wir.patch \
+	file://0021-arm64-bytedevkit_imx8mm_defconfig-align-with-make-sa.patch \
+	file://0022-arm64-bytedevkit_imx8mm_defconfig-add-nftables-syste.patch \
+	file://0023-arm64-bytedevkit_imx8mp_defconfig-align-with-make-sa.patch \
+	file://0024-arm64-bytedevkit_imx8mp_defconfig-add-nftables-syste.patch \
+	file://0025-arm64-bytedevkit_imx93_defconfig-align-with-make-sav.patch \
+	file://0026-arm64-bytedevkit_imx93_defconfig-add-nftables-system.patch \
 "
 
-PR = "r0"
+PR = "r1"
 
 EXTRA_OEMAKE="LOCALVERSION=-${PR}"
 
