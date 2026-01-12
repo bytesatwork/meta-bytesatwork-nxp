@@ -1,4 +1,4 @@
-From 204376dce8b01fcf402a4900083978e9bada21f8 Mon Sep 17 00:00:00 2001
+From e209ec00d1ac177c8abafff945b5d26101f439d9 Mon Sep 17 00:00:00 2001
 From: Simone Schwizer <simone.schwizer@bytesatwork.ch>
 Date: Wed, 2 Jul 2025 17:01:24 +0200
 Subject: [PATCH] imx: Add i.MX93 bytesatwork byteDEVKIT board
@@ -24,9 +24,9 @@ Signed-off-by: Simone Schwizer <simone.schwizer@bytesatwork.ch>
  .../bytedevkit_imx93/lpddr4x_timing.c         | 1540 +++++++++++++
  .../bytedevkit_imx93/lpddr4x_timing_1866mts.c | 1997 ++++++++++++++++
  board/bytesatwork/bytedevkit_imx93/spl.c      |  195 ++
- configs/imx93_bytedevkit_defconfig            |  199 ++
- include/configs/imx93_bytedevkit.h            |  161 ++
- 14 files changed, 6842 insertions(+)
+ configs/imx93_bytedevkit_defconfig            |  201 ++
+ include/configs/imx93_bytedevkit.h            |  162 ++
+ 14 files changed, 6845 insertions(+)
  create mode 100644 arch/arm/dts/imx93-bytedevkit-u-boot.dtsi
  create mode 100644 arch/arm/dts/imx93-bytedevkit.dts
  create mode 100644 board/bytesatwork/bytedevkit_imx93/Kconfig
@@ -645,10 +645,10 @@ index 0000000000..b3363ae1c2
 +	};
 +};
 diff --git a/arch/arm/mach-imx/imx9/Kconfig b/arch/arm/mach-imx/imx9/Kconfig
-index 6e82501499..ceb05202dd 100644
+index dcfb7f680f..a13bfc1f36 100644
 --- a/arch/arm/mach-imx/imx9/Kconfig
 +++ b/arch/arm/mach-imx/imx9/Kconfig
-@@ -55,6 +55,11 @@ config TARGET_IMX93_11X11_EVK
+@@ -56,6 +56,11 @@ config TARGET_IMX93_11X11_EVK
  	select OF_BOARD_FIXUP
  	select IMX93
  
@@ -660,7 +660,7 @@ index 6e82501499..ceb05202dd 100644
  config TARGET_IMX93_VAR_SOM
  	bool "imx93_var_som"
  	select IMX93
-@@ -87,6 +92,7 @@ endchoice
+@@ -88,6 +93,7 @@ endchoice
  source "board/freescale/imx91_evk/Kconfig"
  source "board/freescale/imx91_qsb/Kconfig"
  source "board/freescale/imx93_evk/Kconfig"
@@ -6618,10 +6618,10 @@ index 0000000000..80ef11164e
 +}
 diff --git a/configs/imx93_bytedevkit_defconfig b/configs/imx93_bytedevkit_defconfig
 new file mode 100644
-index 0000000000..fc630623e5
+index 0000000000..1e4c7bee03
 --- /dev/null
 +++ b/configs/imx93_bytedevkit_defconfig
-@@ -0,0 +1,199 @@
+@@ -0,0 +1,201 @@
 +CONFIG_ARM=y
 +CONFIG_ARCH_IMX9=y
 +CONFIG_TEXT_BASE=0x80200000
@@ -6631,8 +6631,8 @@ index 0000000000..fc630623e5
 +CONFIG_SPL_LIBGENERIC_SUPPORT=y
 +CONFIG_NR_DRAM_BANKS=2
 +CONFIG_SF_DEFAULT_SPEED=40000000
-+CONFIG_ENV_SIZE=0x4000
-+CONFIG_ENV_OFFSET=0x700000
++CONFIG_ENV_SIZE=0x20000
++CONFIG_ENV_OFFSET=0xC0000
 +CONFIG_DM_GPIO=y
 +CONFIG_DEFAULT_DEVICE_TREE="imx93-bytedevkit"
 +CONFIG_SPL_TEXT_BASE=0x2049A000
@@ -6643,6 +6643,7 @@ index 0000000000..fc630623e5
 +CONFIG_SPL_DRIVERS_MISC=y
 +CONFIG_SPL_STACK=0x20519dd0
 +CONFIG_SPL=y
++CONFIG_ENV_OFFSET_REDUND=0xE0000
 +CONFIG_CMD_DEKBLOB=y
 +CONFIG_SPL_IMX_ROMAPI_LOADADDR=0x88000000
 +CONFIG_SYS_LOAD_ADDR=0x80400000
@@ -6711,6 +6712,7 @@ index 0000000000..fc630623e5
 +CONFIG_ENV_OVERWRITE=y
 +CONFIG_ENV_IS_NOWHERE=y
 +CONFIG_ENV_IS_IN_MMC=y
++CONFIG_SYS_REDUNDAND_ENVIRONMENT=y
 +CONFIG_SYS_RELOC_GD_ENV_ADDR=y
 +CONFIG_USE_ETHPRIME=y
 +CONFIG_ETHPRIME="eth1"
@@ -6823,10 +6825,10 @@ index 0000000000..fc630623e5
 +CONFIG_EFI_SECURE_BOOT=y
 diff --git a/include/configs/imx93_bytedevkit.h b/include/configs/imx93_bytedevkit.h
 new file mode 100644
-index 0000000000..c1a7809428
+index 0000000000..c6242066cc
 --- /dev/null
 +++ b/include/configs/imx93_bytedevkit.h
-@@ -0,0 +1,161 @@
+@@ -0,0 +1,162 @@
 +/* SPDX-License-Identifier: GPL-2.0+ */
 +/*
 + * Copyright (C) 2025 bytesatwork AG - https://www.bytesatwork.io
@@ -6891,7 +6893,8 @@ index 0000000000..c1a7809428
 +	"mmcpart=1\0" \
 +	"mmcroot=/dev/mmcblk1p1 rootwait rw\0" \
 +	"mmcautodetect=yes\0" \
-+	"mmcargs=setenv bootargs ${jh_clk} ${mcore_clk} console=${console} root=${mmcroot}\0 " \
++	"mmcargs=setenv bootargs ${jh_clk} ${mcore_clk} console=${console} root=${mmcroot} " \
++		"quiet\0" \
 +	"loadbootscript=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${script};\0" \
 +	"bootscript=echo Running bootscript from mmc ...; " \
 +		"source\0" \

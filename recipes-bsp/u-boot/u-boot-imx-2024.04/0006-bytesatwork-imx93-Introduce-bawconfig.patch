@@ -1,4 +1,4 @@
-From 87670474dafaf6bdcb7369f356f24b1178f72013 Mon Sep 17 00:00:00 2001
+From d8c24392316d67d0d28b91ab6b71332ae0d3c38d Mon Sep 17 00:00:00 2001
 From: Rico Ganahl <rico.ganahl@bytesatwork.ch>
 Date: Thu, 20 Jun 2024 14:05:21 +0200
 Subject: [PATCH] bytesatwork: imx93: Introduce bawconfig
@@ -86,7 +86,7 @@ index 80ef11164e..f810f50ad4 100644
  	if (is_voltage_mode(VOLT_LOW_DRIVE))
  		ptiming = &dram_timing_1866mts;
 diff --git a/configs/imx93_bytedevkit_defconfig b/configs/imx93_bytedevkit_defconfig
-index fc630623e5..48fefe6c39 100644
+index 1e4c7bee03..46dc70620b 100644
 --- a/configs/imx93_bytedevkit_defconfig
 +++ b/configs/imx93_bytedevkit_defconfig
 @@ -13,6 +13,10 @@ CONFIG_DM_GPIO=y
@@ -101,7 +101,7 @@ index fc630623e5..48fefe6c39 100644
  CONFIG_SYS_MONITOR_LEN=524288
  CONFIG_SPL_SERIAL=y
 diff --git a/include/configs/imx93_bytedevkit.h b/include/configs/imx93_bytedevkit.h
-index c1a7809428..824e6d0b53 100644
+index c6242066cc..371f70eb8e 100644
 --- a/include/configs/imx93_bytedevkit.h
 +++ b/include/configs/imx93_bytedevkit.h
 @@ -14,6 +14,10 @@

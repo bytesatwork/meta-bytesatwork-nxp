@@ -1,4 +1,4 @@
-From 4f5cdef210d36d9a1be860fa3227d2a54a51636a Mon Sep 17 00:00:00 2001
+From 89461e0539361300d010137bcac0fb01aaad53a4 Mon Sep 17 00:00:00 2001
 From: Alexander Forsch <alexander.forsch@bytesatwork.ch>
 Date: Fri, 8 Mar 2024 13:08:52 +0100
 Subject: [PATCH] imx: Add i.MX8MP bytesatwork byteDEVKIT board
@@ -27,8 +27,8 @@ Signed-off-by: Simone Schwizer <simone.schwizer@bytesatwork.ch>
  .../bytedevkit_imx8mp/lpddr4_timing_ndm.c     | 1847 ++++++++++++++++
  board/bytesatwork/bytedevkit_imx8mp/spl.c     |  188 ++
  configs/imx8mp_bytedevkit_defconfig           |  203 ++
- include/configs/imx8mp_bytedevkit.h           |  122 ++
- 15 files changed, 6780 insertions(+)
+ include/configs/imx8mp_bytedevkit.h           |  123 ++
+ 15 files changed, 6781 insertions(+)
  create mode 100644 arch/arm/dts/imx8mp-bytedevkit-u-boot.dtsi
  create mode 100644 arch/arm/dts/imx8mp-bytedevkit.dts
  create mode 100644 board/bytesatwork/bytedevkit_imx8mp/Kconfig
@@ -6812,10 +6812,10 @@ index 0000000000..54346f4693
 +CONFIG_EFI_SECURE_BOOT=y
 diff --git a/include/configs/imx8mp_bytedevkit.h b/include/configs/imx8mp_bytedevkit.h
 new file mode 100644
-index 0000000000..ba2e0ec3c8
+index 0000000000..ecf2c391d7
 --- /dev/null
 +++ b/include/configs/imx8mp_bytedevkit.h
-@@ -0,0 +1,122 @@
+@@ -0,0 +1,123 @@
 +/* SPDX-License-Identifier: GPL-2.0+ */
 +/*
 + * Copyright (C) 2025 bytesatwork AG - https://www.bytesatwork.io
@@ -6878,7 +6878,8 @@ index 0000000000..ba2e0ec3c8
 +	"mmcpart=1\0" \
 +	"mmcroot=/dev/mmcblk1p1 rootwait rw\0" \
 +	"mmcautodetect=yes\0" \
-+	"mmcargs=setenv bootargs ${jh_clk} ${mcore_clk} console=${console} root=${mmcroot}\0 " \
++	"mmcargs=setenv bootargs ${jh_clk} ${mcore_clk} console=${console} root=${mmcroot} " \
++		"quiet\0" \
 +	"loadbootscript=ext4load mmc ${mmcdev}:${mmcpart} ${loadaddr} ${bsp_script};\0" \
 +	"bootscript=echo Running bootscript from mmc ...; " \
 +		"source\0" \

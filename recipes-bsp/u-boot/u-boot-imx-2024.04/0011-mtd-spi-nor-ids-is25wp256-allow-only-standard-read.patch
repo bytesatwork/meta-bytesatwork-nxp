@@ -1,4 +1,4 @@
-From e456a0f64f69b8a0d75d2b6ac2df0ef2122e5965 Mon Sep 17 00:00:00 2001
+From 0662bb83a9600f4b97474b5350c18524c5c8682f Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Stephan=20D=C3=BCnner?= <stephan.duenner@bytesatwork.ch>
 Date: Thu, 20 Jan 2022 09:00:38 +0100
 Subject: [PATCH] mtd: spi-nor-ids: is25wp256 allow only standard read
