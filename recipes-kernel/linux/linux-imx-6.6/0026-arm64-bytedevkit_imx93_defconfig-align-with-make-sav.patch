@@ -1,4 +1,4 @@
-From 2e5576ffc17d1d06af375df952eb9febbb14b7d8 Mon Sep 17 00:00:00 2001
+From 69e9d69467d87337619872b2af8b4217cf917219 Mon Sep 17 00:00:00 2001
 From: Alexander Forsch <alexander.forsch@bytesatwork.ch>
 Date: Thu, 2 Oct 2025 10:52:15 +0200
 Subject: [PATCH] arm64: bytedevkit_imx93_defconfig: align with make
@@ -12,7 +12,7 @@ Signed-off-by: Alexander Forsch <alexander.forsch@bytesatwork.ch>
  1 file changed, 3 deletions(-)
 
 diff --git a/arch/arm64/configs/bytedevkit_imx93_defconfig b/arch/arm64/configs/bytedevkit_imx93_defconfig
-index db48df6498f8..5d9214f2aed1 100644
+index db48df6498..5d9214f2ae 100644
 --- a/arch/arm64/configs/bytedevkit_imx93_defconfig
 +++ b/arch/arm64/configs/bytedevkit_imx93_defconfig
 @@ -243,7 +243,6 @@ CONFIG_MTD_SST25L=y

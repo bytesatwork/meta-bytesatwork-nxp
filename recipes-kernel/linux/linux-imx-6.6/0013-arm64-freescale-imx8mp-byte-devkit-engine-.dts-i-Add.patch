@@ -1,4 +1,4 @@
-From 8f3d24261eed2321decd1e19e54999c124d73f3f Mon Sep 17 00:00:00 2001
+From f44941a7ef5525ce793e6842a03d643c8fba0203 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Stephan=20D=C3=BCnner?= <stephan.duenner@bytesatwork.ch>
 Date: Tue, 30 Jan 2024 14:09:56 +0100
 Subject: [PATCH] arm64: freescale: imx8mp-byte(devkit|engine).dts(i): Add
@@ -22,7 +22,7 @@ Signed-off-by: Stephan Dünner <stephan.duenner@bytesatwork.ch>
  create mode 100644 arch/arm64/boot/dts/freescale/imx8mp-byteengine.dtsi
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 9ea59c1b810d..7c1ec71a78de 100644
+index 9ea59c1b81..7c1ec71a78 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
 @@ -4443,6 +4443,9 @@ S:	Maintained
@@ -36,7 +36,7 @@ index 9ea59c1b810d..7c1ec71a78de 100644
  F:	arch/arm64/boot/dts/freescale/imx93-byteengine.dtsi
  F:	arch/arm64/configs/bytedevkit_imx8mp_defconfig
 diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-index 1cd68f50931b..77611f081894 100644
+index 1cd68f5093..77611f0818 100644
 --- a/arch/arm64/boot/dts/freescale/Makefile
 +++ b/arch/arm64/boot/dts/freescale/Makefile
 @@ -140,6 +140,8 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mp-ab2.dtb
@@ -50,7 +50,7 @@ index 1cd68f50931b..77611f081894 100644
  imx8mp-evk-revb4-rm67191-dtbs := imx8mp-evk-rm67191.dtb imx8mp-evk-revb4.dtbo
 diff --git a/arch/arm64/boot/dts/freescale/imx8mp-bytedevkit-v2.dts b/arch/arm64/boot/dts/freescale/imx8mp-bytedevkit-v2.dts
 new file mode 100644
-index 000000000000..2353d8435170
+index 0000000000..2353d84351
 --- /dev/null
 +++ b/arch/arm64/boot/dts/freescale/imx8mp-bytedevkit-v2.dts
 @@ -0,0 +1,346 @@
@@ -402,7 +402,7 @@ index 000000000000..2353d8435170
 +};
 diff --git a/arch/arm64/boot/dts/freescale/imx8mp-bytedevkit.dts b/arch/arm64/boot/dts/freescale/imx8mp-bytedevkit.dts
 new file mode 100644
-index 000000000000..5d6da234c5db
+index 0000000000..5d6da234c5
 --- /dev/null
 +++ b/arch/arm64/boot/dts/freescale/imx8mp-bytedevkit.dts
 @@ -0,0 +1,536 @@
@@ -944,7 +944,7 @@ index 000000000000..5d6da234c5db
 +};
 diff --git a/arch/arm64/boot/dts/freescale/imx8mp-byteengine.dtsi b/arch/arm64/boot/dts/freescale/imx8mp-byteengine.dtsi
 new file mode 100644
-index 000000000000..9cb52ae48d53
+index 0000000000..9cb52ae48d
 --- /dev/null
 +++ b/arch/arm64/boot/dts/freescale/imx8mp-byteengine.dtsi
 @@ -0,0 +1,286 @@

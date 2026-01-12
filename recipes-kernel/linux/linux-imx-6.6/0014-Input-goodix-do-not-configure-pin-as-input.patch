@@ -1,4 +1,4 @@
-From 8d741db6d0e089131e36f98ba9bb7870ec7631c4 Mon Sep 17 00:00:00 2001
+From 976020e2b2f572ff6786401b566ad96b0f018f4f Mon Sep 17 00:00:00 2001
 From: Daniel Ammann <daniel.ammann@bytesatwork.ch>
 Date: Thu, 2 Jun 2022 16:12:00 +0200
 Subject: [PATCH] Input: goodix - do not configure pin as input
@@ -11,7 +11,7 @@ Signed-off-by: Daniel Ammann <daniel.ammann@bytesatwork.ch>
  1 file changed, 11 deletions(-)
 
 diff --git a/drivers/input/touchscreen/goodix.c b/drivers/input/touchscreen/goodix.c
-index 8033fa86ff5f..2b91d8043764 100644
+index 8033fa86ff..2b91d80437 100644
 --- a/drivers/input/touchscreen/goodix.c
 +++ b/drivers/input/touchscreen/goodix.c
 @@ -780,17 +780,6 @@ int goodix_reset_no_int_sync(struct goodix_ts_data *ts)

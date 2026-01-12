@@ -1,4 +1,4 @@
-From 3e98d4b2a7363b4137eca0114fbae7a23fd92326 Mon Sep 17 00:00:00 2001
+From d59c392314c864363647dc281358cc5acbc1ca22 Mon Sep 17 00:00:00 2001
 From: Alexander Forsch <alexander.forsch@bytesatwork.ch>
 Date: Tue, 22 Jul 2025 10:29:55 +0200
 Subject: [PATCH] drivers: gpu/drm: Adapt for byteENGINE IMX8MM
@@ -13,7 +13,7 @@ Signed-off-by: Alexander Forsch <alexander.forsch@bytesatwork.ch>
  2 files changed, 12 insertions(+)
 
 diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
-index a135a1b2cab3..a3eaf6c187c2 100644
+index a135a1b2ca..a3eaf6c187 100644
 --- a/drivers/gpu/drm/panel/Kconfig
 +++ b/drivers/gpu/drm/panel/Kconfig
 @@ -880,4 +880,13 @@ config DRM_PANEL_YOURITECH_ILI9806E
@@ -31,7 +31,7 @@ index a135a1b2cab3..a3eaf6c187c2 100644
 +	  If unsure, say N.
  endmenu
 diff --git a/drivers/gpu/drm/panel/panel-youritech-ili9806e.c b/drivers/gpu/drm/panel/panel-youritech-ili9806e.c
-index 7450b6027f1f..8e2c3cbac801 100644
+index 7450b6027f..8e2c3cbac8 100644
 --- a/drivers/gpu/drm/panel/panel-youritech-ili9806e.c
 +++ b/drivers/gpu/drm/panel/panel-youritech-ili9806e.c
 @@ -490,6 +490,9 @@ static int ili9806e_panel_probe(struct mipi_dsi_device *dsi)

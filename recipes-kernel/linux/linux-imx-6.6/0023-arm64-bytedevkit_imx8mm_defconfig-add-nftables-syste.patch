@@ -1,4 +1,4 @@
-From 9b5488a0a5469f3e898708b65b03a42e8aae9e21 Mon Sep 17 00:00:00 2001
+From 3e7f3cc6e508b882ad09dea10e18142489ef0c3e Mon Sep 17 00:00:00 2001
 From: Alexander Forsch <alexander.forsch@bytesatwork.ch>
 Date: Thu, 2 Oct 2025 10:05:14 +0200
 Subject: [PATCH] arm64: bytedevkit_imx8mm_defconfig: add nftables + systemd
@@ -12,7 +12,7 @@ Signed-off-by: Alexander Forsch <alexander.forsch@bytesatwork.ch>
  1 file changed, 17 insertions(+), 16 deletions(-)
 
 diff --git a/arch/arm64/configs/bytedevkit_imx8mm_defconfig b/arch/arm64/configs/bytedevkit_imx8mm_defconfig
-index 78df77087935..29fac4a81064 100644
+index 78df770879..29fac4a810 100644
 --- a/arch/arm64/configs/bytedevkit_imx8mm_defconfig
 +++ b/arch/arm64/configs/bytedevkit_imx8mm_defconfig
 @@ -1,7 +1,8 @@

@@ -1,4 +1,4 @@
-From 6e5df6cf90a28405d8e43afde6b3374350f9e58e Mon Sep 17 00:00:00 2001
+From 0c403b5bba145b5e57a1d0d72b6808a1a8a098de Mon Sep 17 00:00:00 2001
 From: Simone Schwizer <simone.schwizer@bytesatwork.ch>
 Date: Thu, 13 Jun 2024 14:29:16 +0200
 Subject: [PATCH] dt-bindings: vendor-prefixes: Add youritech
@@ -11,7 +11,7 @@ Signed-off-by: Simone Schwizer <simone.schwizer@bytesatwork.ch>
  1 file changed, 2 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index 4a7272410d73..a793f7061aa7 100644
+index 4a7272410d..a793f7061a 100644
 --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
 +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
 @@ -1580,6 +1580,8 @@ patternProperties:

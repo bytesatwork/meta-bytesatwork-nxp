@@ -1,4 +1,4 @@
-From fe241cc0de484806c188e4f15e8c73970c6dd4ad Mon Sep 17 00:00:00 2001
+From 471d95e02edb2bc52cc6d7b73b34ede3416cc5f4 Mon Sep 17 00:00:00 2001
 From: Alexander Forsch <alexander.forsch@bytesatwork.ch>
 Date: Thu, 2 Oct 2025 10:55:28 +0200
 Subject: [PATCH] arm64: bytedevkit_imx93_defconfig: add nftables + systemd
@@ -12,7 +12,7 @@ Signed-off-by: Alexander Forsch <alexander.forsch@bytesatwork.ch>
  1 file changed, 13 insertions(+), 9 deletions(-)
 
 diff --git a/arch/arm64/configs/bytedevkit_imx93_defconfig b/arch/arm64/configs/bytedevkit_imx93_defconfig
-index 5d9214f2aed1..3928a29c9b1b 100644
+index 5d9214f2ae..3928a29c9b 100644
 --- a/arch/arm64/configs/bytedevkit_imx93_defconfig
 +++ b/arch/arm64/configs/bytedevkit_imx93_defconfig
 @@ -1,6 +1,5 @@

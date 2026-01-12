@@ -1,4 +1,4 @@
-From f4e9323ee47acfef6c54c780f8e7d7c4a01442c9 Mon Sep 17 00:00:00 2001
+From 82217fca2c822116bf020aead2144c4f1e0895b0 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Stephan=20D=C3=BCnner?= <stephan.duenner@bytesatwork.ch>
 Date: Fri, 26 Jan 2024 18:57:51 +0100
 Subject: [PATCH] drm/imx: imx-ldb: Add 168Mhz LDB clock to drive 24 Mhz PCLK
@@ -16,7 +16,7 @@ Signed-off-by: Stephan Dünner <stephan.duenner@bytesatwork.ch>
  3 files changed, 2 insertions(+), 19 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-index 3e6d8c76d30a..ff36cc4c6d47 100644
+index 3e6d8c76d3..ff36cc4c6d 100644
 --- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
 +++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
 @@ -752,7 +752,7 @@ clk: clock-controller@30380000 {
@@ -29,7 +29,7 @@ index 3e6d8c76d30a..ff36cc4c6d47 100644
  
  			src: reset-controller@30390000 {
 diff --git a/drivers/clk/imx/clk-pll14xx.c b/drivers/clk/imx/clk-pll14xx.c
-index 6c17786ecb9f..db2c72804efd 100644
+index 6c17786ecb..db2c72804e 100644
 --- a/drivers/clk/imx/clk-pll14xx.c
 +++ b/drivers/clk/imx/clk-pll14xx.c
 @@ -75,6 +75,7 @@ static const struct imx_pll14xx_rate_table imx_pll1443x_tbl[] = {
@@ -41,7 +41,7 @@ index 6c17786ecb9f..db2c72804efd 100644
  
  struct imx_pll14xx_clk imx_1443x_pll = {
 diff --git a/drivers/gpu/drm/imx/imx8mp-ldb.c b/drivers/gpu/drm/imx/imx8mp-ldb.c
-index e3f5c5e6e842..df4fdc5dbfcb 100644
+index e3f5c5e6e8..df4fdc5dbf 100644
 --- a/drivers/gpu/drm/imx/imx8mp-ldb.c
 +++ b/drivers/gpu/drm/imx/imx8mp-ldb.c
 @@ -186,14 +186,6 @@ imx8mp_ldb_encoder_atomic_check(struct drm_encoder *encoder,

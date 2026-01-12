@@ -1,4 +1,4 @@
-From c15f806c79244758beb00385522ad8789d6060a9 Mon Sep 17 00:00:00 2001
+From 2dec614e8f2e4b21c4ea7b7c18a0c3cb20fca631 Mon Sep 17 00:00:00 2001
 From: Alexander Forsch <alexander.forsch@bytesatwork.ch>
 Date: Tue, 22 Jul 2025 14:38:26 +0200
 Subject: [PATCH] arm64: freescale: imx93-bytedevkit.dts: fix usb
@@ -12,7 +12,7 @@ Signed-off-by: Alexander Forsch <alexander.forsch@bytesatwork.ch>
  1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/freescale/imx93-bytedevkit.dts b/arch/arm64/boot/dts/freescale/imx93-bytedevkit.dts
-index 0a6a1fccd997..8ed3baf3291b 100644
+index 0a6a1fccd9..8ed3baf329 100644
 --- a/arch/arm64/boot/dts/freescale/imx93-bytedevkit.dts
 +++ b/arch/arm64/boot/dts/freescale/imx93-bytedevkit.dts
 @@ -40,7 +40,7 @@ reg_usb_otg1_vbus: regulator-otg {

@@ -1,4 +1,4 @@
-From ff04b0c9cf9364b7a682557d360cb8bf21b26c79 Mon Sep 17 00:00:00 2001
+From e48c7645a276b8552656bf8953e879759d4b16b7 Mon Sep 17 00:00:00 2001
 From: Simone Schwizer <simone.schwizer@bytesatwork.ch>
 Date: Mon, 17 Jun 2024 10:37:55 +0200
 Subject: [PATCH] arm64: freescale: imx93-byte(devkit|engine).dts(i): Add
@@ -17,7 +17,7 @@ Signed-off-by: Simone Schwizer <simone.schwizer@bytesatwork.ch>
  create mode 100644 arch/arm64/boot/dts/freescale/imx93-byteengine.dtsi
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 5b545be65c33..92fe917ee89b 100644
+index 5b545be65c..92fe917ee8 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
 @@ -4443,6 +4443,8 @@ S:	Maintained
@@ -30,7 +30,7 @@ index 5b545be65c33..92fe917ee89b 100644
  F:	drivers/gpio/gpio-tca6418.c
  F:	drivers/gpu/drm/panel/panel-youritech-ili9806e.c
 diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-index efe32533733e..1cd68f50931b 100644
+index efe3253373..1cd68f5093 100644
 --- a/arch/arm64/boot/dts/freescale/Makefile
 +++ b/arch/arm64/boot/dts/freescale/Makefile
 @@ -441,6 +441,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx93-9x9-qsb.dtb \
@@ -43,7 +43,7 @@ index efe32533733e..1cd68f50931b 100644
  			  imx91-9x9-qsb-can1.dtb \
 diff --git a/arch/arm64/boot/dts/freescale/imx93-bytedevkit.dts b/arch/arm64/boot/dts/freescale/imx93-bytedevkit.dts
 new file mode 100644
-index 000000000000..0a6a1fccd997
+index 0000000000..0a6a1fccd9
 --- /dev/null
 +++ b/arch/arm64/boot/dts/freescale/imx93-bytedevkit.dts
 @@ -0,0 +1,512 @@
@@ -561,7 +561,7 @@ index 000000000000..0a6a1fccd997
 +};
 diff --git a/arch/arm64/boot/dts/freescale/imx93-byteengine.dtsi b/arch/arm64/boot/dts/freescale/imx93-byteengine.dtsi
 new file mode 100644
-index 000000000000..666cef71cc82
+index 0000000000..666cef71cc
 --- /dev/null
 +++ b/arch/arm64/boot/dts/freescale/imx93-byteengine.dtsi
 @@ -0,0 +1,195 @@

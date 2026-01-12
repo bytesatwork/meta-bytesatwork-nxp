@@ -1,0 +1,47 @@
+From 16ccc631a2f835ff3bbb2a04d84abc653e784d1c Mon Sep 17 00:00:00 2001
+From: Markus Kappeler <markus.kappeler@bytesatwork.ch>
+Date: Tue, 9 Sep 2025 16:32:42 +0200
+Subject: [PATCH] arm64: dts: freescale: imx93-byteengine: Add memory region
+ for ele
+
+Add memory definition for ele (OTP) to get access to MAC addresses.
+
+Signed-off-by: Markus Kappeler <markus.kappeler@bytesatwork.ch>
+---
+ .../boot/dts/freescale/imx93-byteengine.dtsi     | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/freescale/imx93-byteengine.dtsi b/arch/arm64/boot/dts/freescale/imx93-byteengine.dtsi
+index fdae740015..adcc1eef4e 100644
+--- a/arch/arm64/boot/dts/freescale/imx93-byteengine.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx93-byteengine.dtsi
+@@ -8,6 +8,18 @@
+ / {
+ 	model = "bytesatwork byteENGINE i.MX93";
+ 	compatible = "bytesatwork,byteengine-imx93", "fsl,imx93";
++
++	reserved-memory {
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges;
++
++		ele_reserved: ele-reserved@a4120000 {
++			compatible = "shared-dma-pool";
++			reg = <0 0xa4120000 0 0x100000>;
++			no-map;
++		};
++	};
+ };
+ 
+ &mu1 {
+@@ -130,6 +142,10 @@ &wdog3 {
+ 	status = "okay";
+ };
+ 
++&ele_fw2 {
++	memory-region = <&ele_reserved>;
++};
++
+ &iomuxc {
+ 	/* need to config the SION for data and cmd pad, refer to ERR052021 */
+ 	pinctrl_usdhc1: usdhc1grp {

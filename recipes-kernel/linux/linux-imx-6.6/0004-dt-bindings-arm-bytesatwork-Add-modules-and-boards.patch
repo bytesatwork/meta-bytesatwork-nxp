@@ -1,4 +1,4 @@
-From 0ceffaed179d9ba20c58160c9a53704f8b1f4971 Mon Sep 17 00:00:00 2001
+From 50c8819b788ec9e18534541a2a5dcd6c81352142 Mon Sep 17 00:00:00 2001
 From: Simone Schwizer <simone.schwizer@bytesatwork.ch>
 Date: Thu, 13 Jun 2024 12:59:34 +0200
 Subject: [PATCH] dt-bindings: arm: bytesatwork: Add modules and boards
@@ -14,7 +14,7 @@ Signed-off-by: Simone Schwizer <simone.schwizer@bytesatwork.ch>
 
 diff --git a/Documentation/devicetree/bindings/arm/bytesatwork/bytesatwork.yaml b/Documentation/devicetree/bindings/arm/bytesatwork/bytesatwork.yaml
 new file mode 100644
-index 000000000000..d9a7475ca2b1
+index 0000000000..d9a7475ca2
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/arm/bytesatwork/bytesatwork.yaml
 @@ -0,0 +1,41 @@
@@ -60,7 +60,7 @@ index 000000000000..d9a7475ca2b1
 +
 +...
 diff --git a/MAINTAINERS b/MAINTAINERS
-index cd6ad8cda57a..4497beb0caf2 100644
+index cd6ad8cda5..4497beb0ca 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
 @@ -4441,6 +4441,7 @@ BYTESATWORK MODULES AND BOARDS

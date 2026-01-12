@@ -1,4 +1,4 @@
-From 82d4ac164f513c7519df6582eab094dfcacd6f34 Mon Sep 17 00:00:00 2001
+From b6c100edc13832de568bcfcf382460f57a2f9220 Mon Sep 17 00:00:00 2001
 From: Eric Dumazet <edumazet@google.com>
 Date: Fri, 13 Sep 2024 17:06:15 +0000
 Subject: [PATCH] netfilter: nf_reject_ipv6: fix nf_reject_ip6_tcphdr_put()
@@ -151,7 +151,7 @@ Signed-off-by: Daniel Ammann <daniel.ammann@bytesatwork.ch>
  1 file changed, 2 insertions(+), 12 deletions(-)
 
 diff --git a/net/ipv6/netfilter/nf_reject_ipv6.c b/net/ipv6/netfilter/nf_reject_ipv6.c
-index 71d692728230..690d1c047691 100644
+index 71d6927282..690d1c0476 100644
 --- a/net/ipv6/netfilter/nf_reject_ipv6.c
 +++ b/net/ipv6/netfilter/nf_reject_ipv6.c
 @@ -223,33 +223,23 @@ void nf_reject_ip6_tcphdr_put(struct sk_buff *nskb,

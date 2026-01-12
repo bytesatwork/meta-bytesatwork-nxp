@@ -1,4 +1,4 @@
-From 3745f755453705d7babdb12da0de899febe4aec8 Mon Sep 17 00:00:00 2001
+From 898c381a84a9b3a8849b55c71a2298e94cde49db Mon Sep 17 00:00:00 2001
 From: Guy Morand <guy.morand@bytesatwork.ch>
 Date: Thu, 23 May 2024 10:58:23 +0200
 Subject: [PATCH] drivers: gpio: Introduce tca6418 driver
@@ -15,7 +15,7 @@ Signed-off-by: Guy Morand <guy.morand@bytesatwork.ch>
  create mode 100644 drivers/gpio/gpio-tca6418.c
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 3cd1006128b1..52a029bcd6d4 100644
+index 3cd1006128..52a029bcd6 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
 @@ -4443,6 +4443,7 @@ S:	Maintained
@@ -27,7 +27,7 @@ index 3cd1006128b1..52a029bcd6d4 100644
  
  C-MEDIA CMI8788 DRIVER
 diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-index 6dcd39a31a0b..26c3539647d2 100644
+index 6dcd39a31a..26c3539647 100644
 --- a/drivers/gpio/Kconfig
 +++ b/drivers/gpio/Kconfig
 @@ -1153,6 +1153,15 @@ config GPIO_PCF857X
@@ -47,7 +47,7 @@ index 6dcd39a31a0b..26c3539647d2 100644
  	tristate "TPIC2810 8-Bit I2C GPO expander"
  	help
 diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
-index ce50e15974b7..79bc37a579a2 100644
+index ce50e15974..79bc37a579 100644
 --- a/drivers/gpio/Makefile
 +++ b/drivers/gpio/Makefile
 @@ -156,6 +156,7 @@ obj-$(CONFIG_GPIO_SYSCON)		+= gpio-syscon.o
@@ -60,7 +60,7 @@ index ce50e15974b7..79bc37a579a2 100644
  obj-$(CONFIG_GPIO_THUNDERX)		+= gpio-thunderx.o
 diff --git a/drivers/gpio/gpio-tca6418.c b/drivers/gpio/gpio-tca6418.c
 new file mode 100644
-index 000000000000..09f64ed2a71a
+index 0000000000..09f64ed2a7
 --- /dev/null
 +++ b/drivers/gpio/gpio-tca6418.c
 @@ -0,0 +1,634 @@

@@ -1,4 +1,4 @@
-From c9f866f4f1b76443a832d7c5543616d8c2e87d66 Mon Sep 17 00:00:00 2001
+From c723d891a92908f803df956c11a41e56901c7b03 Mon Sep 17 00:00:00 2001
 From: Daniel Ammann <daniel.ammann@bytesatwork.ch>
 Date: Thu, 18 Nov 2021 13:33:33 +0100
 Subject: [PATCH] arm64: bytedevkit_imx8mm_defconfig: Add a basic configuration
@@ -14,7 +14,7 @@ Signed-off-by: Daniel Ammann <daniel.ammann@bytesatwork.ch>
  create mode 100644 arch/arm64/configs/bytedevkit_imx8mm_defconfig
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 7c1ec71a78de..4ea37fc00ce4 100644
+index 7c1ec71a78..4ea37fc00c 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
 @@ -4448,6 +4448,7 @@ F:	arch/arm64/boot/dts/freescale/imx8mp-bytedevkit.dts
@@ -27,7 +27,7 @@ index 7c1ec71a78de..4ea37fc00ce4 100644
  F:	drivers/gpio/gpio-tca6418.c
 diff --git a/arch/arm64/configs/bytedevkit_imx8mm_defconfig b/arch/arm64/configs/bytedevkit_imx8mm_defconfig
 new file mode 100644
-index 000000000000..f72d46e8a278
+index 0000000000..f72d46e8a2
 --- /dev/null
 +++ b/arch/arm64/configs/bytedevkit_imx8mm_defconfig
 @@ -0,0 +1,842 @@

@@ -1,4 +1,4 @@
-From 1d36844b378d3f36889345e2d74254e5f123f2c2 Mon Sep 17 00:00:00 2001
+From 690f994e5c3af51b9c60777835b31922f2a84f21 Mon Sep 17 00:00:00 2001
 From: Alexander Forsch <alexander.forsch@bytesatwork.ch>
 Date: Thu, 2 Oct 2025 10:45:01 +0200
 Subject: [PATCH] arm64: bytedevkit_imx8mp_defconfig: align with make
@@ -12,7 +12,7 @@ Signed-off-by: Alexander Forsch <alexander.forsch@bytesatwork.ch>
  1 file changed, 9 insertions(+), 25 deletions(-)
 
 diff --git a/arch/arm64/configs/bytedevkit_imx8mp_defconfig b/arch/arm64/configs/bytedevkit_imx8mp_defconfig
-index 9dd82811d079..e50ee7a8042e 100644
+index 9dd82811d0..e50ee7a804 100644
 --- a/arch/arm64/configs/bytedevkit_imx8mp_defconfig
 +++ b/arch/arm64/configs/bytedevkit_imx8mp_defconfig
 @@ -31,6 +31,9 @@ CONFIG_RELAY=y

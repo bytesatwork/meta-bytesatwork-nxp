@@ -1,4 +1,4 @@
-From a5d941d043c25c0bc1806e72dfe0e848ef819381 Mon Sep 17 00:00:00 2001
+From 66ecef2389db1dad5ebd37e69d00a8f881397e4a Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Stephan=20D=C3=BCnner?= <stephan.duenner@bytesatwork.ch>
 Date: Fri, 3 May 2024 08:13:32 +0200
 Subject: [PATCH] drm: Add youritech ILI9806E panel
@@ -20,7 +20,7 @@ Signed-off-by: Simone Schwizer <simone.schwizer@bytesatwork.ch>
  create mode 100644 drivers/gpu/drm/panel/panel-youritech-ili9806e.c
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 4497beb0caf2..fe8ac3bb4156 100644
+index 4497beb0ca..fe8ac3bb41 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
 @@ -4442,6 +4442,7 @@ M:	Daniel Ammann <daniel.ammann@bytesatwork.ch>
@@ -32,7 +32,7 @@ index 4497beb0caf2..fe8ac3bb4156 100644
  C-MEDIA CMI8788 DRIVER
  M:	Clemens Ladisch <clemens@ladisch.de>
 diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
-index 2fc8ac09efe5..a135a1b2cab3 100644
+index 2fc8ac09ef..a135a1b2ca 100644
 --- a/drivers/gpu/drm/panel/Kconfig
 +++ b/drivers/gpu/drm/panel/Kconfig
 @@ -872,4 +872,12 @@ config DRM_PANEL_WKS_101WX001
@@ -49,7 +49,7 @@ index 2fc8ac09efe5..a135a1b2cab3 100644
 +	  ILI9806E DSI panel.
  endmenu
 diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
-index e1bd080a06c6..102ab64f6044 100644
+index e1bd080a06..102ab64f60 100644
 --- a/drivers/gpu/drm/panel/Makefile
 +++ b/drivers/gpu/drm/panel/Makefile
 @@ -89,3 +89,4 @@ obj-$(CONFIG_DRM_PANEL_VISIONOX_R66451) += panel-visionox-r66451.o
@@ -59,7 +59,7 @@ index e1bd080a06c6..102ab64f6044 100644
 +obj-$(CONFIG_DRM_PANEL_YOURITECH_ILI9806E) += panel-youritech-ili9806e.o
 diff --git a/drivers/gpu/drm/panel/panel-youritech-ili9806e.c b/drivers/gpu/drm/panel/panel-youritech-ili9806e.c
 new file mode 100644
-index 000000000000..7450b6027f1f
+index 0000000000..7450b6027f
 --- /dev/null
 +++ b/drivers/gpu/drm/panel/panel-youritech-ili9806e.c
 @@ -0,0 +1,594 @@
